@@ -1,0 +1,77 @@
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/with_deletes.ibd
+    File size:             114688 B
+    Space id:              7
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 7
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     1 indexes.
+====================================================================================
+
+====================================================================================
+|  PAGE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    Page no:           4
+    Slibling pages no: NULL [4] NULL
+    Space id:          7
+    Page type:         INDEX
+    Lsn:               33167377
+    FLush lsn:         0
+    -------------------
+    Page level:        0
+    Page size:         [logical: 16384 B], [physical: 16384 B]
+    Number of records: 5
+    Index id:          167
+    Belongs to:        [table: ibdninja_test.with_deletes], [index: PRIMARY]
+    Row format:        DYNAMIC
+    Number dir slots:  3
+    Heap top:          461
+    Number of heap:    12
+    First free rec:    432
+    Garbage:           176 B
+    Last insert:       0
+    Direction:         2
+    Number direction:  9
+    Max trx id:        0
+
+====================================================================================
+|  PAGE ANALYSIS RESULT                                                             |
+------------------------------------------------------------------------------------
+Total valid records count:                5
+Total valid records size:                 165 B
+                                            [Headers: 35 B]
+                                            [Bodies:  130 B]
+Valid records to page space ratio:        1.00708 %
+
+Total records with dropped columns count: 0
+Total instant dropped columns size:       0 B
+Dropped columns to page space ratio:      0.00000 %
+
+Total delete-marked records count:        0
+Total delete-marked records size:         0 B
+Delete-marked recs to page space ratio:   0.00000 %
+
+Total InnoDB internal space used:         169 B
+                                            [FIL HEADER     38 B]
+                                            [PAGE HEADER    36 B]
+                                            [FSEG HEADER    20 B]
+                                            [INFI + SUPRE   26 B]
+                                            [RECORD HEADERS 35 B]*
+                                            [PAGE DIRECTORY 6 B]
+                                            [FIL TRAILER    8 B]
+InnoDB internals to page space ratio:     1.03149 %
+
+Total free space:                         16085 B
+Free space ratio:                         98.17505 %

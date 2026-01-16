@@ -156,7 +156,7 @@ For the `mysql.tables` table with an ID of 29, execute:
 
 This command analyzes all 10 indexes of the `mysql.tables` table and outputs their statistics. Each index's structure is similar to the output of `--analyze-index`.
 
-### 6. List the Leftmost Page Number for Each Level of an Index (`--list-leafmost-pages`, `-e INDEX_ID`)
+### 6. List the Leftmost Page Number for Each Level of an Index (`--list-leftmost-pages`, `-e INDEX_ID`)
 
 Continuing with the **mysql.ibd** example, the `PRIMARY` index of the `mysql.tables` table has an ID of 78.
 Run the following command:

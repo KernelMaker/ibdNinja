@@ -1,0 +1,26 @@
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/instant_add_drop.ibd
+    File size:             114688 B
+    Space id:              9
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 7
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     1 indexes.
+====================================================================================
+
+---------------------------------------
+Table name: ibdninja_test.instant_add_drop
+Index name: PRIMARY
+  Level 0: page 4

@@ -136,9 +136,9 @@ MySQL 8.0 数据文件(.ibd)解析、分析工具（C++)
 
 该命令会依次分析mysql.tables包含的10个索引，并打印他们的统计信息，这里就不展示了，每个索引的统计信息结构同--analyze-index, -i展示一样
 
-### 6. 打印指定索引每一层的leftmost page no（--list-leafmost-pages, -e INDEX_ID)
+### 6. 打印指定索引每一层的leftmost page no（--list-leftmost-pages, -e INDEX_ID)
 
-同样以**mysql.idb**为例，通过上面的示例我们知道表mysql.tables的PRIMARY index的ID为 78，那么我们就可以通过--list-leafmost-pages, -e INDEX_ID来拿到该索引每一层的leftmost page no
+同样以**mysql.idb**为例，通过上面的示例我们知道表mysql.tables的PRIMARY index的ID为 78，那么我们就可以通过--list-leftmost-pages, -e INDEX_ID来拿到该索引每一层的leftmost page no
 
 <img src="https://github.com/KernelMaker/kernelmaker.github.io/blob/master/public/images/ibdNinja-diagram/8.png" alt="image-8" width="60%" />
 

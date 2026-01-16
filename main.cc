@@ -1,5 +1,5 @@
 /*
- * Copyright (c) [2025] [Zhao Song]
+ * Copyright (c) [2025-2026] [Zhao Song]
  */
 #include <getopt.h>
 #include <algorithm>
@@ -17,7 +17,7 @@ void Usage() {
                   "specified ibd file\n");
   fprintf(stdout, "  --list-all-tables, -a                     List all "
                   "tables and their indexes in the specified ibd file\n");
-  fprintf(stdout, "  --list-leafmost-pages, -e INDEX_ID        Show the "
+  fprintf(stdout, "  --list-leftmost-pages, -e INDEX_ID        Show the "
                   "leftmost page number at each level of the specified "
                   "index\n");
   fprintf(stdout, "  --analyze-table, -t TABLE_ID              Analyze the "

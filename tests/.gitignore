@@ -1,0 +1,7 @@
+# Generated fixtures (optional - you may want to commit these for CI)
+# Uncomment the next line if you don't want to track fixtures:
+# fixtures/*.ibd
+
+# Temporary files
+*.tmp
+*.bak

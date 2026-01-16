@@ -8,7 +8,7 @@ LDFLAGS = -Lzlib/zlib-1.2.13/ibdNinja/lib -lz -Wl,-rpath,zlib/zlib-1.2.13/ibdNin
 TARGET = ibdNinja
 
 # Source files, object files, and target
-SRCS = main.cc ibdNinja.cc ibdUtils.cc
+SRCS = main.cc ibdNinja.cc ibdUtils.cc Properties.cc Column.cc Index.cc Table.cc Record.cc
 OBJS = $(SRCS:.cc=.o)
 
 # Default target
@@ -36,5 +36,23 @@ $(TARGET): check_zlib $(OBJS)
 clean:
 	rm -f $(OBJS) $(TARGET) $(SRCS:.cc=.d)
 
+# Test targets
+test: $(TARGET)
+	@./tests/run_tests.sh
+
+test-verbose: $(TARGET)
+	@./tests/run_tests.sh --verbose
+
+test-update: $(TARGET)
+	@./tests/run_tests.sh --update
+
+test-fixtures:
+	@./tests/generate_fixtures.sh
+
+test-upgrade-fixture:
+	@./tests/generate_upgrade_fixture.sh
+
+test-all-fixtures: test-fixtures test-upgrade-fixture
+
 # Phony targets
-.PHONY: all clean
+.PHONY: all clean test test-verbose test-update test-fixtures test-upgrade-fixture test-all-fixtures

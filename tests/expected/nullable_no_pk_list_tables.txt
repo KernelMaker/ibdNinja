@@ -1,0 +1,27 @@
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/nullable_no_pk.ibd
+    File size:             131072 B
+    Space id:              6
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 8
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     2 indexes.
+====================================================================================
+
+Listing all *supported* tables and indexes in the specified ibd file:
+---------------------------------------
+[Table] id: 1072    name: ibdninja_test.nullable_no_pk
+        [Index] id: 165    , root page no: 4      , name: PRIMARY
+        [Index] id: 166    , root page no: 5      , name: idx_col1

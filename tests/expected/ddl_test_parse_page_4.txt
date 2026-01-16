@@ -1,0 +1,79 @@
+[ibdNinja][WARN]: Skipping loading index 'idx_data_v3' of table 'ibdninja_test.ddl_test', Reason: '[Index using virtual columns as keys]'
+
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/ddl_test.ibd
+    File size:             163840 B
+    Space id:              2
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 10
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     3 indexes.
+====================================================================================
+
+====================================================================================
+|  PAGE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    Page no:           4
+    Slibling pages no: NULL [4] NULL
+    Space id:          2
+    Page type:         INDEX
+    Lsn:               55198583
+    FLush lsn:         0
+    -------------------
+    Page level:        0
+    Page size:         [logical: 16384 B], [physical: 16384 B]
+    Number of records: 19
+    Index id:          157
+    Belongs to:        [table: ibdninja_test.ddl_test], [index: PRIMARY]
+    Row format:        DYNAMIC
+    Number dir slots:  5
+    Heap top:          1568
+    Number of heap:    21
+    First free rec:    0
+    Garbage:           0 B
+    Last insert:       1507
+    Direction:         2
+    Number direction:  18
+    Max trx id:        0
+
+====================================================================================
+|  PAGE ANALYSIS RESULT                                                             |
+------------------------------------------------------------------------------------
+Total valid records count:                19
+Total valid records size:                 1448 B
+                                            [Headers: 171 B]
+                                            [Bodies:  1277 B]
+Valid records to page space ratio:        8.83789 %
+
+Total records with dropped columns count: 17
+Total instant dropped columns size:       200 B
+Dropped columns to page space ratio:      1.22070 %
+
+Total delete-marked records count:        0
+Total delete-marked records size:         0 B
+Delete-marked recs to page space ratio:   0.00000 %
+
+Total InnoDB internal space used:         309 B
+                                            [FIL HEADER     38 B]
+                                            [PAGE HEADER    36 B]
+                                            [FSEG HEADER    20 B]
+                                            [INFI + SUPRE   26 B]
+                                            [RECORD HEADERS 171 B]*
+                                            [PAGE DIRECTORY 10 B]
+                                            [FIL TRAILER    8 B]
+InnoDB internals to page space ratio:     1.88599 %
+
+Total free space:                         14798 B
+Free space ratio:                         90.31982 %

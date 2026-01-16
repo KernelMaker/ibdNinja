@@ -1,5 +1,5 @@
 /*
- * Copyright (c) [2025] [Zhao Song]
+ * Copyright (c) [2025-2026] [Zhao Song]
  */
 #ifndef IBDCOLLATIONS_H_
 #define IBDCOLLATIONS_H_
