@@ -1,0 +1,324 @@
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/blob_external.ibd
+    File size:             344064 B
+    Space id:              22
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 21
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     1 indexes.
+====================================================================================
+
+====================================================================================
+|  PAGE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    Page no:           4
+    Slibling pages no: NULL [4] NULL
+    Space id:          22
+    Page type:         INDEX
+    Lsn:               33531717
+    FLush lsn:         0
+    -------------------
+    Page level:        0
+    Page size:         [logical: 16384 B], [physical: 16384 B]
+    Number of records: 5
+    Index id:          194
+    Belongs to:        [table: ibdninja_test.blob_external], [index: PRIMARY]
+    Row format:        DYNAMIC
+    Number dir slots:  2
+    Heap top:          589
+    Number of heap:    7
+    First free rec:    0
+    Garbage:           0 B
+    Last insert:       279
+    Direction:         5
+    Number direction:  0
+    Max trx id:        0
+
+====================================================================================
+|  RECORDS INFORMATION                                                             |
+------------------------------------------------------------------------------------
+=======================================================================
+[ROW 1] Length: 149 (9 | 140), Number of fields: 6
+-----------------------------------------------------------------------
+  [HEADER   ]         0b 64 0c 00 00 00 10 00  96 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 01 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 09 fd 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 00 d4 01 10 
+  [FIELD   4] Name  : description
+              Length: 12   
+              Type  : varchar(100)    | VARCHAR      | DATA_VARMYSQL       
+              Value : 73 6d 61 6c 6c 20 69 6e  6c 69 6e 65 
+  [FIELD   5] Name  : data
+              Length: 100  
+              Type  : longblob        | LONG_BLOB    | DATA_BLOB           
+              Value : 41 41 41 41 41 41 41 41  41 41 41 41 41 41 41 41 
+                      41 41 41 41 41 41 41 41  41 41 41 41 41 41 41 41 
+                      41 41 41 41 41 41 41 41  41 41 41 41 41 41 41 41 
+                      41 41 41 41 41 41 41 41  41 41 41 41 41 41 41 41 
+                      41 41 41 41 41 41 41 41  41 41 41 41 41 41 41 41 
+                      41 41 41 41 41 41 41 41  41 41 41 41 41 41 41 41 
+                      41 41 41 41 
+  [FIELD   6] Name  : extra
+              Length: 11   
+              Type  : text            | BLOB         | DATA_BLOB           
+              Value : 69 6e 6c 69 6e 65 20 74  65 78 74 
+=======================================================================
+[ROW 2] Length: 77 (10 | 67), Number of fields: 6
+-----------------------------------------------------------------------
+  [HEADER   ]         11 14 c0 0d 00 00 00 18  00 4d 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 02 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 09 fe 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 01 00 00 01 80 01 51 
+  [FIELD   4] Name  : description
+              Length: 13   
+              Type  : varchar(100)    | VARCHAR      | DATA_VARMYSQL       
+              Value : 65 78 74 65 72 6e 61 6c  20 62 6c 6f 62 
+  [FIELD   5] Name  : data
+              Length: 20   
+              Type  : longblob        | LONG_BLOB    | DATA_BLOB           
+              Value : 00 00 00 16 00 00 00 12  00 00 00 01 00 00 00 00 
+                      00 00 3e 80 
+                      [EXTERNAL: space=22, page=18, version=1, len=16000]
+                      [LOB DATA (hex, 16000 bytes total)]: 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 
+                      58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 
+                      58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 
+                      58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 
+                      58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 
+                      58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 
+                      58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 
+                      58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 
+                      58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 
+                      58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 
+                      58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 
+                      58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 
+                      58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 
+                      58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 
+                      58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 
+                      58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 
+                      [... 15744 more bytes]
+  [FIELD   6] Name  : extra
+              Length: 17   
+              Type  : text            | BLOB         | DATA_BLOB           
+              Value : 68 61 73 20 65 78 74 65  72 6e 61 6c 20 62 6c 6f 
+                      62 
+=======================================================================
+[ROW 3] Length: 81 (10 | 71), Number of fields: 6
+-----------------------------------------------------------------------
+  [HEADER   ]         14 14 c0 0e 00 00 00 20  00 51 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 03 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 09 fd 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 00 d4 01 2a 
+  [FIELD   4] Name  : description
+              Length: 14   
+              Type  : varchar(100)    | VARCHAR      | DATA_VARMYSQL       
+              Value : 6c 61 72 67 65 20 65 78  74 65 72 6e 61 6c 
+  [FIELD   5] Name  : data
+              Length: 20   
+              Type  : longblob        | LONG_BLOB    | DATA_BLOB           
+              Value : 00 00 00 16 00 00 00 07  00 00 00 01 00 00 00 00 
+                      00 00 7d 00 
+                      [EXTERNAL: space=22, page=7, version=1, len=32000]
+                      [LOB DATA (hex, 32000 bytes total)]: 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 
+                      43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 
+                      43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 
+                      43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 
+                      43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 
+                      43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 
+                      43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 
+                      43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 
+                      43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 
+                      43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 
+                      43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 
+                      43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 
+                      43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 
+                      43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 
+                      43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 
+                      43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 
+                      [... 31744 more bytes]
+  [FIELD   6] Name  : extra
+              Length: 20   
+              Type  : text            | BLOB         | DATA_BLOB           
+              Value : 6c 61 72 67 65 72 20 65  78 74 65 72 6e 61 6c 20 
+                      62 6c 6f 62 
+=======================================================================
+[ROW 4] Length: 81 (10 | 71), Number of fields: 6
+-----------------------------------------------------------------------
+  [HEADER   ]         18 14 c0 0a 00 00 00 28  00 52 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 04 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 09 fd 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 00 d4 01 37 
+  [FIELD   4] Name  : description
+              Length: 10   
+              Type  : varchar(100)    | VARCHAR      | DATA_VARMYSQL       
+              Value : 76 65 72 79 20 6c 61 72  67 65 
+  [FIELD   5] Name  : data
+              Length: 20   
+              Type  : longblob        | LONG_BLOB    | DATA_BLOB           
+              Value : 00 00 00 16 00 00 00 09  00 00 00 01 00 00 00 00 
+                      00 00 fd e8 
+                      [EXTERNAL: space=22, page=9, version=1, len=65000]
+                      [LOB DATA (hex, 65000 bytes total)]: 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 
+                      44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 
+                      44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 
+                      44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 
+                      44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 
+                      44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 
+                      44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 
+                      44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 
+                      44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 
+                      44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 
+                      44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 
+                      44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 
+                      44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 
+                      44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 
+                      44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 
+                      44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 44 
+                      [... 64744 more bytes]
+  [FIELD   6] Name  : extra
+              Length: 24   
+              Type  : text            | BLOB         | DATA_BLOB           
+              Value : 76 65 72 79 20 6c 61 72  67 65 20 65 78 74 65 72 
+                      6e 61 6c 20 62 6c 6f 62  
+=======================================================================
+[ROW 5] Length: 81 (11 | 70), Number of fields: 6
+-----------------------------------------------------------------------
+  [HEADER   ]         14 c0 14 c0 0d 00 00 00  30 fe 69 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 05 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 09 fd 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 00 d4 01 44 
+  [FIELD   4] Name  : description
+              Length: 13   
+              Type  : varchar(100)    | VARCHAR      | DATA_VARMYSQL       
+              Value : 6d 69 78 65 64 20 63 6f  6e 74 65 6e 74 
+  [FIELD   5] Name  : data
+              Length: 20   
+              Type  : longblob        | LONG_BLOB    | DATA_BLOB           
+              Value : 00 00 00 16 00 00 00 0e  00 00 00 01 00 00 00 00 
+                      00 00 4e 20 
+                      [EXTERNAL: space=22, page=14, version=1, len=20000]
+                      [LOB DATA (hex, 20000 bytes total)]: 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 
+                      [... 19744 more bytes]
+  [FIELD   6] Name  : extra
+              Length: 20   
+              Type  : text            | BLOB         | DATA_BLOB           
+              Value : 00 00 00 16 00 00 00 10  00 00 00 01 00 00 00 00 
+                      00 00 4e 20 
+                      [EXTERNAL: space=22, page=16, version=1, len=20000]
+                      [LOB DATA (hex, 20000 bytes total)]: 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 
+                      [... 19744 more bytes]
+====================================================================================
+|  PAGE ANALYSIS RESULT                                                             |
+------------------------------------------------------------------------------------
+Total valid records count:                5
+Total valid records size:                 469 B
+                                            [Headers: 50 B]
+                                            [Bodies:  419 B]
+Valid records to page space ratio:        2.86255 %
+
+Total records with dropped columns count: 0
+Total instant dropped columns size:       0 B
+Dropped columns to page space ratio:      0.00000 %
+
+Total delete-marked records count:        0
+Total delete-marked records size:         0 B
+Delete-marked recs to page space ratio:   0.00000 %
+
+Total InnoDB internal space used:         182 B
+                                            [FIL HEADER     38 B]
+                                            [PAGE HEADER    36 B]
+                                            [FSEG HEADER    20 B]
+                                            [INFI + SUPRE   26 B]
+                                            [RECORD HEADERS 50 B]*
+                                            [PAGE DIRECTORY 4 B]
+                                            [FIL TRAILER    8 B]
+InnoDB internals to page space ratio:     1.11084 %
+
+Total free space:                         15783 B
+Free space ratio:                         96.33179 %

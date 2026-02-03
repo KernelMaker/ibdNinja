@@ -176,6 +176,11 @@ uint32_t g_page_logical_size = 0;
 uint32_t g_page_physical_size = 0;
 bool g_page_compressed = false;
 
+LobOutputFormat g_lob_output_format = LobOutputFormat::HEX;
+bool g_lob_show_version_history = false;
+uint32_t g_lob_text_truncate_len = 256;
+std::string g_lob_output_dir = "./blobs/";
+
 uint32_t RecGetBitField1B(const unsigned char* rec, uint32_t offs,
                                         uint32_t mask, uint32_t shift) {
   assert(rec);

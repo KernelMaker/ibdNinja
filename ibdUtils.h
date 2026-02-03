@@ -505,6 +505,96 @@ const uint32_t LOB_HDR_NEXT_PAGE_NO = 4;
 const uint32_t LOB_HDR_SIZE = 8;
 const uint32_t ZLOB_PAGE_DATA = FIL_PAGE_DATA;
 
+// FLST sub-offsets (for parsing base nodes and file addresses)
+constexpr uint32_t FLST_LEN = 0;
+constexpr uint32_t FLST_FIRST = 4;
+constexpr uint32_t FLST_LAST = 10;
+
+// Modern LOB First Page layout (offsets from FIL_PAGE_DATA=38)
+constexpr uint32_t LOB_FIRST_PAGE_VERSION = 0;
+constexpr uint32_t LOB_FIRST_PAGE_FLAGS = 1;
+constexpr uint32_t LOB_FIRST_PAGE_LOB_VERSION = 2;
+constexpr uint32_t LOB_FIRST_PAGE_LAST_TRX_ID = 6;
+constexpr uint32_t LOB_FIRST_PAGE_LAST_UNDO_NO = 12;
+constexpr uint32_t LOB_FIRST_PAGE_DATA_LEN = 16;
+constexpr uint32_t LOB_FIRST_PAGE_TRX_ID = 20;
+constexpr uint32_t LOB_FIRST_PAGE_INDEX_LIST = 26;
+constexpr uint32_t LOB_FIRST_PAGE_FREE_LIST = 42;
+constexpr uint32_t LOB_FIRST_PAGE_INDEX_BEGIN = 58;
+constexpr uint32_t LOB_FIRST_PAGE_N_ENTRIES = 10;
+constexpr uint32_t LOB_INDEX_ENTRY_SIZE = 60;
+
+// LOB Index Entry layout (60 bytes)
+constexpr uint32_t LOB_ENTRY_PREV = 0;
+constexpr uint32_t LOB_ENTRY_NEXT = 6;
+constexpr uint32_t LOB_ENTRY_VERSIONS = 12;
+constexpr uint32_t LOB_ENTRY_CREATOR_TRX_ID = 28;
+constexpr uint32_t LOB_ENTRY_MODIFIER_TRX_ID = 34;
+constexpr uint32_t LOB_ENTRY_CREATOR_UNDO_NO = 40;
+constexpr uint32_t LOB_ENTRY_MODIFIER_UNDO_NO = 44;
+constexpr uint32_t LOB_ENTRY_PAGE_NO = 48;
+constexpr uint32_t LOB_ENTRY_DATA_LEN = 52;
+constexpr uint32_t LOB_ENTRY_LOB_VERSION = 56;
+
+// LOB Data Page layout (offsets from FIL_PAGE_DATA=38)
+constexpr uint32_t LOB_DATA_PAGE_VERSION = 0;
+constexpr uint32_t LOB_DATA_PAGE_DATA_LEN = 1;
+constexpr uint32_t LOB_DATA_PAGE_TRX_ID = 5;
+constexpr uint32_t LOB_DATA_PAGE_DATA_BEGIN = 11;
+
+// LOB output format
+enum class LobOutputFormat { HEX, RAW_FILE, TEXT_TRUNC, SUMMARY_ONLY };
+
+// LOB global config
+extern LobOutputFormat g_lob_output_format;
+extern bool g_lob_show_version_history;
+extern uint32_t g_lob_text_truncate_len;
+extern std::string g_lob_output_dir;
+
+// LOB data structures
+struct FilAddr {
+  uint32_t page_no;
+  uint16_t byte_offset;
+  bool is_null() const { return page_no == FIL_NULL; }
+};
+
+struct FlstBaseNode {
+  uint32_t length;
+  FilAddr first;
+  FilAddr last;
+};
+
+struct LobIndexEntry {
+  FilAddr prev;
+  FilAddr next;
+  FlstBaseNode versions;
+  uint64_t creator_trx_id;
+  uint64_t modifier_trx_id;
+  uint32_t creator_undo_no;
+  uint32_t modifier_undo_no;
+  uint32_t data_page_no;
+  uint32_t data_len;
+  uint32_t lob_version;
+};
+
+struct LobFirstPageHeader {
+  uint8_t version;
+  uint8_t flags;
+  uint32_t lob_version;
+  uint64_t last_trx_id;
+  uint32_t last_undo_no;
+  uint32_t data_len;
+  uint64_t creator_trx_id;
+  FlstBaseNode index_list;
+  FlstBaseNode free_list;
+};
+
+// LOB free function (callable from Record.cc without ibdNinja.h)
+void FetchAndDisplayExternalLob(uint32_t space_id, uint32_t page_no,
+                                uint32_t version, uint64_t ext_len,
+                                LobOutputFormat format,
+                                bool show_versions, bool print);
+
 // Index related
 constexpr uint32_t DICT_INDEX_SPATIAL_NODEPTR_SIZE = 1;
 

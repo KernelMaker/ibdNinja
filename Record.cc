@@ -542,14 +542,16 @@ void Record::ParseRecord(bool leaf, uint32_t row_no,
     }
     if (len & REC_OFFS_EXTERNAL) {
       const unsigned char* ext_ref = &rec_[end_pos - 20];
-      [[maybe_unused]] uint32_t space_id =
-                         ReadFrom4B(ext_ref + BTR_EXTERN_SPACE_ID);
-      [[maybe_unused]] uint32_t page_no =
-                         ReadFrom4B(ext_ref + BTR_EXTERN_PAGE_NO);
-      uint64_t ext_len = ReadFrom4B(ext_ref + BTR_EXTERN_LEN + 4);
+      uint32_t space_id = ReadFrom4B(ext_ref + BTR_EXTERN_SPACE_ID);
+      uint32_t ext_page_no = ReadFrom4B(ext_ref + BTR_EXTERN_PAGE_NO);
+      uint32_t ext_version = ReadFrom4B(ext_ref + BTR_EXTERN_VERSION);
+      uint64_t ext_len = ReadFrom8B(ext_ref + BTR_EXTERN_LEN) & 0x1FFFFFFFFFULL;
       ninja_pt(print, "\n                      "
-              "[Remaining %" PRIu64 " bytes have been offloaded externally...]",
-              ext_len);
+              "[EXTERNAL: space=%u, page=%u, version=%u, len=%" PRIu64 "]",
+              space_id, ext_page_no, ext_version, ext_len);
+      FetchAndDisplayExternalLob(space_id, ext_page_no, ext_version, ext_len,
+                                 g_lob_output_format,
+                                 g_lob_show_version_history, print);
     }
     ninja_pt(print, "\n");
   }

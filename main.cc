@@ -30,6 +30,14 @@ void Usage() {
                   "record details when parsing a page\n");
   fprintf(stdout, "  --version, -v                             Display version "
                   "information\n");
+  fprintf(stdout, "  --blob-format, -b FORMAT                  LOB output format: "
+                  "hex|file|text|summary (default: hex)\n");
+  fprintf(stdout, "  --blob-truncate NUM                       Max bytes to show "
+                  "for hex/text LOB output (default: 256)\n");
+  fprintf(stdout, "  --blob-output-dir DIR                     Directory for "
+                  "raw LOB file output (default: ./blobs/)\n");
+  fprintf(stdout, "  --lob-versions, -B                        Show LOB version "
+                  "history for external fields\n");
 }
 int main(int argc, char* argv[]) {
   if (argc < 2) {
@@ -47,6 +55,10 @@ int main(int argc, char* argv[]) {
     {"parse-page", required_argument, 0, 'p'},
     {"no-print-record", no_argument, 0, 'n'},
     {"version", no_argument, 0, 'v'},
+    {"blob-format", required_argument, 0, 'b'},
+    {"blob-truncate", required_argument, 0, 0x100},
+    {"blob-output-dir", required_argument, 0, 0x101},
+    {"lob-versions", no_argument, 0, 'B'},
     {0, 0, 0, 0}  // End of options
   };
 
@@ -63,7 +75,7 @@ int main(int argc, char* argv[]) {
   bool print_record = true;
 
   while ((opt = getopt_long(argc,
-                argv, "halvf:e:t:i:p:n", options, &option_index)) != -1) {
+                argv, "halvf:e:t:i:p:nb:B", options, &option_index)) != -1) {
     switch (opt) {
       case 'h':
         ibd_ninja::ibdNinja::PrintName();
@@ -125,6 +137,39 @@ int main(int argc, char* argv[]) {
         break;
       case 'n':
         print_record = false;
+        break;
+      case 'b': {
+          std::string fmt(optarg);
+          if (fmt == "hex") {
+            ibd_ninja::g_lob_output_format = ibd_ninja::LobOutputFormat::HEX;
+          } else if (fmt == "file") {
+            ibd_ninja::g_lob_output_format = ibd_ninja::LobOutputFormat::RAW_FILE;
+          } else if (fmt == "text") {
+            ibd_ninja::g_lob_output_format = ibd_ninja::LobOutputFormat::TEXT_TRUNC;
+          } else if (fmt == "summary") {
+            ibd_ninja::g_lob_output_format = ibd_ninja::LobOutputFormat::SUMMARY_ONLY;
+          } else {
+            fprintf(stderr, "Unknown blob format: %s "
+                    "(use hex, file, text, or summary)\n", optarg);
+            return 1;
+          }
+        }
+        break;
+      case 0x100: {
+          std::string str(optarg);
+          if (std::all_of(str.begin(), str.end(), ::isdigit)) {
+            ibd_ninja::g_lob_text_truncate_len = std::stoul(optarg);
+          } else {
+            fprintf(stderr, "Invalid blob-truncate value: %s\n", optarg);
+            return 1;
+          }
+        }
+        break;
+      case 0x101:
+        ibd_ninja::g_lob_output_dir = optarg;
+        break;
+      case 'B':
+        ibd_ninja::g_lob_show_version_history = true;
         break;
       case '?':
         return 1;
