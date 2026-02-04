@@ -69,6 +69,13 @@ bool Column::Init(const rapidjson::Value& dd_col_obj) {
   Read(&dd_collation_id_, dd_col_obj, "collation_id");
   Read(&dd_is_explicit_collation_, dd_col_obj, "is_explicit_collation");
 
+  // Check if this is a VECTOR column (stored as JSON with is_array=true)
+  if (dd_options_.Exists("is_array")) {
+    uint32_t is_array_val = 0;
+    dd_options_.Get("is_array", &is_array_val);
+    is_array_ = (is_array_val != 0);
+  }
+
   return true;
 }
 
@@ -148,6 +155,8 @@ Column::enum_field_types Column::DDType2FieldType(
       return enum_field_types::MYSQL_TYPE_GEOMETRY;
     case enum_column_types::JSON:
       return enum_field_types::MYSQL_TYPE_JSON;
+    case enum_column_types::VECTOR:
+      return enum_field_types::MYSQL_TYPE_VECTOR;
     // TODO(Zhao): support other types
     default:
       assert(false);
@@ -204,7 +213,9 @@ std::string Column::FieldTypeString() {
     case MYSQL_TYPE_BOOL:
       return "BOOL";
     case MYSQL_TYPE_JSON:
-      return "JSON";
+      return is_array_ ? "VECTOR" : "JSON";
+    case MYSQL_TYPE_VECTOR:
+      return "VECTOR";
     case MYSQL_TYPE_NEWDECIMAL:
       return "NEWDECIMAL";
     case MYSQL_TYPE_ENUM:
@@ -292,6 +303,9 @@ Column::enum_field_types Column::FieldType() const {
     case MYSQL_TYPE_JSON:
       // Field_json -> Field_blob -> Field_longstr -> Field_str
       return MYSQL_TYPE_JSON;
+    case MYSQL_TYPE_VECTOR:
+      // Field_vector -> Field_blob -> Field_longstr -> Field_str
+      return MYSQL_TYPE_VECTOR;
     case MYSQL_TYPE_ENUM:
       // Field_enum -> Field_str
       return MYSQL_TYPE_STRING;
@@ -452,6 +466,7 @@ uint32_t Column::FieldType2SeType() const {
     case MYSQL_TYPE_BLOB:
     case MYSQL_TYPE_LONG_BLOB:
     case MYSQL_TYPE_JSON:  // JSON fields are stored as BLOBs
+    case MYSQL_TYPE_VECTOR:  // VECTOR fields are stored as BLOBs
       return (DATA_BLOB);
     case MYSQL_TYPE_NULL:
       break;
@@ -487,6 +502,8 @@ uint32_t Column::PackLength() const {
     case MYSQL_TYPE_GEOMETRY:
       return 4 + PORTABLE_SIZEOF_CHAR_PTR;
     case MYSQL_TYPE_JSON:
+      return 4 + PORTABLE_SIZEOF_CHAR_PTR;
+    case MYSQL_TYPE_VECTOR:
       return 4 + PORTABLE_SIZEOF_CHAR_PTR;
     case MYSQL_TYPE_ENUM:
       return dd_elements_size_tmp_ < 256 ? 1 : 2;
@@ -572,6 +589,7 @@ bool Column::IsBinary() const {
     case MYSQL_TYPE_LONG_BLOB:
     case MYSQL_TYPE_GEOMETRY:
     case MYSQL_TYPE_JSON:
+    case MYSQL_TYPE_VECTOR:
     case MYSQL_TYPE_ENUM:
     case MYSQL_TYPE_SET:
     case MYSQL_TYPE_NULL:

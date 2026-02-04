@@ -1,0 +1,265 @@
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/multi_index.ibd
+    File size:             163840 B
+    Space id:              3
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 10
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     4 indexes.
+====================================================================================
+
+====================================================================================
+|  PAGE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    Page no:           4
+    Slibling pages no: NULL [4] NULL
+    Space id:          3
+    Page type:         INDEX
+    Lsn:               29834235
+    FLush lsn:         0
+    -------------------
+    Page level:        0
+    Page size:         [logical: 16384 B], [physical: 16384 B]
+    Number of records: 5
+    Index id:          159
+    Belongs to:        [table: ibdninja_test.multi_index], [index: PRIMARY]
+    Row format:        DYNAMIC
+    Number dir slots:  2
+    Heap top:          446
+    Number of heap:    7
+    First free rec:    0
+    Garbage:           0 B
+    Last insert:       387
+    Direction:         2
+    Number direction:  4
+    Max trx id:        0
+
+====================================================================================
+|  RECORDS INFORMATION                                                             |
+------------------------------------------------------------------------------------
+=======================================================================
+[ROW 1] Length: 66 (9 | 57), Number of fields: 8
+-----------------------------------------------------------------------
+  [HEADER   ]         16 05 04 00 00 00 10 00  42 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 01 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 08 24 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 01 0d 01 10 
+  [FIELD   4] Name  : first_name
+              Length: 4    
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 4a 6f 68 6e 
+  [FIELD   5] Name  : last_name
+              Length: 5    
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 53 6d 69 74 68 
+  [FIELD   6] Name  : email
+              Length: 22   
+              Type  : varchar(255)    | VARCHAR      | DATA_VARMYSQL       
+              Value : 6a 6f 68 6e 2e 73 6d 69  74 68 40 65 78 61 6d 70 
+                      6c 65 2e 63 6f 6d 
+  [FIELD   7] Name  : department_id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 0a 
+  [FIELD   8] Name  : created_at
+              Length: 5    
+              Type  : datetime        | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 5e a0 00 
+=======================================================================
+[ROW 2] Length: 62 (9 | 53), Number of fields: 8
+-----------------------------------------------------------------------
+  [HEADER   ]         14 03 04 00 00 00 18 00  3e 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 02 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 08 24 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 01 0d 01 1d 
+  [FIELD   4] Name  : first_name
+              Length: 4    
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 4a 61 6e 65 
+  [FIELD   5] Name  : last_name
+              Length: 3    
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 44 6f 65 
+  [FIELD   6] Name  : email
+              Length: 20   
+              Type  : varchar(255)    | VARCHAR      | DATA_VARMYSQL       
+              Value : 6a 61 6e 65 2e 64 6f 65  40 65 78 61 6d 70 6c 65 
+                      2e 63 6f 6d 
+  [FIELD   7] Name  : department_id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 14 
+  [FIELD   8] Name  : created_at
+              Length: 5    
+              Type  : datetime        | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 60 b0 00 
+=======================================================================
+[ROW 3] Length: 64 (9 | 55), Number of fields: 8
+-----------------------------------------------------------------------
+  [HEADER   ]         15 05 03 00 00 00 20 00  40 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 03 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 08 24 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 01 0d 01 2a 
+  [FIELD   4] Name  : first_name
+              Length: 3    
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 42 6f 62 
+  [FIELD   5] Name  : last_name
+              Length: 5    
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 53 6d 69 74 68 
+  [FIELD   6] Name  : email
+              Length: 21   
+              Type  : varchar(255)    | VARCHAR      | DATA_VARMYSQL       
+              Value : 62 6f 62 2e 73 6d 69 74  68 40 65 78 61 6d 70 6c 
+                      65 2e 63 6f 6d 
+  [FIELD   7] Name  : department_id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 0a 
+  [FIELD   8] Name  : created_at
+              Length: 5    
+              Type  : datetime        | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 62 c0 00 
+=======================================================================
+[ROW 4] Length: 66 (9 | 57), Number of fields: 8
+-----------------------------------------------------------------------
+  [HEADER   ]         13 07 05 00 00 00 28 00  42 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 04 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 08 24 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 01 0d 01 37 
+  [FIELD   4] Name  : first_name
+              Length: 5    
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 41 6c 69 63 65 
+  [FIELD   5] Name  : last_name
+              Length: 7    
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 4a 6f 68 6e 73 6f 6e 
+  [FIELD   6] Name  : email
+              Length: 19   
+              Type  : varchar(255)    | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 6c 69 63 65 2e 6a 40  65 78 61 6d 70 6c 65 2e 
+                      63 6f 6d 
+  [FIELD   7] Name  : department_id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 1e 
+  [FIELD   8] Name  : created_at
+              Length: 5    
+              Type  : datetime        | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 64 d0 00 
+=======================================================================
+[ROW 5] Length: 68 (9 | 59), Number of fields: 8
+-----------------------------------------------------------------------
+  [HEADER   ]         15 05 07 00 00 00 30 fe  ed 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 05 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 08 24 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 01 0d 01 44 
+  [FIELD   4] Name  : first_name
+              Length: 7    
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 43 68 61 72 6c 69 65 
+  [FIELD   5] Name  : last_name
+              Length: 5    
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 42 72 6f 77 6e 
+  [FIELD   6] Name  : email
+              Length: 21   
+              Type  : varchar(255)    | VARCHAR      | DATA_VARMYSQL       
+              Value : 63 68 61 72 6c 69 65 2e  62 40 65 78 61 6d 70 6c 
+                      65 2e 63 6f 6d 
+  [FIELD   7] Name  : department_id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 14 
+  [FIELD   8] Name  : created_at
+              Length: 5    
+              Type  : datetime        | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 66 e0 00 
+====================================================================================
+|  PAGE ANALYSIS RESULT                                                             |
+------------------------------------------------------------------------------------
+Total valid records count:                5
+Total valid records size:                 326 B
+                                            [Headers: 45 B]
+                                            [Bodies:  281 B]
+Valid records to page space ratio:        1.98975 %
+
+Total records with dropped columns count: 0
+Total instant dropped columns size:       0 B
+Dropped columns to page space ratio:      0.00000 %
+
+Total delete-marked records count:        0
+Total delete-marked records size:         0 B
+Delete-marked recs to page space ratio:   0.00000 %
+
+Total InnoDB internal space used:         177 B
+                                            [FIL HEADER     38 B]
+                                            [PAGE HEADER    36 B]
+                                            [FSEG HEADER    20 B]
+                                            [INFI + SUPRE   26 B]
+                                            [RECORD HEADERS 45 B]*
+                                            [PAGE DIRECTORY 4 B]
+                                            [FIL TRAILER    8 B]
+InnoDB internals to page space ratio:     1.08032 %
+
+Total free space:                         15926 B
+Free space ratio:                         97.20459 %

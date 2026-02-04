@@ -1,5 +1,5 @@
 # ibdNinja 🥷
-A powerful C++ tool for parsing and analyzing MySQL 8.0 (.ibd) data files
+A powerful C++ tool for parsing and analyzing MySQL (.ibd) data files
 
 [中文](https://github.com/KernelMaker/ibdNinja/blob/main/README_CN.md)
 
@@ -275,7 +275,7 @@ This is the first version I developed during the Christmas holiday, so there are
 
 1. **Supported MySQL Versions**:
 
-   Currently supports MySQL 8.0 (8.0.16 - 8.0.40).
+   Currently supports MySQL 8.0 (8.0.16 - 8.0.40), MySQL 8.4 (8.4.0 - 8.4.8), and MySQL 9.0 (9.0.0 - 9.6.0).
 
    *(Earlier versions of MySQL 8.0, prior to 8.0.16, contain a bug in SDI generation that leads to missing metadata in `dd_object::indexes::elements`.)*
 

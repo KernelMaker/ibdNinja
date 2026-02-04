@@ -705,7 +705,7 @@ bool ibdNinja::SDIToLeftmostLeaf(unsigned char* buf, uint32_t sdi_root,
   if (n_of_recs == 0) {
     ninja_warn("No SDI is found in this file, "
                "it might be from an older MySQL version.");
-    ninja_warn("ibdNinja currently supports MySQL 8.0.16 to 8.0.40.");
+    ninja_warn("ibdNinja currently supports MySQL 8.0.16 to 8.0.40, 8.4.0 to 8.4.8, and 9.0.0 to 9.6.0.");
     return false;
   }
 

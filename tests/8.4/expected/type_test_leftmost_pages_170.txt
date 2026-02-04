@@ -1,0 +1,38 @@
+[ibdNinja][WARN]: Skipping loading index 'idx_point' of table 'ibdninja_test.type_test', Reason: '[Spatial index]'
+
+[ibdNinja][WARN]: Skipping loading index 'idx_geometry' of table 'ibdninja_test.type_test', Reason: '[Spatial index]'
+
+[ibdNinja][WARN]: Skipping loading index 'idx_virtual_int' of table 'ibdninja_test.type_test', Reason: '[Index using virtual columns as keys]'
+
+[ibdNinja][WARN]: Skipping loading index 'idx_virtual_concat' of table 'ibdninja_test.type_test', Reason: '[Index using virtual columns as keys]'
+
+[ibdNinja][WARN]: Skipping loading index 'idx_virtual_composite' of table 'ibdninja_test.type_test', Reason: '[Index using virtual columns as keys]'
+
+[ibdNinja][WARN]: Skipping loading index 'idx_fulltext' of table 'ibdninja_test.type_test', Reason: '[Fulltext index]'
+
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/type_test.ibd
+    File size:             311296 B
+    Space id:              10
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 19
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     7 indexes.
+====================================================================================
+
+---------------------------------------
+Table name: ibdninja_test.type_test
+Index name: PRIMARY
+  Level 0: page 4

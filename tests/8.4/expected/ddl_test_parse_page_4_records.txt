@@ -1,0 +1,954 @@
+[ibdNinja][WARN]: Skipping loading index 'idx_data_v3' of table 'ibdninja_test.ddl_test', Reason: '[Index using virtual columns as keys]'
+
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/ddl_test.ibd
+    File size:             163840 B
+    Space id:              2
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 10
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     3 indexes.
+====================================================================================
+
+====================================================================================
+|  PAGE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    Page no:           4
+    Slibling pages no: NULL [4] NULL
+    Space id:          2
+    Page type:         INDEX
+    Lsn:               55844467
+    FLush lsn:         0
+    -------------------
+    Page level:        0
+    Page size:         [logical: 16384 B], [physical: 16384 B]
+    Number of records: 19
+    Index id:          158
+    Belongs to:        [table: ibdninja_test.ddl_test], [index: PRIMARY]
+    Row format:        DYNAMIC
+    Number dir slots:  5
+    Heap top:          1568
+    Number of heap:    21
+    First free rec:    0
+    Garbage:           0 B
+    Last insert:       1507
+    Direction:         2
+    Number direction:  18
+    Max trx id:        0
+
+====================================================================================
+|  RECORDS INFORMATION                                                             |
+------------------------------------------------------------------------------------
+=======================================================================
+[ROW 1] Length: 47 (7 | 40), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         0f 00 00 00 10 00 2f 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 01 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 07 1e 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 01 0d 01 10 
+  [FIELD   4] Name  : original_col1
+              Length: 15   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 6f 72 69 67 69 6e 61 6c  5f 64 61 74 61 5f 31 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 4    
+              Type  :                 | LONG         | DATA_INT            
+              Value : 80 00 00 64 
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 0    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : *NULL*
+  [FIELD   8] Name  : data_v3
+              Length: 0    
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : *NULL*
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 0    
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : *NULL*
+  [FIELD  10] Name  : data_v5
+              Length: 0    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : *NULL*
+=======================================================================
+[ROW 2] Length: 47 (7 | 40), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         0f 00 00 00 18 00 2f 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 02 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 07 1e 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 01 0d 01 1d 
+  [FIELD   4] Name  : original_col1
+              Length: 15   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 6f 72 69 67 69 6e 61 6c  5f 64 61 74 61 5f 32 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 4    
+              Type  :                 | LONG         | DATA_INT            
+              Value : 80 00 00 c8 
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 0    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : *NULL*
+  [FIELD   8] Name  : data_v3
+              Length: 0    
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : *NULL*
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 0    
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : *NULL*
+  [FIELD  10] Name  : data_v5
+              Length: 0    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : *NULL*
+=======================================================================
+[ROW 3] Length: 47 (7 | 40), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         0f 00 00 00 20 00 30 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 03 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 07 1e 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 01 0d 01 2a 
+  [FIELD   4] Name  : original_col1
+              Length: 15   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 6f 72 69 67 69 6e 61 6c  5f 64 61 74 61 5f 33 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 4    
+              Type  :                 | LONG         | DATA_INT            
+              Value : 80 00 01 2c 
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 0    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : *NULL*
+  [FIELD   8] Name  : data_v3
+              Length: 0    
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : *NULL*
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 0    
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : *NULL*
+  [FIELD  10] Name  : data_v5
+              Length: 0    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : *NULL*
+=======================================================================
+[ROW 4] Length: 52 (8 | 44), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         0e 00 01 44 00 28 00 34  
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 04 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 07 2d 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 01 0e 01 10 
+  [FIELD   4] Name  : original_col1
+              Length: 14   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 66 74 65 72 5f 61 64  64 5f 76 32 5f 31 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 4    
+              Type  :                 | LONG         | DATA_INT            
+              Value : 80 00 01 90 
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 5    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 42 a0 00 
+  [FIELD   8] Name  : data_v3
+              Length: 0    
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : *NULL*
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 0    
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : *NULL*
+  [FIELD  10] Name  : data_v5
+              Length: 0    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : *NULL*
+=======================================================================
+[ROW 5] Length: 52 (8 | 44), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         0e 00 01 40 00 30 00 35  
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 05 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 07 2d 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 01 0e 01 1d 
+  [FIELD   4] Name  : original_col1
+              Length: 14   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 66 74 65 72 5f 61 64  64 5f 76 32 5f 32 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 4    
+              Type  :                 | LONG         | DATA_INT            
+              Value : 80 00 01 f4 
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 5    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 42 b0 00 
+  [FIELD   8] Name  : data_v3
+              Length: 0    
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : *NULL*
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 0    
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : *NULL*
+  [FIELD  10] Name  : data_v5
+              Length: 0    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : *NULL*
+=======================================================================
+[ROW 6] Length: 75 (9 | 66), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         16 0e 00 02 40 00 38 00  4b 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 06 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 07 43 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 01 14 01 10 
+  [FIELD   4] Name  : original_col1
+              Length: 14   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 66 74 65 72 5f 61 64  64 5f 76 33 5f 31 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 4    
+              Type  :                 | LONG         | DATA_INT            
+              Value : 80 00 02 58 
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 5    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 42 c0 00 
+  [FIELD   8] Name  : data_v3
+              Length: 22   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 01 00 15 00 0b 00 03  00 0c 0e 00 6b 65 79 06 
+                      76 61 6c 75 65 31 
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 0    
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : *NULL*
+  [FIELD  10] Name  : data_v5
+              Length: 0    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : *NULL*
+=======================================================================
+[ROW 7] Length: 75 (9 | 66), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         16 0e 00 02 40 00 40 00  4b 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 07 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 07 43 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 01 14 01 31 
+  [FIELD   4] Name  : original_col1
+              Length: 14   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 66 74 65 72 5f 61 64  64 5f 76 33 5f 32 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 4    
+              Type  :                 | LONG         | DATA_INT            
+              Value : 80 00 02 bc 
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 5    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 42 d0 00 
+  [FIELD   8] Name  : data_v3
+              Length: 22   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 01 00 15 00 0b 00 03  00 0c 0e 00 6b 65 79 06 
+                      76 61 6c 75 65 32 
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 0    
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : *NULL*
+  [FIELD  10] Name  : data_v5
+              Length: 0    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : *NULL*
+=======================================================================
+[ROW 8] Length: 82 (9 | 73), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         16 15 00 02 44 00 48 00  52 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 08 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 16 27 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 00 c9 01 10 
+  [FIELD   4] Name  : original_col1
+              Length: 21   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 62 65 66 6f 72 65 5f 38  30 34 30 5f 63 68 61 6e 
+                      67 65 73 5f 31 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 4    
+              Type  :                 | LONG         | DATA_INT            
+              Value : 80 00 03 20 
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 5    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 42 e0 00 
+  [FIELD   8] Name  : data_v3
+              Length: 22   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 01 00 15 00 0b 00 03  00 0c 0e 00 6b 65 79 06 
+                      76 61 6c 75 65 33 
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 0    
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : *NULL*
+  [FIELD  10] Name  : data_v5
+              Length: 0    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : *NULL*
+=======================================================================
+[ROW 9] Length: 82 (9 | 73), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         16 15 00 02 40 00 50 00  53 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 09 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 16 27 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 00 c9 01 31 
+  [FIELD   4] Name  : original_col1
+              Length: 21   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 62 65 66 6f 72 65 5f 38  30 34 30 5f 63 68 61 6e 
+                      67 65 73 5f 32 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 4    
+              Type  :                 | LONG         | DATA_INT            
+              Value : 80 00 03 84 
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 5    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 42 f0 00 
+  [FIELD   8] Name  : data_v3
+              Length: 22   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 01 00 15 00 0b 00 03  00 0c 0e 00 6b 65 79 06 
+                      76 61 6c 75 65 34 
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 0    
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : *NULL*
+  [FIELD  10] Name  : data_v5
+              Length: 0    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : *NULL*
+=======================================================================
+[ROW 10] Length: 92 (10 | 82), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         0b 16 13 00 03 40 00 58  00 5c 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 0a 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 16 32 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 00 ce 01 10 
+  [FIELD   4] Name  : original_col1
+              Length: 19   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 66 74 65 72 5f 38 30  34 30 5f 61 64 64 5f 76 
+                      34 5f 31 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 4    
+              Type  :                 | LONG         | DATA_INT            
+              Value : 80 00 03 e8 
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 5    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 43 00 00 
+  [FIELD   8] Name  : data_v3
+              Length: 22   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 01 00 15 00 0b 00 03  00 0c 0e 00 6b 65 79 06 
+                      76 61 6c 75 65 35 
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 11   
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : 74 65 78 74 5f 64 61 74  61 5f 31 
+  [FIELD  10] Name  : data_v5
+              Length: 0    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : *NULL*
+=======================================================================
+[ROW 11] Length: 92 (10 | 82), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         0b 16 13 00 03 40 00 60  00 5c 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 0b 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 16 32 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 00 ce 01 31 
+  [FIELD   4] Name  : original_col1
+              Length: 19   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 66 74 65 72 5f 38 30  34 30 5f 61 64 64 5f 76 
+                      34 5f 32 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 4    
+              Type  :                 | LONG         | DATA_INT            
+              Value : 80 00 04 4c 
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 5    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 43 10 00 
+  [FIELD   8] Name  : data_v3
+              Length: 22   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 01 00 15 00 0b 00 03  00 0c 0e 00 6b 65 79 06 
+                      76 61 6c 75 65 36 
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 11   
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : 74 65 78 74 5f 64 61 74  61 5f 32 
+  [FIELD  10] Name  : data_v5
+              Length: 0    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : *NULL*
+=======================================================================
+[ROW 12] Length: 97 (10 | 87), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         0b 16 13 00 04 44 00 68  00 61 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 0c 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 16 41 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 00 d3 01 10 
+  [FIELD   4] Name  : original_col1
+              Length: 19   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 66 74 65 72 5f 38 30  34 30 5f 61 64 64 5f 76 
+                      35 5f 31 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 4    
+              Type  :                 | LONG         | DATA_INT            
+              Value : 80 00 04 b0 
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 5    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 43 20 00 
+  [FIELD   8] Name  : data_v3
+              Length: 22   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 01 00 15 00 0b 00 03  00 0c 0e 00 6b 65 79 06 
+                      76 61 6c 75 65 37 
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 11   
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : 74 65 78 74 5f 64 61 74  61 5f 33 
+  [FIELD  10] Name  : data_v5
+              Length: 5    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : 80 00 00 7b 2d 
+=======================================================================
+[ROW 13] Length: 97 (10 | 87), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         0b 16 13 00 04 40 00 70  00 61 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 0d 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 16 41 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 00 d3 01 31 
+  [FIELD   4] Name  : original_col1
+              Length: 19   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 66 74 65 72 5f 38 30  34 30 5f 61 64 64 5f 76 
+                      35 5f 32 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 4    
+              Type  :                 | LONG         | DATA_INT            
+              Value : 80 00 05 14 
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 5    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 43 30 00 
+  [FIELD   8] Name  : data_v3
+              Length: 22   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 01 00 15 00 0b 00 03  00 0c 0e 00 6b 65 79 06 
+                      76 61 6c 75 65 38 
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 11   
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : 74 65 78 74 5f 64 61 74  61 5f 34 
+  [FIELD  10] Name  : data_v5
+              Length: 5    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : 80 00 02 a6 5a 
+=======================================================================
+[ROW 14] Length: 95 (10 | 85), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         0b 16 15 00 05 40 00 78  00 5f 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 0e 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 16 4a 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 00 d6 01 10 
+  [FIELD   4] Name  : original_col1
+              Length: 21   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 66 74 65 72 5f 64 72  6f 70 5f 6f 72 69 67 69 
+                      6e 61 6c 5f 31 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 0    
+              Type  :                 | LONG         | DATA_INT            
+              Value : *NULL*
+                      (This row was inserted after this column was instantly dropped)
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 5    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 43 40 00 
+  [FIELD   8] Name  : data_v3
+              Length: 22   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 01 00 15 00 0b 00 03  00 0c 0e 00 6b 65 79 06 
+                      76 61 6c 75 65 39 
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 11   
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : 74 65 78 74 5f 64 61 74  61 5f 35 
+  [FIELD  10] Name  : data_v5
+              Length: 5    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : 80 00 03 09 4d 
+=======================================================================
+[ROW 15] Length: 96 (10 | 86), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         0b 17 15 00 05 40 00 80  00 60 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 0f 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 16 4a 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 00 d6 01 31 
+  [FIELD   4] Name  : original_col1
+              Length: 21   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 66 74 65 72 5f 64 72  6f 70 5f 6f 72 69 67 69 
+                      6e 61 6c 5f 32 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 0    
+              Type  :                 | LONG         | DATA_INT            
+              Value : *NULL*
+                      (This row was inserted after this column was instantly dropped)
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 5    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 43 50 00 
+  [FIELD   8] Name  : data_v3
+              Length: 23   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 01 00 16 00 0b 00 03  00 0c 0e 00 6b 65 79 07 
+                      76 61 6c 75 65 31 30 
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 11   
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : 74 65 78 74 5f 64 61 74  61 5f 36 
+  [FIELD  10] Name  : data_v5
+              Length: 5    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : 80 00 03 78 58 
+=======================================================================
+[ROW 16] Length: 90 (10 | 80), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         0b 17 14 00 06 40 00 88  00 5a 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 10 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 16 53 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 00 da 01 10 
+  [FIELD   4] Name  : original_col1
+              Length: 20   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 66 74 65 72 5f 64 72  6f 70 5f 38 30 31 36 63 
+                      6f 6c 5f 31 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 0    
+              Type  :                 | LONG         | DATA_INT            
+              Value : *NULL*
+                      (This row was inserted after this column was instantly dropped)
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 0    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : *NULL*
+                      (This row was inserted after this column was instantly dropped)
+  [FIELD   8] Name  : data_v3
+              Length: 23   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 01 00 16 00 0b 00 03  00 0c 0e 00 6b 65 79 07 
+                      76 61 6c 75 65 31 31 
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 11   
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : 74 65 78 74 5f 64 61 74  61 5f 37 
+  [FIELD  10] Name  : data_v5
+              Length: 5    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : 80 00 03 e7 63 
+=======================================================================
+[ROW 17] Length: 90 (10 | 80), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         0b 17 14 00 06 40 00 90  00 59 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 11 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 16 53 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 00 da 01 32 
+  [FIELD   4] Name  : original_col1
+              Length: 20   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 66 74 65 72 5f 64 72  6f 70 5f 38 30 31 36 63 
+                      6f 6c 5f 32 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 0    
+              Type  :                 | LONG         | DATA_INT            
+              Value : *NULL*
+                      (This row was inserted after this column was instantly dropped)
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 0    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : *NULL*
+                      (This row was inserted after this column was instantly dropped)
+  [FIELD   8] Name  : data_v3
+              Length: 23   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 01 00 16 00 0b 00 03  00 0c 0e 00 6b 65 79 07 
+                      76 61 6c 75 65 31 32 
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 11   
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : 74 65 78 74 5f 64 61 74  61 5f 38 
+  [FIELD  10] Name  : data_v5
+              Length: 5    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : 80 00 00 6f 0b 
+=======================================================================
+[ROW 18] Length: 70 (9 | 61), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         17 0c 00 07 40 00 98 00  46 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 12 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 16 5c 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 00 e0 01 10 
+  [FIELD   4] Name  : original_col1
+              Length: 12   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 66 69 6e 61 6c 5f 64 61  74 61 5f 31 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 0    
+              Type  :                 | LONG         | DATA_INT            
+              Value : *NULL*
+                      (This row was inserted after this column was instantly dropped)
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 0    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : *NULL*
+                      (This row was inserted after this column was instantly dropped)
+  [FIELD   8] Name  : data_v3
+              Length: 23   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 01 00 16 00 0b 00 03  00 0c 0e 00 6b 65 79 07 
+                      76 61 6c 75 65 31 33 
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 0    
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : *NULL*
+                      (This row was inserted after this column was instantly dropped)
+  [FIELD  10] Name  : data_v5
+              Length: 5    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : 80 00 00 de 16 
+=======================================================================
+[ROW 19] Length: 70 (9 | 61), Number of fields: 10
+-----------------------------------------------------------------------
+  [HEADER   ]         17 0c 00 07 40 00 a0 fa  8d 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 13 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 16 5c 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 00 e0 01 32 
+  [FIELD   4] Name  : original_col1
+              Length: 12   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 66 69 6e 61 6c 5f 64 61  74 61 5f 32 
+  [FIELD   5] Name  : !hidden!_dropped_v5_p4_original_col2
+              Length: 0    
+              Type  :                 | LONG         | DATA_INT            
+              Value : *NULL*
+                      (This row was inserted after this column was instantly dropped)
+  [FIELD   6] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD   7] Name  : !hidden!_dropped_v6_p6_data_v2
+              Length: 0    
+              Type  :                 | DATETIME2    | DATA_FIXBINARY      
+              Value : *NULL*
+                      (This row was inserted after this column was instantly dropped)
+  [FIELD   8] Name  : data_v3
+              Length: 23   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 01 00 16 00 0b 00 03  00 0c 0e 00 6b 65 79 07 
+                      76 61 6c 75 65 31 34 
+  [FIELD   9] Name  : !hidden!_dropped_v7_p8_data_v4
+              Length: 0    
+              Type  :                 | BLOB         | DATA_BLOB           
+              Value : *NULL*
+                      (This row was inserted after this column was instantly dropped)
+  [FIELD  10] Name  : data_v5
+              Length: 5    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : 80 00 01 4d 21 
+====================================================================================
+|  PAGE ANALYSIS RESULT                                                             |
+------------------------------------------------------------------------------------
+Total valid records count:                19
+Total valid records size:                 1448 B
+                                            [Headers: 171 B]
+                                            [Bodies:  1277 B]
+Valid records to page space ratio:        8.83789 %
+
+Total records with dropped columns count: 17
+Total instant dropped columns size:       200 B
+Dropped columns to page space ratio:      1.22070 %
+
+Total delete-marked records count:        0
+Total delete-marked records size:         0 B
+Delete-marked recs to page space ratio:   0.00000 %
+
+Total InnoDB internal space used:         309 B
+                                            [FIL HEADER     38 B]
+                                            [PAGE HEADER    36 B]
+                                            [FSEG HEADER    20 B]
+                                            [INFI + SUPRE   26 B]
+                                            [RECORD HEADERS 171 B]*
+                                            [PAGE DIRECTORY 10 B]
+                                            [FIL TRAILER    8 B]
+InnoDB internals to page space ratio:     1.88599 %
+
+Total free space:                         14798 B
+Free space ratio:                         90.31982 %

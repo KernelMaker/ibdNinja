@@ -1,0 +1,187 @@
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/vector_test.ibd
+    File size:             114688 B
+    Space id:              23
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 7
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     1 indexes.
+====================================================================================
+
+====================================================================================
+|  PAGE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    Page no:           4
+    Slibling pages no: NULL [4] NULL
+    Space id:          23
+    Page type:         INDEX
+    Lsn:               31176859
+    FLush lsn:         0
+    -------------------
+    Page level:        0
+    Page size:         [logical: 16384 B], [physical: 16384 B]
+    Number of records: 3
+    Index id:          195
+    Belongs to:        [table: ibdninja_test.vector_test], [index: PRIMARY]
+    Row format:        DYNAMIC
+    Number dir slots:  2
+    Heap top:          421
+    Number of heap:    5
+    First free rec:    0
+    Garbage:           0 B
+    Last insert:       392
+    Direction:         2
+    Number direction:  2
+    Max trx id:        0
+
+====================================================================================
+|  RECORDS INFORMATION                                                             |
+------------------------------------------------------------------------------------
+=======================================================================
+[ROW 1] Length: 140 (10 | 130), Number of fields: 7
+-----------------------------------------------------------------------
+  [HEADER   ]         15 40 10 0c 00 00 00 10  00 8c 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 01 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 0c ed 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 00 cf 01 10 
+  [FIELD   4] Name  : description
+              Length: 12   
+              Type  : varchar(100)    | VARCHAR      | DATA_VARMYSQL       
+              Value : 66 69 72 73 74 20 76 65  63 74 6f 72 
+  [FIELD   5] Name  : embedding
+              Length: 16   
+              Type  : vector(4)       | VECTOR       | DATA_BLOB           
+              Value : 00 00 80 3f 00 00 00 40  00 00 40 40 00 00 80 40 
+                      
+  [FIELD   6] Name  : embedding_large
+              Length: 64   
+              Type  : vector(16)      | VECTOR       | DATA_BLOB           
+              Value : cd cc cc 3d cd cc 4c 3e  9a 99 99 3e cd cc cc 3e 
+                      00 00 00 3f 9a 99 19 3f  33 33 33 3f cd cc 4c 3f 
+                      66 66 66 3f 00 00 80 3f  cd cc 8c 3f 9a 99 99 3f 
+                      66 66 a6 3f 33 33 b3 3f  00 00 c0 3f cd cc cc 3f 
+                      
+  [FIELD   7] Name  : json_col
+              Length: 21   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 01 00 14 00 0b 00 03  00 0c 0e 00 6b 65 79 05 
+                      76 61 6c 75 65 
+=======================================================================
+[ROW 2] Length: 125 (10 | 115), Number of fields: 7
+-----------------------------------------------------------------------
+  [HEADER   ]         05 40 10 0d 00 00 00 18  00 7a 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 02 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 0c ef 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 00 d1 01 10 
+  [FIELD   4] Name  : description
+              Length: 13   
+              Type  : varchar(100)    | VARCHAR      | DATA_VARMYSQL       
+              Value : 73 65 63 6f 6e 64 20 76  65 63 74 6f 72 
+  [FIELD   5] Name  : embedding
+              Length: 16   
+              Type  : vector(4)       | VECTOR       | DATA_BLOB           
+              Value : 00 00 a0 40 00 00 c0 40  00 00 e0 40 00 00 00 41 
+                      
+  [FIELD   6] Name  : embedding_large
+              Length: 64   
+              Type  : vector(16)      | VECTOR       | DATA_BLOB           
+              Value : 00 00 80 3f 00 00 80 3f  00 00 80 3f 00 00 80 3f 
+                      00 00 80 3f 00 00 80 3f  00 00 80 3f 00 00 80 3f 
+                      00 00 80 3f 00 00 80 3f  00 00 80 3f 00 00 80 3f 
+                      00 00 80 3f 00 00 80 3f  00 00 80 3f 00 00 80 3f 
+                      
+  [FIELD   7] Name  : json_col
+              Length: 5    
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 02 00 00 04 00 
+=======================================================================
+[ROW 3] Length: 36 (7 | 29), Number of fields: 7
+-----------------------------------------------------------------------
+  [HEADER   ]         0c 0e 00 00 20 fe e8 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 03 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 0c f3 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 00 d2 01 10 
+  [FIELD   4] Name  : description
+              Length: 12   
+              Type  : varchar(100)    | VARCHAR      | DATA_VARMYSQL       
+              Value : 6e 75 6c 6c 20 76 65 63  74 6f 72 73 
+  [FIELD   5] Name  : embedding
+              Length: 0    
+              Type  : vector(4)       | VECTOR       | DATA_BLOB           
+              Value : *NULL*
+  [FIELD   6] Name  : embedding_large
+              Length: 0    
+              Type  : vector(16)      | VECTOR       | DATA_BLOB           
+              Value : *NULL*
+  [FIELD   7] Name  : json_col
+              Length: 0    
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : *NULL*
+====================================================================================
+|  PAGE ANALYSIS RESULT                                                             |
+------------------------------------------------------------------------------------
+Total valid records count:                3
+Total valid records size:                 301 B
+                                            [Headers: 27 B]
+                                            [Bodies:  274 B]
+Valid records to page space ratio:        1.83716 %
+
+Total records with dropped columns count: 0
+Total instant dropped columns size:       0 B
+Dropped columns to page space ratio:      0.00000 %
+
+Total delete-marked records count:        0
+Total delete-marked records size:         0 B
+Delete-marked recs to page space ratio:   0.00000 %
+
+Total InnoDB internal space used:         159 B
+                                            [FIL HEADER     38 B]
+                                            [PAGE HEADER    36 B]
+                                            [FSEG HEADER    20 B]
+                                            [INFI + SUPRE   26 B]
+                                            [RECORD HEADERS 27 B]*
+                                            [PAGE DIRECTORY 4 B]
+                                            [FIL TRAILER    8 B]
+InnoDB internals to page space ratio:     0.97046 %
+
+Total free space:                         15951 B
+Free space ratio:                         97.35718 %

@@ -1,0 +1,178 @@
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/instant_add_drop.ibd
+    File size:             114688 B
+    Space id:              9
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 7
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     1 indexes.
+====================================================================================
+
+====================================================================================
+|  PAGE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    Page no:           4
+    Slibling pages no: NULL [4] NULL
+    Space id:          9
+    Page type:         INDEX
+    Lsn:               30252598
+    FLush lsn:         0
+    -------------------
+    Page level:        0
+    Page size:         [logical: 16384 B], [physical: 16384 B]
+    Number of records: 3
+    Index id:          169
+    Belongs to:        [table: ibdninja_test.instant_add_drop], [index: PRIMARY]
+    Row format:        DYNAMIC
+    Number dir slots:  2
+    Heap top:          247
+    Number of heap:    5
+    First free rec:    0
+    Garbage:           0 B
+    Last insert:       217
+    Direction:         2
+    Number direction:  2
+    Max trx id:        0
+
+====================================================================================
+|  RECORDS INFORMATION                                                             |
+------------------------------------------------------------------------------------
+=======================================================================
+[ROW 1] Length: 35 (7 | 28), Number of fields: 7
+-----------------------------------------------------------------------
+  [HEADER   ]         06 00 00 00 10 00 25 
+  [FIELD   1] Name  : col_uint
+              Length: 4    
+              Type  : int unsigned    | LONG         | DATA_INT            
+              Value : 00 00 00 01 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 09 6a 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 00 9a 01 10 
+  [FIELD   4] Name  : col_datetime_0
+              Length: 5    
+              Type  : datetime        | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b9 08 f1 89 
+  [FIELD   5] Name  : !hidden!_dropped_v3_p4_col_varchar
+              Length: 6    
+              Type  :                 | VARCHAR      | DATA_VARMYSQL       
+              Value : 52 6f 77 5f 56 31 
+  [FIELD   6] Name  : col_datetime_6
+              Length: 0    
+              Type  : datetime(6)     | DATETIME2    | DATA_FIXBINARY      
+              Value : *NULL*
+  [FIELD   7] Name  : !hidden!_dropped_v4_p6_col_char
+              Length: 0    
+              Type  :                 | STRING       | DATA_MYSQL          
+              Value : *NULL*
+=======================================================================
+[ROW 2] Length: 55 (9 | 46), Number of fields: 7
+-----------------------------------------------------------------------
+  [HEADER   ]         0a 06 00 02 40 00 18 00  35 
+  [FIELD   1] Name  : col_uint
+              Length: 4    
+              Type  : int unsigned    | LONG         | DATA_INT            
+              Value : 00 00 00 02 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 09 7d 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 00 9f 01 10 
+  [FIELD   4] Name  : col_datetime_0
+              Length: 5    
+              Type  : datetime        | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b9 08 f1 89 
+  [FIELD   5] Name  : !hidden!_dropped_v3_p4_col_varchar
+              Length: 6    
+              Type  :                 | VARCHAR      | DATA_VARMYSQL       
+              Value : 52 6f 77 5f 56 32 
+  [FIELD   6] Name  : col_datetime_6
+              Length: 8    
+              Type  : datetime(6)     | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b9 08 f1 89 00 00 00  
+  [FIELD   7] Name  : !hidden!_dropped_v4_p6_col_char
+              Length: 10   
+              Type  :                 | STRING       | DATA_MYSQL          
+              Value : 69 62 64 4e 69 6e 6a 61  20 20 
+=======================================================================
+[ROW 3] Length: 37 (7 | 30), Number of fields: 7
+-----------------------------------------------------------------------
+  [HEADER   ]         00 04 40 00 20 ff 97 
+  [FIELD   1] Name  : col_uint
+              Length: 4    
+              Type  : int unsigned    | LONG         | DATA_INT            
+              Value : 00 00 00 03 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 09 90 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 00 a6 01 10 
+  [FIELD   4] Name  : col_datetime_0
+              Length: 5    
+              Type  : datetime        | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b9 08 f1 89 
+  [FIELD   5] Name  : !hidden!_dropped_v3_p4_col_varchar
+              Length: 0    
+              Type  :                 | VARCHAR      | DATA_VARMYSQL       
+              Value : *NULL*
+                      (This row was inserted after this column was instantly dropped)
+  [FIELD   6] Name  : col_datetime_6
+              Length: 8    
+              Type  : datetime(6)     | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b9 08 f1 89 00 00 00  
+  [FIELD   7] Name  : !hidden!_dropped_v4_p6_col_char
+              Length: 0    
+              Type  :                 | STRING       | DATA_MYSQL          
+              Value : *NULL*
+                      (This row was inserted after this column was instantly dropped)
+====================================================================================
+|  PAGE ANALYSIS RESULT                                                             |
+------------------------------------------------------------------------------------
+Total valid records count:                3
+Total valid records size:                 127 B
+                                            [Headers: 23 B]
+                                            [Bodies:  104 B]
+Valid records to page space ratio:        0.77515 %
+
+Total records with dropped columns count: 2
+Total instant dropped columns size:       22 B
+Dropped columns to page space ratio:      0.13428 %
+
+Total delete-marked records count:        0
+Total delete-marked records size:         0 B
+Delete-marked recs to page space ratio:   0.00000 %
+
+Total InnoDB internal space used:         155 B
+                                            [FIL HEADER     38 B]
+                                            [PAGE HEADER    36 B]
+                                            [FSEG HEADER    20 B]
+                                            [INFI + SUPRE   26 B]
+                                            [RECORD HEADERS 23 B]*
+                                            [PAGE DIRECTORY 4 B]
+                                            [FIL TRAILER    8 B]
+InnoDB internals to page space ratio:     0.94604 %
+
+Total free space:                         16125 B
+Free space ratio:                         98.41919 %

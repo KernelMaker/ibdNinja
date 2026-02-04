@@ -1,0 +1,828 @@
+[ibdNinja][WARN]: Skipping loading index 'idx_point' of table 'ibdninja_test.type_test', Reason: '[Spatial index]'
+
+[ibdNinja][WARN]: Skipping loading index 'idx_geometry' of table 'ibdninja_test.type_test', Reason: '[Spatial index]'
+
+[ibdNinja][WARN]: Skipping loading index 'idx_virtual_int' of table 'ibdninja_test.type_test', Reason: '[Index using virtual columns as keys]'
+
+[ibdNinja][WARN]: Skipping loading index 'idx_virtual_concat' of table 'ibdninja_test.type_test', Reason: '[Index using virtual columns as keys]'
+
+[ibdNinja][WARN]: Skipping loading index 'idx_virtual_composite' of table 'ibdninja_test.type_test', Reason: '[Index using virtual columns as keys]'
+
+[ibdNinja][WARN]: Skipping loading index 'idx_fulltext' of table 'ibdninja_test.type_test', Reason: '[Fulltext index]'
+
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/type_test.ibd
+    File size:             311296 B
+    Space id:              10
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 19
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     7 indexes.
+====================================================================================
+
+====================================================================================
+|  PAGE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    Page no:           4
+    Slibling pages no: NULL [4] NULL
+    Space id:          10
+    Page type:         INDEX
+    Lsn:               30439317
+    FLush lsn:         0
+    -------------------
+    Page level:        0
+    Page size:         [logical: 16384 B], [physical: 16384 B]
+    Number of records: 3
+    Index id:          170
+    Belongs to:        [table: ibdninja_test.type_test], [index: PRIMARY]
+    Row format:        DYNAMIC
+    Number dir slots:  2
+    Heap top:          3510
+    Number of heap:    5
+    First free rec:    0
+    Garbage:           0 B
+    Last insert:       2592
+    Direction:         2
+    Number direction:  2
+    Max trx id:        0
+
+====================================================================================
+|  RECORDS INFORMATION                                                             |
+------------------------------------------------------------------------------------
+=======================================================================
+[ROW 1] Length: 636 (26 | 610), Number of fields: 47
+-----------------------------------------------------------------------
+  [HEADER   ]         05 22 6a 36 22 61 2d 19  19 00 00 00 00 00 00 14 
+                      00 00 00 00 00 00 00 10  02 7f 
+  [FIELD   1] Name  : col_int
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 01 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 09 c4 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 00 bf 01 10 
+  [FIELD   4] Name  : col_tinyint
+              Length: 1    
+              Type  : tinyint         | TINY         | DATA_INT            
+              Value : 00 
+  [FIELD   5] Name  : col_smallint
+              Length: 2    
+              Type  : smallint        | SHORT        | DATA_INT            
+              Value : 00 00 
+  [FIELD   6] Name  : col_mediumint
+              Length: 3    
+              Type  : mediumint       | INT24        | DATA_INT            
+              Value : 00 00 00 
+  [FIELD   7] Name  : col_bigint
+              Length: 8    
+              Type  : bigint          | LONGLONG     | DATA_INT            
+              Value : 00 00 00 00 00 00 00 00  
+  [FIELD   8] Name  : col_decimal_small
+              Length: 3    
+              Type  : decimal(5,2)    | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : 7c 18 9c 
+  [FIELD   9] Name  : col_decimal_large
+              Length: 10   
+              Type  : decimal(20,5)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : 7f ff ff ff fe 79 60 fe  79 60 
+  [FIELD  10] Name  : col_float
+              Length: 4    
+              Type  : float           | FLOAT        | DATA_FLOAT          
+              Value : ff ff 7f ff 
+  [FIELD  11] Name  : col_double
+              Length: 8    
+              Type  : double          | DOUBLE       | DATA_DOUBLE         
+              Value : ff ff ff ff ff ff ef ff  
+  [FIELD  12] Name  : col_bit1
+              Length: 1    
+              Type  : bit(1)          | BIT          | DATA_FIXBINARY      
+              Value : 00 
+  [FIELD  13] Name  : col_bit8
+              Length: 1    
+              Type  : bit(8)          | BIT          | DATA_FIXBINARY      
+              Value : 00 
+  [FIELD  14] Name  : col_bit64
+              Length: 8    
+              Type  : bit(64)         | BIT          | DATA_FIXBINARY      
+              Value : 00 00 00 00 00 00 00 00  
+  [FIELD  15] Name  : col_char_utf8
+              Length: 20   
+              Type  : char(20)        | STRING       | DATA_MYSQL          
+              Value : 20 20 20 20 20 20 20 20  20 20 20 20 20 20 20 20 
+                      20 20 20 20 
+  [FIELD  16] Name  : col_char_latin1
+              Length: 20   
+              Type  : char(20)        | STRING       | DATA_CHAR           
+              Value : 20 20 20 20 20 20 20 20  20 20 20 20 20 20 20 20 
+                      20 20 20 20 
+  [FIELD  17] Name  : col_varchar_utf8
+              Length: 0    
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 
+  [FIELD  18] Name  : col_varchar_latin1
+              Length: 0    
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 
+  [FIELD  19] Name  : col_text_utf8
+              Length: 0    
+              Type  : text            | BLOB         | DATA_BLOB           
+              Value : 
+  [FIELD  20] Name  : col_text_latin1
+              Length: 0    
+              Type  : text            | BLOB         | DATA_BLOB           
+              Value : 
+  [FIELD  21] Name  : col_binary
+              Length: 10   
+              Type  : binary(10)      | STRING       | DATA_FIXBINARY      
+              Value : 00 00 00 00 00 00 00 00  00 00 
+  [FIELD  22] Name  : col_varbinary
+              Length: 0    
+              Type  : varbinary(100)  | VARCHAR      | DATA_BINARY         
+              Value : 
+  [FIELD  23] Name  : col_blob
+              Length: 0    
+              Type  : blob            | BLOB         | DATA_BLOB           
+              Value : 
+  [FIELD  24] Name  : col_datetime0
+              Length: 5    
+              Type  : datetime        | DATETIME2    | DATA_FIXBINARY      
+              Value : 8c b2 42 00 00 
+  [FIELD  25] Name  : col_datetime3
+              Length: 7    
+              Type  : datetime(3)     | DATETIME2    | DATA_FIXBINARY      
+              Value : 8c b2 42 00 00 00 00 
+  [FIELD  26] Name  : col_datetime6
+              Length: 8    
+              Type  : datetime(6)     | DATETIME2    | DATA_FIXBINARY      
+              Value : 8c b2 42 00 00 00 00 00  
+  [FIELD  27] Name  : col_timestamp0
+              Length: 4    
+              Type  : timestamp       | TIMESTAMP2   | DATA_FIXBINARY      
+              Value : 00 00 00 01 
+  [FIELD  28] Name  : col_timestamp3
+              Length: 6    
+              Type  : timestamp(3)    | TIMESTAMP2   | DATA_FIXBINARY      
+              Value : 00 00 00 01 00 00 
+  [FIELD  29] Name  : col_timestamp6
+              Length: 7    
+              Type  : timestamp(6)    | TIMESTAMP2   | DATA_FIXBINARY      
+              Value : 00 00 00 01 00 00 00 
+  [FIELD  30] Name  : col_time0
+              Length: 3    
+              Type  : time            | TIME2        | DATA_FIXBINARY      
+              Value : 4b 91 05 
+  [FIELD  31] Name  : col_time3
+              Length: 5    
+              Type  : time(3)         | TIME2        | DATA_FIXBINARY      
+              Value : 4b 91 05 00 00 
+  [FIELD  32] Name  : col_time6
+              Length: 6    
+              Type  : time(6)         | TIME2        | DATA_FIXBINARY      
+              Value : 4b 91 05 00 00 00 
+  [FIELD  33] Name  : col_date
+              Length: 3    
+              Type  : date            | NEWDATE      | DATA_INT            
+              Value : 87 d0 21 
+  [FIELD  34] Name  : col_year
+              Length: 1    
+              Type  : year            | YEAR         | DATA_INT            
+              Value : 01 
+  [FIELD  35] Name  : col_geometry
+              Length: 25   
+              Type  : geometry        | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 01 00 00  00 00 00 00 00 00 00 00 
+                      00 00 00 00 00 00 00 00  00 
+  [FIELD  36] Name  : col_point
+              Length: 25   
+              Type  : point           | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 01 00 00  00 00 00 00 00 00 00 00 
+                      00 00 00 00 00 00 00 00  00 
+  [FIELD  37] Name  : col_linestring
+              Length: 45   
+              Type  : linestring      | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 02 00 00  00 02 00 00 00 00 00 00 
+                      00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 
+                      00 00 00 00 00 00 00 00  00 00 00 00 00 
+  [FIELD  38] Name  : col_polygon
+              Length: 97   
+              Type  : polygon         | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 03 00 00  00 01 00 00 00 05 00 00 
+                      00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 
+                      00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 f0 
+                      3f 00 00 00 00 00 00 f0  3f 00 00 00 00 00 00 f0 
+                      3f 00 00 00 00 00 00 f0  3f 00 00 00 00 00 00 00 
+                      00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 
+                      00 
+  [FIELD  39] Name  : col_multipoint
+              Length: 34   
+              Type  : multipoint      | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 04 00 00  00 01 00 00 00 01 01 00 
+                      00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 
+                      00 00 
+  [FIELD  40] Name  : col_multilinestring
+              Length: 54   
+              Type  : multilinestring | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 05 00 00  00 01 00 00 00 01 02 00 
+                      00 00 02 00 00 00 00 00  00 00 00 00 00 00 00 00 
+                      00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 
+                      00 00 00 00 00 00 
+  [FIELD  41] Name  : col_multipolygon
+              Length: 106  
+              Type  : multipolygon    | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 06 00 00  00 01 00 00 00 01 03 00 
+                      00 00 01 00 00 00 05 00  00 00 00 00 00 00 00 00 
+                      00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 
+                      00 00 00 00 00 00 00 00  f0 3f 00 00 00 00 00 00 
+                      f0 3f 00 00 00 00 00 00  f0 3f 00 00 00 00 00 00 
+                      f0 3f 00 00 00 00 00 00  00 00 00 00 00 00 00 00 
+                      00 00 00 00 00 00 00 00  00 00 
+  [FIELD  42] Name  : col_geometrycollection
+              Length: 34   
+              Type  : geomcollection  | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 07 00 00  00 01 00 00 00 01 01 00 
+                      00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 
+                      00 00 
+  [FIELD  43] Name  : col_enum
+              Length: 1    
+              Type  : enum('small','medium','large') | ENUM         | DATA_INT            
+              Value : 01 
+  [FIELD  44] Name  : col_set
+              Length: 1    
+              Type  : set('red','green','blue') | SET          | DATA_INT            
+              Value : 00 
+  [FIELD  45] Name  : col_json
+              Length: 5    
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 00 00 04 00 
+  [FIELD  46] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD  47] Name  : FTS_DOC_ID
+              Length: 8    
+              Type  :                 | LONGLONG     | DATA_INT            
+              Value : 00 00 00 00 00 00 00 02  
+=======================================================================
+[ROW 2] Length: 1810 (29 | 1781), Number of fields: 47
+-----------------------------------------------------------------------
+  [HEADER   ]         6c 4b 6a 5f 37 61 2d 19  19 ff 80 64 ff 80 ff 80 
+                      32 32 14 00 00 00 00 00  00 00 18 07 0f 
+  [FIELD   1] Name  : col_int
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 02 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 09 c4 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 00 bf 01 3d 
+  [FIELD   4] Name  : col_tinyint
+              Length: 1    
+              Type  : tinyint         | TINY         | DATA_INT            
+              Value : ff 
+  [FIELD   5] Name  : col_smallint
+              Length: 2    
+              Type  : smallint        | SHORT        | DATA_INT            
+              Value : ff ff 
+  [FIELD   6] Name  : col_mediumint
+              Length: 3    
+              Type  : mediumint       | INT24        | DATA_INT            
+              Value : ff ff ff 
+  [FIELD   7] Name  : col_bigint
+              Length: 8    
+              Type  : bigint          | LONGLONG     | DATA_INT            
+              Value : ff ff ff ff ff ff ff ff  
+  [FIELD   8] Name  : col_decimal_small
+              Length: 3    
+              Type  : decimal(5,2)    | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : 83 e7 63 
+  [FIELD   9] Name  : col_decimal_large
+              Length: 10   
+              Type  : decimal(20,5)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : 80 00 00 00 01 86 9f 01  86 9f 
+  [FIELD  10] Name  : col_float
+              Length: 4    
+              Type  : float           | FLOAT        | DATA_FLOAT          
+              Value : ff ff 7f 7f 
+  [FIELD  11] Name  : col_double
+              Length: 8    
+              Type  : double          | DOUBLE       | DATA_DOUBLE         
+              Value : ff ff ff ff ff ff ef 7f  
+  [FIELD  12] Name  : col_bit1
+              Length: 1    
+              Type  : bit(1)          | BIT          | DATA_FIXBINARY      
+              Value : 01 
+  [FIELD  13] Name  : col_bit8
+              Length: 1    
+              Type  : bit(8)          | BIT          | DATA_FIXBINARY      
+              Value : ff 
+  [FIELD  14] Name  : col_bit64
+              Length: 8    
+              Type  : bit(64)         | BIT          | DATA_FIXBINARY      
+              Value : ff ff ff ff ff ff ff ff  
+  [FIELD  15] Name  : col_char_utf8
+              Length: 20   
+              Type  : char(20)        | STRING       | DATA_MYSQL          
+              Value : 41 41 41 41 41 41 41 41  41 41 20 20 20 20 20 20 
+                      20 20 20 20 
+  [FIELD  16] Name  : col_char_latin1
+              Length: 20   
+              Type  : char(20)        | STRING       | DATA_CHAR           
+              Value : 42 42 42 42 42 42 42 42  42 42 20 20 20 20 20 20 
+                      20 20 20 20 
+  [FIELD  17] Name  : col_varchar_utf8
+              Length: 50   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 43 43 43 43 43 43 43 43  43 43 43 43 43 43 43 43 
+                      43 43 43 43 43 43 43 43  43 43 43 43 43 43 43 43 
+                      43 43 43 43 43 43 43 43  43 43 43 43 43 43 43 43 
+                      43 43 
+  [FIELD  18] Name  : col_varchar_latin1
+              Length: 50   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 44 44 44 44 44 44 44 44  44 44 44 44 44 44 44 44 
+                      44 44 44 44 44 44 44 44  44 44 44 44 44 44 44 44 
+                      44 44 44 44 44 44 44 44  44 44 44 44 44 44 44 44 
+                      44 44 
+  [FIELD  19] Name  : col_text_utf8
+              Length: 255  
+              Type  : text            | BLOB         | DATA_BLOB           
+              Value : 45 45 45 45 45 45 45 45  45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45  45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45  45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45  45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45  45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45  45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45  45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45  45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45  45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45  45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45  45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45  45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45  45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45  45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45  45 45 45 45 45 45 45 45 
+                      45 45 45 45 45 45 45 45  45 45 45 45 45 45 45 
+  [FIELD  20] Name  : col_text_latin1
+              Length: 255  
+              Type  : text            | BLOB         | DATA_BLOB           
+              Value : 46 46 46 46 46 46 46 46  46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46  46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46  46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46  46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46  46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46  46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46  46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46  46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46  46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46  46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46  46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46  46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46  46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46  46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46  46 46 46 46 46 46 46 46 
+                      46 46 46 46 46 46 46 46  46 46 46 46 46 46 46 
+  [FIELD  21] Name  : col_binary
+              Length: 10   
+              Type  : binary(10)      | STRING       | DATA_FIXBINARY      
+              Value : 47 47 47 47 47 47 47 47  47 47 
+  [FIELD  22] Name  : col_varbinary
+              Length: 100  
+              Type  : varbinary(100)  | VARCHAR      | DATA_BINARY         
+              Value : 48 48 48 48 48 48 48 48  48 48 48 48 48 48 48 48 
+                      48 48 48 48 48 48 48 48  48 48 48 48 48 48 48 48 
+                      48 48 48 48 48 48 48 48  48 48 48 48 48 48 48 48 
+                      48 48 48 48 48 48 48 48  48 48 48 48 48 48 48 48 
+                      48 48 48 48 48 48 48 48  48 48 48 48 48 48 48 48 
+                      48 48 48 48 48 48 48 48  48 48 48 48 48 48 48 48 
+                      48 48 48 48 
+  [FIELD  23] Name  : col_blob
+              Length: 255  
+              Type  : blob            | BLOB         | DATA_BLOB           
+              Value : 49 49 49 49 49 49 49 49  49 49 49 49 49 49 49 49 
+                      49 49 49 49 49 49 49 49  49 49 49 49 49 49 49 49 
+                      49 49 49 49 49 49 49 49  49 49 49 49 49 49 49 49 
+                      49 49 49 49 49 49 49 49  49 49 49 49 49 49 49 49 
+                      49 49 49 49 49 49 49 49  49 49 49 49 49 49 49 49 
+                      49 49 49 49 49 49 49 49  49 49 49 49 49 49 49 49 
+                      49 49 49 49 49 49 49 49  49 49 49 49 49 49 49 49 
+                      49 49 49 49 49 49 49 49  49 49 49 49 49 49 49 49 
+                      49 49 49 49 49 49 49 49  49 49 49 49 49 49 49 49 
+                      49 49 49 49 49 49 49 49  49 49 49 49 49 49 49 49 
+                      49 49 49 49 49 49 49 49  49 49 49 49 49 49 49 49 
+                      49 49 49 49 49 49 49 49  49 49 49 49 49 49 49 49 
+                      49 49 49 49 49 49 49 49  49 49 49 49 49 49 49 49 
+                      49 49 49 49 49 49 49 49  49 49 49 49 49 49 49 49 
+                      49 49 49 49 49 49 49 49  49 49 49 49 49 49 49 49 
+                      49 49 49 49 49 49 49 49  49 49 49 49 49 49 49 
+  [FIELD  24] Name  : col_datetime0
+              Length: 5    
+              Type  : datetime        | DATETIME2    | DATA_FIXBINARY      
+              Value : fe f3 fd 7e fb 
+  [FIELD  25] Name  : col_datetime3
+              Length: 7    
+              Type  : datetime(3)     | DATETIME2    | DATA_FIXBINARY      
+              Value : fe f3 fd 7e fb 13 7e 
+  [FIELD  26] Name  : col_datetime6
+              Length: 8    
+              Type  : datetime(6)     | DATETIME2    | DATA_FIXBINARY      
+              Value : fe f3 fd 7e fb 07 a1 1f  
+  [FIELD  27] Name  : col_timestamp0
+              Length: 4    
+              Type  : timestamp       | TIMESTAMP2   | DATA_FIXBINARY      
+              Value : 7f ff ff ff 
+  [FIELD  28] Name  : col_timestamp3
+              Length: 6    
+              Type  : timestamp(3)    | TIMESTAMP2   | DATA_FIXBINARY      
+              Value : 7f ff ff ff 13 7e 
+  [FIELD  29] Name  : col_timestamp6
+              Length: 7    
+              Type  : timestamp(6)    | TIMESTAMP2   | DATA_FIXBINARY      
+              Value : 7f ff ff ff 07 a1 1f 
+  [FIELD  30] Name  : col_time0
+              Length: 3    
+              Type  : time            | TIME2        | DATA_FIXBINARY      
+              Value : b4 6e fb 
+  [FIELD  31] Name  : col_time3
+              Length: 5    
+              Type  : time(3)         | TIME2        | DATA_FIXBINARY      
+              Value : b4 6e fa 27 06 
+  [FIELD  32] Name  : col_time6
+              Length: 6    
+              Type  : time(6)         | TIME2        | DATA_FIXBINARY      
+              Value : b4 6e fa 0f 42 3f 
+  [FIELD  33] Name  : col_date
+              Length: 3    
+              Type  : date            | NEWDATE      | DATA_INT            
+              Value : ce 1f 9f 
+  [FIELD  34] Name  : col_year
+              Length: 1    
+              Type  : year            | YEAR         | DATA_INT            
+              Value : ff 
+  [FIELD  35] Name  : col_geometry
+              Length: 25   
+              Type  : geometry        | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 01 00 00  00 00 00 00 00 00 80 66 
+                      40 00 00 00 00 00 80 56  40 
+  [FIELD  36] Name  : col_point
+              Length: 25   
+              Type  : point           | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 01 00 00  00 00 00 00 00 00 80 66 
+                      40 00 00 00 00 00 80 56  40 
+  [FIELD  37] Name  : col_linestring
+              Length: 45   
+              Type  : linestring      | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 02 00 00  00 02 00 00 00 00 00 00 
+                      00 00 80 66 c0 00 00 00  00 00 80 56 c0 00 00 00 
+                      00 00 80 66 40 00 00 00  00 00 80 56 40 
+  [FIELD  38] Name  : col_polygon
+              Length: 97   
+              Type  : polygon         | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 03 00 00  00 01 00 00 00 05 00 00 
+                      00 00 00 00 00 00 80 66  c0 00 00 00 00 00 80 56 
+                      c0 00 00 00 00 00 80 66  c0 00 00 00 00 00 80 56 
+                      40 00 00 00 00 00 80 66  40 00 00 00 00 00 80 56 
+                      40 00 00 00 00 00 80 66  40 00 00 00 00 00 80 56 
+                      c0 00 00 00 00 00 80 66  c0 00 00 00 00 00 80 56 
+                      c0 
+  [FIELD  39] Name  : col_multipoint
+              Length: 55   
+              Type  : multipoint      | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 04 00 00  00 02 00 00 00 01 01 00 
+                      00 00 00 00 00 00 00 80  66 c0 00 00 00 00 00 80 
+                      56 c0 01 01 00 00 00 00  00 00 00 00 80 66 40 00 
+                      00 00 00 00 80 56 40 
+  [FIELD  40] Name  : col_multilinestring
+              Length: 95   
+              Type  : multilinestring | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 05 00 00  00 02 00 00 00 01 02 00 
+                      00 00 02 00 00 00 00 00  00 00 00 80 66 c0 00 00 
+                      00 00 00 80 56 c0 00 00  00 00 00 80 66 40 00 00 
+                      00 00 00 80 56 40 01 02  00 00 00 02 00 00 00 00 
+                      00 00 00 00 80 66 40 00  00 00 00 00 80 56 c0 00 
+                      00 00 00 00 80 66 c0 00  00 00 00 00 80 56 40 
+  [FIELD  41] Name  : col_multipolygon
+              Length: 106  
+              Type  : multipolygon    | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 06 00 00  00 01 00 00 00 01 03 00 
+                      00 00 01 00 00 00 05 00  00 00 00 00 00 00 00 80 
+                      66 c0 00 00 00 00 00 80  56 c0 00 00 00 00 00 80 
+                      66 c0 00 00 00 00 00 80  56 40 00 00 00 00 00 80 
+                      66 40 00 00 00 00 00 80  56 40 00 00 00 00 00 80 
+                      66 40 00 00 00 00 00 80  56 c0 00 00 00 00 00 80 
+                      66 c0 00 00 00 00 00 80  56 c0 
+  [FIELD  42] Name  : col_geometrycollection
+              Length: 75   
+              Type  : geomcollection  | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 07 00 00  00 02 00 00 00 01 01 00 
+                      00 00 00 00 00 00 00 80  66 40 00 00 00 00 00 80 
+                      56 40 01 02 00 00 00 02  00 00 00 00 00 00 00 00 
+                      80 66 c0 00 00 00 00 00  80 56 c0 00 00 00 00 00 
+                      80 66 40 00 00 00 00 00  80 56 40 
+  [FIELD  43] Name  : col_enum
+              Length: 1    
+              Type  : enum('small','medium','large') | ENUM         | DATA_INT            
+              Value : 03 
+  [FIELD  44] Name  : col_set
+              Length: 1    
+              Type  : set('red','green','blue') | SET          | DATA_INT            
+              Value : 07 
+  [FIELD  45] Name  : col_json
+              Length: 108  
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 03 00 6b 00 19 00 06  00 1f 00 06 00 25 00 06 
+                      00 00 2b 00 05 0f 27 0c  67 00 6e 65 73 74 65 64 
+                      6e 75 6d 62 65 72 73 74  72 69 6e 67 02 00 3c 00 
+                      12 00 05 00 17 00 06 00  02 1d 00 00 2a 00 61 72 
+                      72 61 79 6f 62 6a 65 63  74 03 00 0d 00 05 01 00 
+                      05 02 00 05 03 00 01 00  12 00 0b 00 03 00 0c 0e 
+                      00 6b 65 79 03 6d 61 78  03 6d 61 78 
+  [FIELD  46] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD  47] Name  : FTS_DOC_ID
+              Length: 8    
+              Type  :                 | LONGLONG     | DATA_INT            
+              Value : 00 00 00 00 00 00 00 03  
+=======================================================================
+[ROW 3] Length: 944 (26 | 918), Number of fields: 47
+-----------------------------------------------------------------------
+  [HEADER   ]         69 4b 6a 5f 37 61 2d 19  19 08 0d 11 1e 0c 19 14 
+                      00 00 00 00 00 00 00 20  f6 50 
+  [FIELD   1] Name  : col_int
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 03 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 09 c4 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 00 bf 01 74 
+  [FIELD   4] Name  : col_tinyint
+              Length: 1    
+              Type  : tinyint         | TINY         | DATA_INT            
+              Value : 80 
+  [FIELD   5] Name  : col_smallint
+              Length: 2    
+              Type  : smallint        | SHORT        | DATA_INT            
+              Value : 80 00 
+  [FIELD   6] Name  : col_mediumint
+              Length: 3    
+              Type  : mediumint       | INT24        | DATA_INT            
+              Value : 80 00 00 
+  [FIELD   7] Name  : col_bigint
+              Length: 8    
+              Type  : bigint          | LONGLONG     | DATA_INT            
+              Value : 80 00 00 00 00 00 00 00  
+  [FIELD   8] Name  : col_decimal_small
+              Length: 3    
+              Type  : decimal(5,2)    | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : 80 00 00 
+  [FIELD   9] Name  : col_decimal_large
+              Length: 10   
+              Type  : decimal(20,5)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : 80 00 00 00 00 00 00 00  00 00 
+  [FIELD  10] Name  : col_float
+              Length: 4    
+              Type  : float           | FLOAT        | DATA_FLOAT          
+              Value : 00 00 00 00 
+  [FIELD  11] Name  : col_double
+              Length: 8    
+              Type  : double          | DOUBLE       | DATA_DOUBLE         
+              Value : 00 00 00 00 00 00 00 00  
+  [FIELD  12] Name  : col_bit1
+              Length: 1    
+              Type  : bit(1)          | BIT          | DATA_FIXBINARY      
+              Value : 01 
+  [FIELD  13] Name  : col_bit8
+              Length: 1    
+              Type  : bit(8)          | BIT          | DATA_FIXBINARY      
+              Value : aa 
+  [FIELD  14] Name  : col_bit64
+              Length: 8    
+              Type  : bit(64)         | BIT          | DATA_FIXBINARY      
+              Value : aa aa aa aa aa aa aa aa  
+  [FIELD  15] Name  : col_char_utf8
+              Length: 20   
+              Type  : char(20)        | STRING       | DATA_MYSQL          
+              Value : 4d 69 78 65 64 c3 a4 c2  b8 c2 ad c3 a6 e2 80 93 
+                      e2 80 a1 20 
+  [FIELD  16] Name  : col_char_latin1
+              Length: 20   
+              Type  : char(20)        | STRING       | DATA_CHAR           
+              Value : 4d 69 78 65 64 20 20 20  20 20 20 20 20 20 20 20 
+                      20 20 20 20 
+  [FIELD  17] Name  : col_varchar_utf8
+              Length: 25   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 4d 69 78 65 64 20 55 54  46 38 20 c3 a4 c2 b8 c2 
+                      ad c3 a6 e2 80 93 e2 80  a1 
+  [FIELD  18] Name  : col_varchar_latin1
+              Length: 12   
+              Type  : varchar(50)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 4d 69 78 65 64 20 4c 61  74 69 6e 31 
+  [FIELD  19] Name  : col_text_utf8
+              Length: 30   
+              Type  : text            | BLOB         | DATA_BLOB           
+              Value : 4d 69 78 65 64 20 54 65  78 74 20 55 54 46 38 20 
+                      c3 a4 c2 b8 c2 ad c3 a6  e2 80 93 e2 80 a1 
+  [FIELD  20] Name  : col_text_latin1
+              Length: 17   
+              Type  : text            | BLOB         | DATA_BLOB           
+              Value : 4d 69 78 65 64 20 54 65  78 74 20 4c 61 74 69 6e 
+                      31 
+  [FIELD  21] Name  : col_binary
+              Length: 10   
+              Type  : binary(10)      | STRING       | DATA_FIXBINARY      
+              Value : 42 49 4e 41 52 59 5f 4d  49 58 
+  [FIELD  22] Name  : col_varbinary
+              Length: 13   
+              Type  : varbinary(100)  | VARCHAR      | DATA_BINARY         
+              Value : 56 41 52 42 49 4e 41 52  59 5f 4d 49 58 
+  [FIELD  23] Name  : col_blob
+              Length: 8    
+              Type  : blob            | BLOB         | DATA_BLOB           
+              Value : 42 4c 4f 42 5f 4d 49 58  
+  [FIELD  24] Name  : col_datetime0
+              Length: 5    
+              Type  : datetime        | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 42 c0 00 
+  [FIELD  25] Name  : col_datetime3
+              Length: 7    
+              Type  : datetime(3)     | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 42 c0 00 04 ce 
+  [FIELD  26] Name  : col_datetime6
+              Length: 8    
+              Type  : datetime(6)     | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b2 42 c0 00 01 e2 40  
+  [FIELD  27] Name  : col_timestamp0
+              Length: 4    
+              Type  : timestamp       | TIMESTAMP2   | DATA_FIXBINARY      
+              Value : 65 92 a9 40 
+  [FIELD  28] Name  : col_timestamp3
+              Length: 6    
+              Type  : timestamp(3)    | TIMESTAMP2   | DATA_FIXBINARY      
+              Value : 65 92 a9 40 04 ce 
+  [FIELD  29] Name  : col_timestamp6
+              Length: 7    
+              Type  : timestamp(6)    | TIMESTAMP2   | DATA_FIXBINARY      
+              Value : 65 92 a9 40 01 e2 40 
+  [FIELD  30] Name  : col_time0
+              Length: 3    
+              Type  : time            | TIME2        | DATA_FIXBINARY      
+              Value : 80 c0 00 
+  [FIELD  31] Name  : col_time3
+              Length: 5    
+              Type  : time(3)         | TIME2        | DATA_FIXBINARY      
+              Value : 80 c0 00 04 ce 
+  [FIELD  32] Name  : col_time6
+              Length: 6    
+              Type  : time(6)         | TIME2        | DATA_FIXBINARY      
+              Value : 80 c0 00 01 e2 40 
+  [FIELD  33] Name  : col_date
+              Length: 3    
+              Type  : date            | NEWDATE      | DATA_INT            
+              Value : 8f d0 21 
+  [FIELD  34] Name  : col_year
+              Length: 1    
+              Type  : year            | YEAR         | DATA_INT            
+              Value : 7c 
+  [FIELD  35] Name  : col_geometry
+              Length: 25   
+              Type  : geometry        | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 01 00 00  00 00 00 00 00 00 80 46 
+                      40 00 00 00 00 00 80 46  40 
+  [FIELD  36] Name  : col_point
+              Length: 25   
+              Type  : point           | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 01 00 00  00 00 00 00 00 00 80 46 
+                      40 00 00 00 00 00 80 46  40 
+  [FIELD  37] Name  : col_linestring
+              Length: 45   
+              Type  : linestring      | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 02 00 00  00 02 00 00 00 00 00 00 
+                      00 00 80 46 c0 00 00 00  00 00 80 46 c0 00 00 00 
+                      00 00 80 46 40 00 00 00  00 00 80 46 40 
+  [FIELD  38] Name  : col_polygon
+              Length: 97   
+              Type  : polygon         | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 03 00 00  00 01 00 00 00 05 00 00 
+                      00 00 00 00 00 00 80 46  c0 00 00 00 00 00 80 46 
+                      c0 00 00 00 00 00 80 46  c0 00 00 00 00 00 80 46 
+                      40 00 00 00 00 00 80 46  40 00 00 00 00 00 80 46 
+                      40 00 00 00 00 00 80 46  40 00 00 00 00 00 80 46 
+                      c0 00 00 00 00 00 80 46  c0 00 00 00 00 00 80 46 
+                      c0 
+  [FIELD  39] Name  : col_multipoint
+              Length: 55   
+              Type  : multipoint      | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 04 00 00  00 02 00 00 00 01 01 00 
+                      00 00 00 00 00 00 00 80  46 c0 00 00 00 00 00 80 
+                      46 c0 01 01 00 00 00 00  00 00 00 00 80 46 40 00 
+                      00 00 00 00 80 46 40 
+  [FIELD  40] Name  : col_multilinestring
+              Length: 95   
+              Type  : multilinestring | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 05 00 00  00 02 00 00 00 01 02 00 
+                      00 00 02 00 00 00 00 00  00 00 00 80 46 c0 00 00 
+                      00 00 00 80 46 c0 00 00  00 00 00 80 46 40 00 00 
+                      00 00 00 80 46 40 01 02  00 00 00 02 00 00 00 00 
+                      00 00 00 00 80 46 40 00  00 00 00 00 80 46 c0 00 
+                      00 00 00 00 80 46 c0 00  00 00 00 00 80 46 40 
+  [FIELD  41] Name  : col_multipolygon
+              Length: 106  
+              Type  : multipolygon    | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 06 00 00  00 01 00 00 00 01 03 00 
+                      00 00 01 00 00 00 05 00  00 00 00 00 00 00 00 80 
+                      46 c0 00 00 00 00 00 80  46 c0 00 00 00 00 00 80 
+                      46 c0 00 00 00 00 00 80  46 40 00 00 00 00 00 80 
+                      46 40 00 00 00 00 00 80  46 40 00 00 00 00 00 80 
+                      46 40 00 00 00 00 00 80  46 c0 00 00 00 00 00 80 
+                      46 c0 00 00 00 00 00 80  46 c0 
+  [FIELD  42] Name  : col_geometrycollection
+              Length: 75   
+              Type  : geomcollection  | GEOMETRY     | DATA_GEOMETRY       
+              Value : 00 00 00 00 01 07 00 00  00 02 00 00 00 01 01 00 
+                      00 00 00 00 00 00 00 80  46 40 00 00 00 00 00 80 
+                      46 40 01 02 00 00 00 02  00 00 00 00 00 00 00 00 
+                      80 46 c0 00 00 00 00 00  80 46 c0 00 00 00 00 00 
+                      80 46 40 00 00 00 00 00  80 46 40 
+  [FIELD  43] Name  : col_enum
+              Length: 1    
+              Type  : enum('small','medium','large') | ENUM         | DATA_INT            
+              Value : 02 
+  [FIELD  44] Name  : col_set
+              Length: 1    
+              Type  : set('red','green','blue') | SET          | DATA_INT            
+              Value : 05 
+  [FIELD  45] Name  : col_json
+              Length: 105  
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 03 00 68 00 19 00 05  00 1e 00 06 00 24 00 06 
+                      00 00 2a 00 05 7b 00 0c  62 00 6d 69 78 65 64 6e 
+                      75 6d 62 65 72 73 74 72  69 6e 67 02 00 38 00 12 
+                      00 05 00 17 00 06 00 02  1d 00 00 24 00 61 72 72 
+                      61 79 6f 62 6a 65 63 74  01 00 07 00 05 01 00 01 
+                      00 14 00 0b 00 03 00 0c  0e 00 6b 65 79 05 76 61 
+                      6c 75 65 05 6d 69 78 65  64 
+  [FIELD  46] Name  : verify_column
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 02 9a 
+  [FIELD  47] Name  : FTS_DOC_ID
+              Length: 8    
+              Type  :                 | LONGLONG     | DATA_INT            
+              Value : 00 00 00 00 00 00 00 04  
+====================================================================================
+|  PAGE ANALYSIS RESULT                                                             |
+------------------------------------------------------------------------------------
+Total valid records count:                3
+Total valid records size:                 3390 B
+                                            [Headers: 81 B]
+                                            [Bodies:  3309 B]
+Valid records to page space ratio:        20.69092 %
+
+Total records with dropped columns count: 0
+Total instant dropped columns size:       0 B
+Dropped columns to page space ratio:      0.00000 %
+
+Total delete-marked records count:        0
+Total delete-marked records size:         0 B
+Delete-marked recs to page space ratio:   0.00000 %
+
+Total InnoDB internal space used:         213 B
+                                            [FIL HEADER     38 B]
+                                            [PAGE HEADER    36 B]
+                                            [FSEG HEADER    20 B]
+                                            [INFI + SUPRE   26 B]
+                                            [RECORD HEADERS 81 B]*
+                                            [PAGE DIRECTORY 4 B]
+                                            [FIL TRAILER    8 B]
+InnoDB internals to page space ratio:     1.30005 %
+
+Total free space:                         12862 B
+Free space ratio:                         78.50342 %

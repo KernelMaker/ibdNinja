@@ -1,0 +1,398 @@
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/data_types.ibd
+    File size:             114688 B
+    Space id:              5
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 7
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     1 indexes.
+====================================================================================
+
+====================================================================================
+|  PAGE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    Page no:           4
+    Slibling pages no: NULL [4] NULL
+    Space id:          5
+    Page type:         INDEX
+    Lsn:               29922952
+    FLush lsn:         0
+    -------------------
+    Page level:        0
+    Page size:         [logical: 16384 B], [physical: 16384 B]
+    Number of records: 3
+    Index id:          164
+    Belongs to:        [table: ibdninja_test.data_types], [index: PRIMARY]
+    Row format:        DYNAMIC
+    Number dir slots:  2
+    Heap top:          480
+    Number of heap:    5
+    First free rec:    0
+    Garbage:           0 B
+    Last insert:       463
+    Direction:         2
+    Number direction:  2
+    Max trx id:        0
+
+====================================================================================
+|  RECORDS INFORMATION                                                             |
+------------------------------------------------------------------------------------
+=======================================================================
+[ROW 1] Length: 191 (14 | 177), Number of fields: 25
+-----------------------------------------------------------------------
+  [HEADER   ]         22 04 04 14 16 0a 00 00  00 00 00 10 00 bf 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 01 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 08 4f 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 00 8e 01 10 
+  [FIELD   4] Name  : tiny_col
+              Length: 1    
+              Type  : tinyint         | TINY         | DATA_INT            
+              Value : ff 
+  [FIELD   5] Name  : small_col
+              Length: 2    
+              Type  : smallint        | SHORT        | DATA_INT            
+              Value : ff ff 
+  [FIELD   6] Name  : medium_col
+              Length: 3    
+              Type  : mediumint       | INT24        | DATA_INT            
+              Value : ff ff ff 
+  [FIELD   7] Name  : big_col
+              Length: 8    
+              Type  : bigint          | LONGLONG     | DATA_INT            
+              Value : ff ff ff ff ff ff ff ff  
+  [FIELD   8] Name  : float_col
+              Length: 4    
+              Type  : float           | FLOAT        | DATA_FLOAT          
+              Value : c3 f5 48 40 
+  [FIELD   9] Name  : double_col
+              Length: 8    
+              Type  : double          | DOUBLE       | DATA_DOUBLE         
+              Value : ea 2e 44 54 fb 21 09 40  
+  [FIELD  10] Name  : decimal_col
+              Length: 5    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : 80 00 30 39 43 
+  [FIELD  11] Name  : char_col
+              Length: 10   
+              Type  : char(10)        | STRING       | DATA_MYSQL          
+              Value : 43 48 41 52 31 30 20 20  20 20 
+  [FIELD  12] Name  : varchar_col
+              Length: 22   
+              Type  : varchar(255)    | VARCHAR      | DATA_VARMYSQL       
+              Value : 56 61 72 69 61 62 6c 65  20 6c 65 6e 67 74 68 20 
+                      73 74 72 69 6e 67 
+  [FIELD  13] Name  : text_col
+              Length: 20   
+              Type  : text            | BLOB         | DATA_BLOB           
+              Value : 54 68 69 73 20 69 73 20  61 20 74 65 78 74 20 66 
+                      69 65 6c 64 
+  [FIELD  14] Name  : binary_col
+              Length: 16   
+              Type  : binary(16)      | STRING       | DATA_FIXBINARY      
+              Value : 01 02 03 04 05 06 07 08  09 0a 0b 0c 0d 0e 0f 10 
+                      
+  [FIELD  15] Name  : varbinary_col
+              Length: 4    
+              Type  : varbinary(255)  | VARCHAR      | DATA_BINARY         
+              Value : de ad be ef 
+  [FIELD  16] Name  : blob_col
+              Length: 4    
+              Type  : blob            | BLOB         | DATA_BLOB           
+              Value : ca fe ba be 
+  [FIELD  17] Name  : date_col
+              Length: 3    
+              Type  : date            | NEWDATE      | DATA_INT            
+              Value : 8f d0 cf 
+  [FIELD  18] Name  : time_col
+              Length: 3    
+              Type  : time            | TIME2        | DATA_FIXBINARY      
+              Value : 80 e7 80 
+  [FIELD  19] Name  : datetime_col
+              Length: 5    
+              Type  : datetime        | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 b3 9e e7 80 
+  [FIELD  20] Name  : timestamp_col
+              Length: 4    
+              Type  : timestamp       | TIMESTAMP2   | DATA_FIXBINARY      
+              Value : 69 83 5f 2d 
+  [FIELD  21] Name  : year_col
+              Length: 1    
+              Type  : year            | YEAR         | DATA_INT            
+              Value : 7c 
+  [FIELD  22] Name  : enum_col
+              Length: 1    
+              Type  : enum('A','B','C') | ENUM         | DATA_INT            
+              Value : 02 
+  [FIELD  23] Name  : set_col
+              Length: 1    
+              Type  : set('X','Y','Z') | SET          | DATA_INT            
+              Value : 05 
+  [FIELD  24] Name  : bit_col
+              Length: 1    
+              Type  : bit(8)          | BIT          | DATA_FIXBINARY      
+              Value : aa 
+  [FIELD  25] Name  : json_col
+              Length: 34   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 02 00 21 00 12 00 03  00 15 00 06 00 0c 1b 00 
+                      05 2a 00 6b 65 79 6e 75  6d 62 65 72 05 76 61 6c 
+                      75 65 
+=======================================================================
+[ROW 2] Length: 144 (14 | 130), Number of fields: 25
+-----------------------------------------------------------------------
+  [HEADER   ]         05 00 04 0e 0e 0a 00 00  00 00 00 18 00 8a 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 02 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 08 51 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 81 00 00 00 8f 01 10 
+  [FIELD   4] Name  : tiny_col
+              Length: 1    
+              Type  : tinyint         | TINY         | DATA_INT            
+              Value : 00 
+  [FIELD   5] Name  : small_col
+              Length: 2    
+              Type  : smallint        | SHORT        | DATA_INT            
+              Value : 00 00 
+  [FIELD   6] Name  : medium_col
+              Length: 3    
+              Type  : mediumint       | INT24        | DATA_INT            
+              Value : 00 00 00 
+  [FIELD   7] Name  : big_col
+              Length: 8    
+              Type  : bigint          | LONGLONG     | DATA_INT            
+              Value : 00 00 00 00 00 00 00 00  
+  [FIELD   8] Name  : float_col
+              Length: 4    
+              Type  : float           | FLOAT        | DATA_FLOAT          
+              Value : 00 00 c0 bf 
+  [FIELD   9] Name  : double_col
+              Length: 8    
+              Type  : double          | DOUBLE       | DATA_DOUBLE         
+              Value : 9b 91 04 8b 0a bf 05 c0  
+  [FIELD  10] Name  : decimal_col
+              Length: 5    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : 7f fe 79 60 9c 
+  [FIELD  11] Name  : char_col
+              Length: 10   
+              Type  : char(10)        | STRING       | DATA_MYSQL          
+              Value : 41 42 43 20 20 20 20 20  20 20 
+  [FIELD  12] Name  : varchar_col
+              Length: 14   
+              Type  : varchar(255)    | VARCHAR      | DATA_VARMYSQL       
+              Value : 41 6e 6f 74 68 65 72 20  73 74 72 69 6e 67 
+  [FIELD  13] Name  : text_col
+              Length: 14   
+              Type  : text            | BLOB         | DATA_BLOB           
+              Value : 4d 6f 72 65 20 74 65 78  74 20 68 65 72 65 
+  [FIELD  14] Name  : binary_col
+              Length: 16   
+              Type  : binary(16)      | STRING       | DATA_FIXBINARY      
+              Value : ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff 
+                      
+  [FIELD  15] Name  : varbinary_col
+              Length: 4    
+              Type  : varbinary(255)  | VARCHAR      | DATA_BINARY         
+              Value : 12 34 56 78 
+  [FIELD  16] Name  : blob_col
+              Length: 0    
+              Type  : blob            | BLOB         | DATA_BLOB           
+              Value : 
+  [FIELD  17] Name  : date_col
+              Length: 3    
+              Type  : date            | NEWDATE      | DATA_INT            
+              Value : 8f a0 21 
+  [FIELD  18] Name  : time_col
+              Length: 3    
+              Type  : time            | TIME2        | DATA_FIXBINARY      
+              Value : 80 00 00 
+  [FIELD  19] Name  : datetime_col
+              Length: 5    
+              Type  : datetime        | DATETIME2    | DATA_FIXBINARY      
+              Value : 99 64 42 00 00 
+  [FIELD  20] Name  : timestamp_col
+              Length: 4    
+              Type  : timestamp       | TIMESTAMP2   | DATA_FIXBINARY      
+              Value : 38 6d 43 81 
+  [FIELD  21] Name  : year_col
+              Length: 1    
+              Type  : year            | YEAR         | DATA_INT            
+              Value : 64 
+  [FIELD  22] Name  : enum_col
+              Length: 1    
+              Type  : enum('A','B','C') | ENUM         | DATA_INT            
+              Value : 01 
+  [FIELD  23] Name  : set_col
+              Length: 1    
+              Type  : set('X','Y','Z') | SET          | DATA_INT            
+              Value : 02 
+  [FIELD  24] Name  : bit_col
+              Length: 1    
+              Type  : bit(8)          | BIT          | DATA_FIXBINARY      
+              Value : ff 
+  [FIELD  25] Name  : json_col
+              Length: 5    
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 02 00 00 04 00 
+=======================================================================
+[ROW 3] Length: 25 (8 | 17), Number of fields: 25
+-----------------------------------------------------------------------
+  [HEADER   ]         3f ff ff 00 00 20 fe a1  
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 03 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 08 53 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 00 8f 01 10 
+  [FIELD   4] Name  : tiny_col
+              Length: 0    
+              Type  : tinyint         | TINY         | DATA_INT            
+              Value : *NULL*
+  [FIELD   5] Name  : small_col
+              Length: 0    
+              Type  : smallint        | SHORT        | DATA_INT            
+              Value : *NULL*
+  [FIELD   6] Name  : medium_col
+              Length: 0    
+              Type  : mediumint       | INT24        | DATA_INT            
+              Value : *NULL*
+  [FIELD   7] Name  : big_col
+              Length: 0    
+              Type  : bigint          | LONGLONG     | DATA_INT            
+              Value : *NULL*
+  [FIELD   8] Name  : float_col
+              Length: 0    
+              Type  : float           | FLOAT        | DATA_FLOAT          
+              Value : *NULL*
+  [FIELD   9] Name  : double_col
+              Length: 0    
+              Type  : double          | DOUBLE       | DATA_DOUBLE         
+              Value : *NULL*
+  [FIELD  10] Name  : decimal_col
+              Length: 0    
+              Type  : decimal(10,2)   | NEWDECIMAL   | DATA_FIXBINARY      
+              Value : *NULL*
+  [FIELD  11] Name  : char_col
+              Length: 0    
+              Type  : char(10)        | STRING       | DATA_MYSQL          
+              Value : *NULL*
+  [FIELD  12] Name  : varchar_col
+              Length: 0    
+              Type  : varchar(255)    | VARCHAR      | DATA_VARMYSQL       
+              Value : *NULL*
+  [FIELD  13] Name  : text_col
+              Length: 0    
+              Type  : text            | BLOB         | DATA_BLOB           
+              Value : *NULL*
+  [FIELD  14] Name  : binary_col
+              Length: 0    
+              Type  : binary(16)      | STRING       | DATA_FIXBINARY      
+              Value : *NULL*
+  [FIELD  15] Name  : varbinary_col
+              Length: 0    
+              Type  : varbinary(255)  | VARCHAR      | DATA_BINARY         
+              Value : *NULL*
+  [FIELD  16] Name  : blob_col
+              Length: 0    
+              Type  : blob            | BLOB         | DATA_BLOB           
+              Value : *NULL*
+  [FIELD  17] Name  : date_col
+              Length: 0    
+              Type  : date            | NEWDATE      | DATA_INT            
+              Value : *NULL*
+  [FIELD  18] Name  : time_col
+              Length: 0    
+              Type  : time            | TIME2        | DATA_FIXBINARY      
+              Value : *NULL*
+  [FIELD  19] Name  : datetime_col
+              Length: 0    
+              Type  : datetime        | DATETIME2    | DATA_FIXBINARY      
+              Value : *NULL*
+  [FIELD  20] Name  : timestamp_col
+              Length: 0    
+              Type  : timestamp       | TIMESTAMP2   | DATA_FIXBINARY      
+              Value : *NULL*
+  [FIELD  21] Name  : year_col
+              Length: 0    
+              Type  : year            | YEAR         | DATA_INT            
+              Value : *NULL*
+  [FIELD  22] Name  : enum_col
+              Length: 0    
+              Type  : enum('A','B','C') | ENUM         | DATA_INT            
+              Value : *NULL*
+  [FIELD  23] Name  : set_col
+              Length: 0    
+              Type  : set('X','Y','Z') | SET          | DATA_INT            
+              Value : *NULL*
+  [FIELD  24] Name  : bit_col
+              Length: 0    
+              Type  : bit(8)          | BIT          | DATA_FIXBINARY      
+              Value : *NULL*
+  [FIELD  25] Name  : json_col
+              Length: 0    
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : *NULL*
+====================================================================================
+|  PAGE ANALYSIS RESULT                                                             |
+------------------------------------------------------------------------------------
+Total valid records count:                3
+Total valid records size:                 360 B
+                                            [Headers: 36 B]
+                                            [Bodies:  324 B]
+Valid records to page space ratio:        2.19727 %
+
+Total records with dropped columns count: 0
+Total instant dropped columns size:       0 B
+Dropped columns to page space ratio:      0.00000 %
+
+Total delete-marked records count:        0
+Total delete-marked records size:         0 B
+Delete-marked recs to page space ratio:   0.00000 %
+
+Total InnoDB internal space used:         168 B
+                                            [FIL HEADER     38 B]
+                                            [PAGE HEADER    36 B]
+                                            [FSEG HEADER    20 B]
+                                            [INFI + SUPRE   26 B]
+                                            [RECORD HEADERS 36 B]*
+                                            [PAGE DIRECTORY 4 B]
+                                            [FIL TRAILER    8 B]
+InnoDB internals to page space ratio:     1.02539 %
+
+Total free space:                         15892 B
+Free space ratio:                         96.99707 %

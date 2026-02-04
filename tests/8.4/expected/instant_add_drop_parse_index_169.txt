@@ -1,0 +1,60 @@
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/instant_add_drop.ibd
+    File size:             114688 B
+    Space id:              9
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 7
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     1 indexes.
+====================================================================================
+
+
+Analyzing index PRIMARY at level 0...
+====================================================================================
+|  INDEX ANALYSIS RESULT                                                            |
+------------------------------------------------------------------------------------
+Index name:                                       PRIMARY
+Index id:                                         169
+Belongs to:                                       ibdninja_test.instant_add_drop
+Root page no:                                     4
+Num of fields(ALL):                               7
+Num of levels:                                    1
+Num of pages:                                     1
+                                                    [Non leaf pages: 0]
+                                                    [Leaf pages:     1]
+
+--------LEAF-LEVEL---------------
+Total pages count:                                1
+Total pages size:                                 16384 B
+
+Total valid records count:                        3
+Total valid records size:                         127 B
+                                                    [Headers: 23 B]
+                                                    [Bodies:  104 B]
+Valid records to leaf pages space ratio:          0.77515 %
+
+Total records with instant dropped columns count: 2
+Total instant dropped columns size:               22 B
+Dropped columns to leaf pages space ratio:        0.13428 %
+
+Total delete-marked records count:                0
+Total delete-marked records size:                 0 B
+Delete-marked records to leaf pages space ratio:  0.00000 %
+
+Total Innodb internal space used:                 155 B
+InnoDB internal space to leaf pages space ratio:  0.94604 %
+
+Total free space:                                 16125 B
+Free space ratio:                                 98.41919 %

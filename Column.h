@@ -123,7 +123,7 @@ class Column {
     std::cout << space_str << "]" << std::endl;
   }
   enum enum_column_types {
-    // 31 in total
+    // 32 in total
     DECIMAL = 1,
     TINY,
     SHORT,
@@ -154,7 +154,8 @@ class Column {
     VAR_STRING,
     STRING,
     GEOMETRY,
-    JSON
+    JSON,
+    VECTOR  // MySQL 9.0+, dd_type = 32
   };
   enum enum_column_key {
     CK_NONE = 1,
@@ -196,6 +197,7 @@ class Column {
     MYSQL_TYPE_DATETIME2,   /**< Internal to MySQL. Not used in protocol */
     MYSQL_TYPE_TIME2,       /**< Internal to MySQL. Not used in protocol */
     MYSQL_TYPE_TYPED_ARRAY, /**< Used for replication only */
+    MYSQL_TYPE_VECTOR = 242, /**< MySQL 9.0+ VECTOR type */
     MYSQL_TYPE_INVALID = 243,
     MYSQL_TYPE_BOOL = 244, /**< Currently just a placeholder */
     MYSQL_TYPE_JSON = 245,
@@ -326,6 +328,9 @@ class Column {
   bool ib_instant_default() {
     return ib_instant_default_;
   }
+  bool is_array() const {
+    return is_array_;
+  }
   bool se_explicit() {
     return se_explicit_;
   }
@@ -389,6 +394,7 @@ class Column {
   uint32_t ib_phy_pos_;
   uint32_t ib_col_len_;
   bool ib_instant_default_;
+  bool is_array_ = false;
 
   bool se_explicit_;
   IndexColumn* index_column_;

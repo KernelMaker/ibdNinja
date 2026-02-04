@@ -1,0 +1,197 @@
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/multi_page.ibd
+    File size:             278528 B
+    Space id:              8
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 17
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     1 indexes.
+====================================================================================
+
+====================================================================================
+|  PAGE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    Page no:           4
+    Slibling pages no: NULL [4] NULL
+    Space id:          8
+    Page type:         INDEX
+    Lsn:               30168589
+    FLush lsn:         0
+    -------------------
+    Page level:        1
+    Page size:         [logical: 16384 B], [physical: 16384 B]
+    Number of records: 11
+    Index id:          168
+    Belongs to:        [table: ibdninja_test.multi_page], [index: PRIMARY]
+    Row format:        DYNAMIC
+    Number dir slots:  3
+    Heap top:          274
+    Number of heap:    13
+    First free rec:    0
+    Garbage:           0 B
+    Last insert:       266
+    Direction:         2
+    Number direction:  10
+    Max trx id:        0
+
+====================================================================================
+|  RECORDS INFORMATION                                                             |
+------------------------------------------------------------------------------------
+=======================================================================
+[ROW 1] Length: 14 (6 | 8), Number of fields: 2
+-----------------------------------------------------------------------
+  [HEADER   ]         00 10 00 11 00 0e 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 01 
+  [FIELD   2] Name  : *NODE_PTR(Child page no)
+              Length: 4    
+              Value : 00 00 00 05 
+=======================================================================
+[ROW 2] Length: 14 (6 | 8), Number of fields: 2
+-----------------------------------------------------------------------
+  [HEADER   ]         00 00 00 19 00 0e 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 1e 
+  [FIELD   2] Name  : *NODE_PTR(Child page no)
+              Length: 4    
+              Value : 00 00 00 06 
+=======================================================================
+[ROW 3] Length: 14 (6 | 8), Number of fields: 2
+-----------------------------------------------------------------------
+  [HEADER   ]         00 00 00 21 00 0e 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 57 
+  [FIELD   2] Name  : *NODE_PTR(Child page no)
+              Length: 4    
+              Value : 00 00 00 07 
+=======================================================================
+[ROW 4] Length: 14 (6 | 8), Number of fields: 2
+-----------------------------------------------------------------------
+  [HEADER   ]         00 04 00 29 00 0e 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 8b 
+  [FIELD   2] Name  : *NODE_PTR(Child page no)
+              Length: 4    
+              Value : 00 00 00 08 
+=======================================================================
+[ROW 5] Length: 14 (6 | 8), Number of fields: 2
+-----------------------------------------------------------------------
+  [HEADER   ]         00 00 00 31 00 0e 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 be 
+  [FIELD   2] Name  : *NODE_PTR(Child page no)
+              Length: 4    
+              Value : 00 00 00 09 
+=======================================================================
+[ROW 6] Length: 14 (6 | 8), Number of fields: 2
+-----------------------------------------------------------------------
+  [HEADER   ]         00 00 00 39 00 0e 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 f1 
+  [FIELD   2] Name  : *NODE_PTR(Child page no)
+              Length: 4    
+              Value : 00 00 00 0a 
+=======================================================================
+[ROW 7] Length: 14 (6 | 8), Number of fields: 2
+-----------------------------------------------------------------------
+  [HEADER   ]         00 00 00 41 00 0e 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 01 24 
+  [FIELD   2] Name  : *NODE_PTR(Child page no)
+              Length: 4    
+              Value : 00 00 00 0b 
+=======================================================================
+[ROW 8] Length: 14 (6 | 8), Number of fields: 2
+-----------------------------------------------------------------------
+  [HEADER   ]         00 00 00 49 00 0e 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 01 57 
+  [FIELD   2] Name  : *NODE_PTR(Child page no)
+              Length: 4    
+              Value : 00 00 00 0c 
+=======================================================================
+[ROW 9] Length: 14 (6 | 8), Number of fields: 2
+-----------------------------------------------------------------------
+  [HEADER   ]         00 00 00 51 00 0e 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 01 8a 
+  [FIELD   2] Name  : *NODE_PTR(Child page no)
+              Length: 4    
+              Value : 00 00 00 0d 
+=======================================================================
+[ROW 10] Length: 14 (6 | 8), Number of fields: 2
+-----------------------------------------------------------------------
+  [HEADER   ]         00 00 00 59 00 0e 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 01 bd 
+  [FIELD   2] Name  : *NODE_PTR(Child page no)
+              Length: 4    
+              Value : 00 00 00 0e 
+=======================================================================
+[ROW 11] Length: 14 (6 | 8), Number of fields: 2
+-----------------------------------------------------------------------
+  [HEADER   ]         00 00 00 61 ff 66 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 01 f0 
+  [FIELD   2] Name  : *NODE_PTR(Child page no)
+              Length: 4    
+              Value : 00 00 00 0f 
+====================================================================================
+|  PAGE ANALYSIS RESULT                                                             |
+------------------------------------------------------------------------------------
+Total valid records count:               11
+Total valid records size:                154 B
+                                           [Headers: 66 B]
+                                           [Bodies : 88 B)
+Valid records to page space ratio:       0.93994 %
+
+Total delete-marked records count:       0
+Total delete-marked records size:        0 B
+Delete-marked recs to page space ratio:  0.00000 %
+
+Total innoDB internal space used:        200 B
+                                           [FIL HEADER     38 B]
+                                           [PAGE HEADER    36 B]
+                                           [FSEG HEADER    20 B]
+                                           [INFI + SUPRE   26 B]
+                                           [RECORD HEADERS 66 B]*
+                                           [PAGE DIRECTORY 6 B]
+                                           [FIL TRAILER    8 B]
+InnoDB internals to page space ratio:    1.22070 %
+
+Total free space:                        16096 B
+Free space ratio:                        98.24219 %

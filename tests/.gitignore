@@ -1,6 +1,7 @@
 # Generated fixtures (optional - you may want to commit these for CI)
 # Uncomment the next line if you don't want to track fixtures:
-# fixtures/*.ibd
+# 8.0/fixtures/*.ibd
+# 8.4/fixtures/*.ibd
 
 # Temporary files
 *.tmp

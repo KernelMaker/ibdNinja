@@ -36,7 +36,7 @@ $(TARGET): check_zlib $(OBJS)
 clean:
 	rm -f $(OBJS) $(TARGET) $(SRCS:.cc=.d)
 
-# Test targets
+# Test targets - run both versions
 test: $(TARGET)
 	@./tests/run_tests.sh
 
@@ -46,13 +46,50 @@ test-verbose: $(TARGET)
 test-update: $(TARGET)
 	@./tests/run_tests.sh --update
 
-test-fixtures:
-	@./tests/generate_fixtures.sh
+# Version-specific test targets
+test-8.0: $(TARGET)
+	@./tests/8.0/run_tests.sh
 
-test-upgrade-fixture:
-	@./tests/generate_upgrade_fixture.sh
+test-8.4: $(TARGET)
+	@./tests/8.4/run_tests.sh
 
-test-all-fixtures: test-fixtures test-upgrade-fixture
+test-9.0: $(TARGET)
+	@./tests/9.0/run_tests.sh
+
+test-update-8.0: $(TARGET)
+	@./tests/8.0/run_tests.sh --update
+
+test-update-8.4: $(TARGET)
+	@./tests/8.4/run_tests.sh --update
+
+test-update-9.0: $(TARGET)
+	@./tests/9.0/run_tests.sh --update
+
+# Fixture generation
+test-fixtures: test-fixtures-8.0
+
+test-fixtures-8.0:
+	@./tests/8.0/generate_fixtures.sh
+
+test-fixtures-8.4:
+	@./tests/8.4/generate_fixtures.sh
+
+test-fixtures-9.0:
+	@./tests/9.0/generate_fixtures.sh
+
+test-upgrade-fixture: test-upgrade-fixture-8.0
+
+test-upgrade-fixture-8.0:
+	@./tests/8.0/generate_upgrade_fixture.sh
+
+test-upgrade-fixture-8.4:
+	@./tests/8.4/generate_upgrade_fixture.sh
+
+test-all-fixtures: test-fixtures-8.0 test-upgrade-fixture-8.0
 
 # Phony targets
-.PHONY: all clean test test-verbose test-update test-fixtures test-upgrade-fixture test-all-fixtures
+.PHONY: all clean test test-verbose test-update \
+	test-8.0 test-8.4 test-9.0 test-update-8.0 test-update-8.4 test-update-9.0 \
+	test-fixtures test-fixtures-8.0 test-fixtures-8.4 test-fixtures-9.0 \
+	test-upgrade-fixture test-upgrade-fixture-8.0 test-upgrade-fixture-8.4 \
+	test-all-fixtures
