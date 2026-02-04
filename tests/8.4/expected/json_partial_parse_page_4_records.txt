@@ -1,0 +1,144 @@
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/json_partial.ibd
+    File size:             180224 B
+    Space id:              2
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 11
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     1 indexes.
+====================================================================================
+
+====================================================================================
+|  PAGE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    Page no:           4
+    Slibling pages no: NULL [4] NULL
+    Space id:          2
+    Page type:         INDEX
+    Lsn:               29732896
+    FLush lsn:         0
+    -------------------
+    Page level:        0
+    Page size:         [logical: 16384 B], [physical: 16384 B]
+    Number of records: 1
+    Index id:          158
+    Belongs to:        [table: ibdninja_test.json_partial], [index: PRIMARY]
+    Row format:        DYNAMIC
+    Number dir slots:  2
+    Heap top:          187
+    Number of heap:    3
+    First free rec:    0
+    Garbage:           0 B
+    Last insert:       130
+    Direction:         5
+    Number direction:  0
+    Max trx id:        0
+
+====================================================================================
+|  RECORDS INFORMATION                                                             |
+------------------------------------------------------------------------------------
+=======================================================================
+[ROW 1] Length: 67 (10 | 57), Number of fields: 5
+-----------------------------------------------------------------------
+  [HEADER   ]         14 c0 14 c0 00 00 00 10  ff ee 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 01 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 07 1c 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 01 00 00 01 24 01 51 
+  [FIELD   4] Name  : doc1
+              Length: 20   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 00 00 02 00 00 00 05  00 00 00 03 00 00 00 00 
+                      00 00 28 96 
+                      [EXTERNAL: space=2, page=5, version=3, len=10390]
+                      [LOB DATA (hex, 10390 bytes total)]:
+                      00 07 00 95 28 35 00 07 00 3c 00 07 00 43 00 07 
+                      00 4a 00 08 00 52 00 08 00 5a 00 09 00 63 00 09 
+                      00 04 00 00 02 6c 00 0c b1 00 00 c3 27 00 e6 27 
+                      02 8d 28 00 91 28 6e 75 6c 6c 76 61 6c 6e 75 6d 
+                      62 65 72 73 70 61 79 6c 6f 61 64 62 6f 6f 6c 65 
+                      61 6e 73 6d 65 74 61 64 61 74 61 65 6d 70 74 79 
+                      5f 61 72 72 65 6d 70 74 79 5f 6f 62 6a 0b 00 45 
+                      00 05 00 00 05 01 00 05 ff ff 05 ff 00 05 80 ff 
+                      07 25 00 07 29 00 07 2d 00 07 31 00 09 35 00 09 
+                      3d 00 ff ff 00 00 a0 86 01 00 ff ff ff 7f 00 00 
+                      00 80 ff ff ff ff 00 00 00 00 ff e3 0b 54 02 00 
+                      00 00 90 4e 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 
+                      4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 
+                      4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 
+                      4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 
+                      4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 4d 
+                      [... 10134 more bytes]
+  [FIELD   5] Name  : doc2
+              Length: 20   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 00 00 02 00 00 00 06  00 00 00 02 00 00 00 00 
+                      00 00 27 fc 
+                      [EXTERNAL: space=2, page=6, version=2, len=10236]
+                      [LOB DATA (hex, 10236 bytes total)]:
+                      00 03 00 fb 27 19 00 05 00 1e 00 0a 00 28 00 0b 
+                      00 02 33 00 0c cc 00 0c de 27 69 74 65 6d 73 6c 
+                      61 72 67 65 5f 74 65 78 74 64 65 73 63 72 69 70 
+                      74 69 6f 6e 03 00 99 00 00 0d 00 00 3b 00 00 69 
+                      00 03 00 2e 00 19 00 02 00 1b 00 04 00 1f 00 06 
+                      00 05 01 00 0c 25 00 04 01 00 69 64 6e 61 6d 65 
+                      61 63 74 69 76 65 08 69 74 65 6d 5f 6f 6e 65 03 
+                      00 2e 00 19 00 02 00 1b 00 04 00 1f 00 06 00 05 
+                      02 00 0c 25 00 04 02 00 69 64 6e 61 6d 65 61 63 
+                      74 69 76 65 08 69 74 65 6d 5f 74 77 6f 03 00 30 
+                      00 19 00 02 00 1b 00 04 00 1f 00 06 00 05 03 00 
+                      0c 25 00 04 01 00 69 64 6e 61 6d 65 61 63 74 69 
+                      76 65 0a 69 74 65 6d 5f 74 68 72 65 65 90 4e 59 
+                      59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 
+                      59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 
+                      59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 
+                      [... 9980 more bytes]
+====================================================================================
+|  PAGE ANALYSIS RESULT                                                             |
+------------------------------------------------------------------------------------
+Total valid records count:                1
+Total valid records size:                 67 B
+                                            [Headers: 10 B]
+                                            [Bodies:  57 B]
+Valid records to page space ratio:        0.40894 %
+
+Total records with dropped columns count: 0
+Total instant dropped columns size:       0 B
+Dropped columns to page space ratio:      0.00000 %
+
+Total delete-marked records count:        0
+Total delete-marked records size:         0 B
+Delete-marked recs to page space ratio:   0.00000 %
+
+Total InnoDB internal space used:         142 B
+                                            [FIL HEADER     38 B]
+                                            [PAGE HEADER    36 B]
+                                            [FSEG HEADER    20 B]
+                                            [INFI + SUPRE   26 B]
+                                            [RECORD HEADERS 10 B]*
+                                            [PAGE DIRECTORY 4 B]
+                                            [FIL TRAILER    8 B]
+InnoDB internals to page space ratio:     0.86670 %
+
+Total free space:                         16185 B
+Free space ratio:                         98.78540 %

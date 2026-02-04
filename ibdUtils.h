@@ -595,6 +595,21 @@ void FetchAndDisplayExternalLob(uint32_t space_id, uint32_t page_no,
                                 LobOutputFormat format,
                                 bool show_versions, bool print);
 
+// Struct to hold info about an external field found in a record
+struct ExternalFieldInfo {
+  uint32_t field_index;      // field position in record (0-based)
+  std::string column_name;   // column name
+  std::string column_type;   // dd_column_type_utf8 (e.g. "json", "longblob")
+  bool is_json;              // true if Column::type() == Column::JSON
+  uint32_t space_id;
+  uint32_t page_no;          // LOB first page number
+  uint32_t version;
+  uint64_t ext_len;          // total external length
+};
+
+// Forward declaration for binary JSON decoder
+std::string JsonBinaryToString(const unsigned char* data, size_t len);
+
 // Index related
 constexpr uint32_t DICT_INDEX_SPATIAL_NODEPTR_SIZE = 1;
 

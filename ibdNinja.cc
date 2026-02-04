@@ -6,6 +6,7 @@
 #include "Index.h"
 #include "Column.h"
 #include "Record.h"
+#include "JsonBinary.h"
 
 #include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
@@ -20,6 +21,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <set>
 #include <sys/stat.h>
 #include <fstream>
 
@@ -326,7 +328,7 @@ void FetchAndDisplayExternalLob(uint32_t space_id, uint32_t page_no,
           show_len = g_lob_text_truncate_len;
         }
         ninja_pt(print, "\n                      [LOB DATA (hex, %" PRIu64
-                 " bytes total)]: ", fetched);
+                 " bytes total)]:\n                      ", fetched);
         for (uint32_t i = 0; i < show_len; i++) {
           ninja_pt(print, "%02x ", lob_data[i]);
           if ((i + 1) % 16 == 0 && i + 1 < show_len) {
@@ -391,6 +393,683 @@ void FetchAndDisplayExternalLob(uint32_t space_id, uint32_t page_no,
     ninja_pt(print, "\n                      "
              "[LOB: Unsupported page type %u (%s)]",
              page_type, PageType2String(page_type).c_str());
+  }
+}
+
+/* ------ Inspect Blob ------ */
+
+static void PrintLobChainVisualization(uint32_t first_page_no, bool is_json) {
+  unsigned char page_buf[UNIV_PAGE_SIZE_MAX];
+  unsigned char ver_buf[UNIV_PAGE_SIZE_MAX];
+
+  ssize_t bytes = ibdNinja::ReadPage(first_page_no, page_buf);
+  if (bytes != g_page_physical_size) {
+    ninja_error("Failed to read LOB first page: %u", first_page_no);
+    return;
+  }
+
+  if (PageGetType(page_buf) != FIL_PAGE_TYPE_LOB_FIRST) {
+    ninja_error("Page %u is not a LOB_FIRST page (type=%u)",
+                first_page_no, PageGetType(page_buf));
+    return;
+  }
+
+  LobFirstPageHeader hdr = ReadLobFirstPageHeader(page_buf);
+
+  printf("\n  [LOB CHAIN VISUALIZATION]\n");
+  printf("  LOB Header: version=%u, flags=%u, lob_version=%u, "
+         "data_len=%u, creator_trx=%" PRIu64 "\n",
+         hdr.version, hdr.flags, hdr.lob_version,
+         hdr.data_len, hdr.creator_trx_id);
+  printf("  Index list length: %u, Free list length: %u\n",
+         hdr.index_list.length, hdr.free_list.length);
+  printf("  ---\n");
+
+  FilAddr cur_addr = hdr.index_list.first;
+  uint32_t entry_no = 0;
+  uint32_t cached_page_no = first_page_no;
+  uint32_t pages_visited = 0;
+  uint32_t total_data_len = 0;
+  uint32_t n_data_pages = 0;
+
+  while (!cur_addr.is_null()) {
+    if (++pages_visited > LOB_MAX_PAGES_VISITED) {
+      printf("  ... (truncated, exceeded max pages limit)\n");
+      break;
+    }
+
+    if (cur_addr.page_no != cached_page_no) {
+      bytes = ibdNinja::ReadPage(cur_addr.page_no, page_buf);
+      if (bytes != g_page_physical_size) {
+        ninja_error("Failed to read LOB index page: %u", cur_addr.page_no);
+        break;
+      }
+      cached_page_no = cur_addr.page_no;
+    }
+
+    LobIndexEntry entry = ReadLobIndexEntry(page_buf + cur_addr.byte_offset);
+
+    const char* loc = (entry.data_page_no == first_page_no) ? "first" : "data";
+    printf("  [Entry #%u] page=%u(%s), len=%u, ver=%u, "
+           "creator_trx=%" PRIu64 ", modifier_trx=%" PRIu64 "\n",
+           entry_no, entry.data_page_no, loc, entry.data_len,
+           entry.lob_version, entry.creator_trx_id, entry.modifier_trx_id);
+
+    total_data_len += entry.data_len;
+    if (entry.data_page_no != first_page_no) {
+      n_data_pages++;
+    }
+
+    // For JSON fields: show version chains
+    if (is_json && entry.versions.length > 0) {
+      printf("    versions: v%u(current)", entry.lob_version);
+      FilAddr ver_addr = entry.versions.first;
+      uint32_t ver_cached_page_no = 0;
+      while (!ver_addr.is_null()) {
+        if (++pages_visited > LOB_MAX_PAGES_VISITED) break;
+        if (ver_addr.page_no != ver_cached_page_no) {
+          bytes = ibdNinja::ReadPage(ver_addr.page_no, ver_buf);
+          if (bytes != g_page_physical_size) break;
+          ver_cached_page_no = ver_addr.page_no;
+        }
+        LobIndexEntry old_entry = ReadLobIndexEntry(
+            ver_buf + ver_addr.byte_offset);
+        printf(" <-- v%u(page=%u,len=%u,trx=%" PRIu64 ")",
+               old_entry.lob_version, old_entry.data_page_no,
+               old_entry.data_len, old_entry.creator_trx_id);
+        ver_addr = old_entry.next;
+      }
+      printf("\n");
+    }
+
+    entry_no++;
+    cur_addr = entry.next;
+  }
+
+  printf("  ---\n");
+  printf("  Summary: %u entries, %u total data bytes, %u separate data pages\n",
+         entry_no, total_data_len, n_data_pages);
+
+  // Collect all visible version numbers for purge gap detection
+  if (is_json) {
+    std::set<uint32_t> visible_versions;
+    // Re-traverse to collect all version numbers
+    cur_addr = hdr.index_list.first;
+    cached_page_no = first_page_no;
+    pages_visited = 0;
+    // Re-read first page since page_buf may have been overwritten
+    ibdNinja::ReadPage(first_page_no, page_buf);
+    while (!cur_addr.is_null()) {
+      if (++pages_visited > LOB_MAX_PAGES_VISITED) break;
+      if (cur_addr.page_no != cached_page_no) {
+        ibdNinja::ReadPage(cur_addr.page_no, page_buf);
+        cached_page_no = cur_addr.page_no;
+      }
+      LobIndexEntry e = ReadLobIndexEntry(page_buf + cur_addr.byte_offset);
+      visible_versions.insert(e.lob_version);
+      if (e.versions.length > 0) {
+        FilAddr va = e.versions.first;
+        uint32_t vc = 0;
+        while (!va.is_null()) {
+          if (++pages_visited > LOB_MAX_PAGES_VISITED) break;
+          if (va.page_no != vc) {
+            ibdNinja::ReadPage(va.page_no, ver_buf);
+            vc = va.page_no;
+          }
+          LobIndexEntry oe = ReadLobIndexEntry(ver_buf + va.byte_offset);
+          visible_versions.insert(oe.lob_version);
+          va = oe.next;
+        }
+      }
+      cur_addr = e.next;
+    }
+
+    // Version gap detection: check for missing versions in [1..hdr.lob_version]
+    std::vector<uint32_t> missing;
+    for (uint32_t v = 1; v <= hdr.lob_version; v++) {
+      if (visible_versions.find(v) == visible_versions.end()) {
+        missing.push_back(v);
+      }
+    }
+    if (!missing.empty()) {
+      printf("  [PURGE DETECTED] Missing versions: ");
+      for (size_t i = 0; i < missing.size(); i++) {
+        if (i > 0) printf(", ");
+        printf("%u", missing[i]);
+      }
+      printf(" (out of 1..%u)\n", hdr.lob_version);
+    }
+
+    // Free list display
+    if (hdr.free_list.length > 0) {
+      printf("  Free list (%u entries):\n", hdr.free_list.length);
+      FilAddr free_addr = hdr.free_list.first;
+      uint32_t free_cached_page_no = 0;
+      uint32_t free_idx = 0;
+      pages_visited = 0;
+      while (!free_addr.is_null()) {
+        if (++pages_visited > LOB_MAX_PAGES_VISITED) break;
+        if (free_addr.page_no != free_cached_page_no) {
+          ibdNinja::ReadPage(free_addr.page_no, ver_buf);
+          free_cached_page_no = free_addr.page_no;
+        }
+        LobIndexEntry fe = ReadLobIndexEntry(ver_buf + free_addr.byte_offset);
+        printf("    [Free #%u] page=%u, offset=%u, ver=%u, len=%u, "
+               "data_page=%u\n",
+               free_idx, free_addr.page_no, free_addr.byte_offset,
+               fe.lob_version, fe.data_len, fe.data_page_no);
+        free_addr = fe.next;
+        free_idx++;
+      }
+    }
+  }
+}
+
+static uint64_t FetchLobByVersion(uint32_t first_page_no,
+                                  uint32_t target_version,
+                                  unsigned char* dest_buf,
+                                  bool* error) {
+  *error = false;
+  unsigned char page_buf[UNIV_PAGE_SIZE_MAX];
+  unsigned char data_buf[UNIV_PAGE_SIZE_MAX];
+  unsigned char ver_buf[UNIV_PAGE_SIZE_MAX];
+
+  ssize_t bytes = ibdNinja::ReadPage(first_page_no, page_buf);
+  if (bytes != g_page_physical_size) {
+    ninja_error("Failed to read LOB first page: %u", first_page_no);
+    *error = true;
+    return 0;
+  }
+
+  if (PageGetType(page_buf) != FIL_PAGE_TYPE_LOB_FIRST) {
+    ninja_error("Expected LOB_FIRST page type (24), got %u",
+                PageGetType(page_buf));
+    *error = true;
+    return 0;
+  }
+
+  LobFirstPageHeader hdr = ReadLobFirstPageHeader(page_buf);
+
+  uint32_t first_page_data_offset = FIL_PAGE_DATA + LOB_FIRST_PAGE_INDEX_BEGIN +
+                                    LOB_FIRST_PAGE_N_ENTRIES * LOB_INDEX_ENTRY_SIZE;
+
+  FilAddr cur_addr = hdr.index_list.first;
+  uint64_t bytes_copied = 0;
+  uint32_t pages_visited = 0;
+  uint32_t cached_index_page_no = first_page_no;
+
+  while (!cur_addr.is_null()) {
+    if (++pages_visited > LOB_MAX_PAGES_VISITED) {
+      ninja_error("LOB traversal exceeded max pages limit");
+      *error = true;
+      break;
+    }
+    if (bytes_copied > LOB_MAX_FETCH_SIZE) {
+      ninja_error("LOB data exceeded max fetch size");
+      *error = true;
+      break;
+    }
+
+    if (cur_addr.page_no != cached_index_page_no) {
+      bytes = ibdNinja::ReadPage(cur_addr.page_no, page_buf);
+      if (bytes != g_page_physical_size) {
+        *error = true;
+        break;
+      }
+      cached_index_page_no = cur_addr.page_no;
+    }
+
+    LobIndexEntry entry = ReadLobIndexEntry(page_buf + cur_addr.byte_offset);
+
+    // Determine which entry to use for this position
+    LobIndexEntry use_entry = entry;
+    bool found = false;
+
+    if (entry.lob_version == target_version) {
+      found = true;
+      use_entry = entry;
+    } else if (entry.lob_version > target_version &&
+               entry.versions.length > 0) {
+      // Search the version chain for matching or closest version <= target
+      FilAddr ver_addr = entry.versions.first;
+      uint32_t ver_cached_page_no = 0;
+      uint32_t best_version = 0;
+      bool have_best = false;
+
+      while (!ver_addr.is_null()) {
+        if (++pages_visited > LOB_MAX_PAGES_VISITED) break;
+        if (ver_addr.page_no != ver_cached_page_no) {
+          bytes = ibdNinja::ReadPage(ver_addr.page_no, ver_buf);
+          if (bytes != g_page_physical_size) break;
+          ver_cached_page_no = ver_addr.page_no;
+        }
+        LobIndexEntry old_entry = ReadLobIndexEntry(
+            ver_buf + ver_addr.byte_offset);
+        if (old_entry.lob_version == target_version) {
+          use_entry = old_entry;
+          found = true;
+          break;
+        }
+        if (old_entry.lob_version <= target_version &&
+            (!have_best || old_entry.lob_version > best_version)) {
+          best_version = old_entry.lob_version;
+          use_entry = old_entry;
+          have_best = true;
+        }
+        ver_addr = old_entry.next;
+      }
+      if (!found && have_best) {
+        found = true;
+      }
+    } else {
+      // Current entry's version <= target, use it
+      // (highest version <= target_version)
+      found = true;
+      use_entry = entry;
+    }
+
+    if (!found) {
+      // No suitable version found for this entry, skip
+      cur_addr = entry.next;
+      continue;
+    }
+
+    // Read the data for this entry
+    const unsigned char* data_src = nullptr;
+    uint32_t data_len = use_entry.data_len;
+
+    if (use_entry.data_page_no == first_page_no) {
+      if (cached_index_page_no != first_page_no) {
+        bytes = ibdNinja::ReadPage(first_page_no, data_buf);
+        if (bytes != g_page_physical_size) {
+          *error = true;
+          break;
+        }
+        data_src = data_buf + first_page_data_offset;
+      } else {
+        data_src = page_buf + first_page_data_offset;
+      }
+    } else {
+      bytes = ibdNinja::ReadPage(use_entry.data_page_no, data_buf);
+      if (bytes != g_page_physical_size) {
+        *error = true;
+        break;
+      }
+      uint16_t data_page_type = PageGetType(data_buf);
+      if (data_page_type != FIL_PAGE_TYPE_LOB_DATA) {
+        ninja_error("Expected LOB_DATA page type (23), got %u on page %u",
+                    data_page_type, use_entry.data_page_no);
+        *error = true;
+        break;
+      }
+      data_src = data_buf + FIL_PAGE_DATA + LOB_DATA_PAGE_DATA_BEGIN;
+    }
+
+    if (dest_buf != nullptr) {
+      memcpy(dest_buf + bytes_copied, data_src, data_len);
+    }
+    bytes_copied += data_len;
+
+    cur_addr = entry.next;
+  }
+
+  return bytes_copied;
+}
+
+// Collect all distinct lob_version values visible in the chain.
+// If max_lob_version is non-null, stores hdr.lob_version (the highest version
+// ever assigned, which may be higher than any visible version if purge ran).
+static void CollectLobVersions(uint32_t first_page_no,
+                               std::vector<uint32_t>* versions,
+                               uint32_t* max_lob_version = nullptr) {
+  unsigned char page_buf[UNIV_PAGE_SIZE_MAX];
+  unsigned char ver_buf[UNIV_PAGE_SIZE_MAX];
+
+  ssize_t bytes = ibdNinja::ReadPage(first_page_no, page_buf);
+  if (bytes != g_page_physical_size) return;
+  if (PageGetType(page_buf) != FIL_PAGE_TYPE_LOB_FIRST) return;
+
+  LobFirstPageHeader hdr = ReadLobFirstPageHeader(page_buf);
+  if (max_lob_version) {
+    *max_lob_version = hdr.lob_version;
+  }
+
+  FilAddr cur_addr = hdr.index_list.first;
+  uint32_t cached_page_no = first_page_no;
+  uint32_t pages_visited = 0;
+  std::set<uint32_t> ver_set;
+
+  while (!cur_addr.is_null()) {
+    if (++pages_visited > LOB_MAX_PAGES_VISITED) break;
+    if (cur_addr.page_no != cached_page_no) {
+      bytes = ibdNinja::ReadPage(cur_addr.page_no, page_buf);
+      if (bytes != g_page_physical_size) break;
+      cached_page_no = cur_addr.page_no;
+    }
+    LobIndexEntry entry = ReadLobIndexEntry(page_buf + cur_addr.byte_offset);
+    ver_set.insert(entry.lob_version);
+
+    if (entry.versions.length > 0) {
+      FilAddr ver_addr = entry.versions.first;
+      uint32_t ver_cached_page_no = 0;
+      while (!ver_addr.is_null()) {
+        if (++pages_visited > LOB_MAX_PAGES_VISITED) break;
+        if (ver_addr.page_no != ver_cached_page_no) {
+          bytes = ibdNinja::ReadPage(ver_addr.page_no, ver_buf);
+          if (bytes != g_page_physical_size) break;
+          ver_cached_page_no = ver_addr.page_no;
+        }
+        LobIndexEntry old_entry = ReadLobIndexEntry(
+            ver_buf + ver_addr.byte_offset);
+        ver_set.insert(old_entry.lob_version);
+        ver_addr = old_entry.next;
+      }
+    }
+
+    cur_addr = entry.next;
+  }
+
+  versions->assign(ver_set.begin(), ver_set.end());
+}
+
+void ibdNinja::InspectBlob(uint32_t page_no, uint32_t rec_no) {
+  if (rec_no == 0) {
+    ninja_error("Record number must be >= 1 (1-based)");
+    return;
+  }
+
+  // Step 1: Read the page and validate
+  unsigned char buf_unalign[2 * UNIV_PAGE_SIZE_MAX];
+  memset(buf_unalign, 0, 2 * UNIV_PAGE_SIZE_MAX);
+  unsigned char* buf = static_cast<unsigned char*>(
+                    ut_align(buf_unalign, g_page_physical_size));
+
+  ssize_t bytes = ReadPage(page_no, buf);
+  if (bytes != g_page_physical_size) {
+    ninja_error("Failed to read page: %u", page_no);
+    return;
+  }
+
+  uint16_t type = PageGetType(buf);
+  if (type != FIL_PAGE_INDEX) {
+    ninja_error("Page %u is not an INDEX page (type=%u: %s)",
+                page_no, type, PageType2String(type).c_str());
+    return;
+  }
+
+  uint32_t page_level = ReadFrom2B(buf + PAGE_HEADER + PAGE_LEVEL);
+  if (page_level != 0) {
+    ninja_error("Page %u is not a leaf page (level=%u)", page_no, page_level);
+    return;
+  }
+
+  uint32_t n_recs = ReadFrom2B(buf + PAGE_HEADER + PAGE_N_RECS);
+  if (rec_no > n_recs) {
+    ninja_error("Record number %u exceeds page record count %u",
+                rec_no, n_recs);
+    return;
+  }
+
+  uint64_t index_id = ReadFrom8B(buf + PAGE_HEADER + PAGE_INDEX_ID);
+  Index* index = GetIndex(index_id);
+  if (index == nullptr) {
+    ninja_error("Unable to find index %" PRIu64 " in loaded indexes", index_id);
+    return;
+  }
+
+  // Walk the record chain to find the target record
+  unsigned char* current_rec = GetFirstUserRec(buf);
+  if (current_rec == nullptr) {
+    ninja_error("Failed to get first user record on page %u", page_no);
+    return;
+  }
+
+  bool corrupt = false;
+  for (uint32_t i = 1; i < rec_no && current_rec != nullptr; i++) {
+    current_rec = GetNextRecInPage(current_rec, buf, &corrupt);
+    if (corrupt) {
+      ninja_error("Corrupt record chain on page %u", page_no);
+      return;
+    }
+  }
+
+  if (current_rec == nullptr) {
+    ninja_error("Could not reach record %u on page %u", rec_no, page_no);
+    return;
+  }
+
+  printf("Inspecting page %u, record %u\n", page_no, rec_no);
+
+  // Create Record object and compute offsets
+  Record rec(current_rec, index);
+  uint32_t* offsets = rec.GetColumnOffsets();
+  if (offsets == nullptr) {
+    ninja_error("Failed to compute column offsets for record %u", rec_no);
+    return;
+  }
+
+  // Step 2: Scan for external fields
+  uint32_t n_fields = index->GetNFields();
+  // offsets layout: offsets[0]=n_alloc, offsets[1]=n_fields,
+  // offsets[2..]=RecOffsBase, RecOffsBase[0]=header, RecOffsBase[1..n]=field ends
+  uint32_t* offs_base = offsets + REC_OFFS_HEADER_SIZE;
+
+  std::vector<ExternalFieldInfo> ext_fields;
+
+  for (uint32_t i = 0; i < n_fields; i++) {
+    uint32_t len = offs_base[i + 1];
+    uint32_t end_pos = (len & REC_OFFS_MASK);
+
+    if (len & REC_OFFS_EXTERNAL) {
+      const unsigned char* ext_ref = &current_rec[end_pos - 20];
+      ExternalFieldInfo info;
+      info.field_index = i;
+      IndexColumn* icol = index->GetPhysicalField(i);
+      info.column_name = icol->column()->name();
+      info.column_type = icol->column()->dd_column_type_utf8();
+      info.is_json = (icol->column()->type() == Column::JSON);
+      info.space_id = ReadFrom4B(ext_ref + BTR_EXTERN_SPACE_ID);
+      info.page_no = ReadFrom4B(ext_ref + BTR_EXTERN_PAGE_NO);
+      info.version = ReadFrom4B(ext_ref + BTR_EXTERN_VERSION);
+      info.ext_len = ReadFrom8B(ext_ref + BTR_EXTERN_LEN) & 0x1FFFFFFFFFULL;
+      ext_fields.push_back(info);
+    }
+  }
+
+  if (ext_fields.empty()) {
+    printf("No external BLOB fields found in this record.\n");
+    return;
+  }
+
+  // Step 2b: Select field
+  size_t selected = 0;
+  if (ext_fields.size() == 1) {
+    printf("Found 1 external field: [%s] (%s), page=%u, len=%" PRIu64 "\n",
+           ext_fields[0].column_name.c_str(),
+           ext_fields[0].column_type.c_str(),
+           ext_fields[0].page_no,
+           ext_fields[0].ext_len);
+    selected = 0;
+  } else {
+    printf("Found %zu external fields:\n", ext_fields.size());
+    for (size_t i = 0; i < ext_fields.size(); i++) {
+      printf("  [%zu] %s (%s), page=%u, len=%" PRIu64 "%s\n",
+             i + 1,
+             ext_fields[i].column_name.c_str(),
+             ext_fields[i].column_type.c_str(),
+             ext_fields[i].page_no,
+             ext_fields[i].ext_len,
+             ext_fields[i].is_json ? " [JSON]" : "");
+    }
+    printf("Select field [1-%zu]: ", ext_fields.size());
+    fflush(stdout);
+    char input_buf[64];
+    if (fgets(input_buf, sizeof(input_buf), stdin) == nullptr) {
+      return;
+    }
+    uint32_t choice = 0;
+    if (sscanf(input_buf, "%u", &choice) != 1 ||
+        choice < 1 || choice > ext_fields.size()) {
+      ninja_error("Invalid selection");
+      return;
+    }
+    selected = choice - 1;
+  }
+
+  const ExternalFieldInfo& field = ext_fields[selected];
+  printf("\nSelected: %s (%s)%s\n",
+         field.column_name.c_str(), field.column_type.c_str(),
+         field.is_json ? " [JSON]" : "");
+
+  // Step 3: Visualize the LOB chain
+  PrintLobChainVisualization(field.page_no, field.is_json);
+
+  // Step 4: Interactive action menu
+  while (true) {
+    printf("\nActions:\n");
+    printf("  [1] Print full field value (current version)\n");
+    if (field.is_json) {
+      printf("  [2] Print full field value for a specific version (JSON only)\n");
+    }
+    printf("  [0] Exit\n");
+    printf("Choice: ");
+    fflush(stdout);
+
+    char input_buf[64];
+    if (fgets(input_buf, sizeof(input_buf), stdin) == nullptr) {
+      break;
+    }
+    int action = -1;
+    if (sscanf(input_buf, "%d", &action) != 1) {
+      printf("Invalid input.\n");
+      continue;
+    }
+
+    if (action == 0) {
+      break;
+    } else if (action == 1) {
+      // Print current version
+      uint64_t fetch_len = field.ext_len;
+      if (fetch_len > LOB_MAX_FETCH_SIZE) {
+        fetch_len = LOB_MAX_FETCH_SIZE;
+      }
+      unsigned char* lob_data = new unsigned char[fetch_len + 1]();
+      bool error = false;
+      uint64_t fetched = FetchModernUncompLob(field.page_no, field.ext_len,
+                                              lob_data, &error);
+      if (error) {
+        printf("Error fetching LOB data.\n");
+        delete[] lob_data;
+        continue;
+      }
+
+      if (field.is_json) {
+        std::string json_str = JsonBinaryToString(lob_data, fetched);
+        printf("\n[JSON value (%" PRIu64 " bytes binary -> %zu chars decoded)]:\n",
+               fetched, json_str.size());
+        printf("%s\n", json_str.c_str());
+      } else {
+        printf("\n[LOB DATA (hex, %" PRIu64 " bytes)]:\n", fetched);
+        for (uint64_t i = 0; i < fetched; i++) {
+          printf("%02x ", lob_data[i]);
+          if ((i + 1) % 16 == 0) {
+            printf("\n");
+          }
+        }
+        if (fetched % 16 != 0) printf("\n");
+      }
+      delete[] lob_data;
+
+    } else if (action == 2 && field.is_json) {
+      // Print specific version
+      std::vector<uint32_t> versions;
+      uint32_t max_lob_ver = 0;
+      CollectLobVersions(field.page_no, &versions, &max_lob_ver);
+
+      if (versions.empty()) {
+        printf("No versions found.\n");
+        continue;
+      }
+
+      printf("Available versions: ");
+      for (size_t i = 0; i < versions.size(); i++) {
+        if (i > 0) printf(", ");
+        printf("%u", versions[i]);
+      }
+      printf("\nEnter version number: ");
+      fflush(stdout);
+
+      char ver_buf[64];
+      if (fgets(ver_buf, sizeof(ver_buf), stdin) == nullptr) break;
+      uint32_t target_ver = 0;
+      if (sscanf(ver_buf, "%u", &target_ver) != 1) {
+        printf("Invalid version number.\n");
+        continue;
+      }
+
+      // Check if version exists
+      bool ver_found = false;
+      for (uint32_t v : versions) {
+        if (v == target_ver) { ver_found = true; break; }
+      }
+      if (!ver_found) {
+        printf("[WARNING] Version %u is not available.\n", target_ver);
+        if (target_ver <= max_lob_ver) {
+          printf("This version was likely purged by InnoDB.\n");
+        } else {
+          printf("Version %u exceeds max assigned version %u.\n",
+                 target_ver, max_lob_ver);
+        }
+        printf("Available versions: ");
+        for (size_t i = 0; i < versions.size(); i++) {
+          if (i > 0) printf(", ");
+          printf("%u", versions[i]);
+        }
+        // Find closest available version
+        uint32_t closest = versions[0];
+        uint32_t min_diff = (target_ver > closest)
+            ? target_ver - closest : closest - target_ver;
+        for (uint32_t v : versions) {
+          uint32_t diff = (target_ver > v) ? target_ver - v : v - target_ver;
+          if (diff < min_diff) {
+            min_diff = diff;
+            closest = v;
+          }
+        }
+        printf("\nWould you like to see version %u instead? [y/N]: ", closest);
+        fflush(stdout);
+        char yn_buf[64];
+        if (fgets(yn_buf, sizeof(yn_buf), stdin) == nullptr) break;
+        if (yn_buf[0] == 'y' || yn_buf[0] == 'Y') {
+          target_ver = closest;
+        } else {
+          continue;
+        }
+      }
+
+      uint64_t fetch_len = field.ext_len;
+      if (fetch_len > LOB_MAX_FETCH_SIZE) {
+        fetch_len = LOB_MAX_FETCH_SIZE;
+      }
+      unsigned char* lob_data = new unsigned char[fetch_len + 1]();
+      bool error = false;
+      uint64_t fetched = FetchLobByVersion(field.page_no, target_ver,
+                                           lob_data, &error);
+      if (error) {
+        printf("Error fetching LOB data for version %u.\n", target_ver);
+        delete[] lob_data;
+        continue;
+      }
+
+      std::string json_str = JsonBinaryToString(lob_data, fetched);
+      printf("\n[JSON value v%u (%" PRIu64 " bytes binary -> %zu chars decoded)]:\n",
+             target_ver, fetched, json_str.size());
+      printf("%s\n", json_str.c_str());
+      delete[] lob_data;
+
+    } else {
+      printf("Invalid choice.\n");
+    }
   }
 }
 

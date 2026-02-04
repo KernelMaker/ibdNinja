@@ -70,6 +70,7 @@ class ibdNinja {
                  bool print,
                  bool print_record);
   bool ParseIndex(uint32_t index_id);
+  void InspectBlob(uint32_t page_no, uint32_t rec_no);
 
   bool ParseTable(uint32_t table_id);
 

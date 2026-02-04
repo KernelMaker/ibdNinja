@@ -12,7 +12,9 @@ MySQL 数据文件(.ibd)解析、分析工具（C++)
 
 **3. 重点介绍：解析包含instant add/drop columns的record示例**
 
-**4. 限制**
+**4. 重点介绍：检查JSON LOB版本链**
+
+**5. 限制**
 
 
 
@@ -56,7 +58,15 @@ MySQL 数据文件(.ibd)解析、分析工具（C++)
 ### 4. 打印索引每层的leftmost page number
 支持打印指定索引每一层的leftmost page number，方便用户通过他们对该索引逐level逐page地手动分析，或打印所有记录。
 
-### 5. [TODO] 修复ibd文件损坏
+### 5. 检查外部存储的BLOB/JSON字段（--inspect-blob, -I PAGE,REC）
+
+对于包含外部存储字段（BLOB、TEXT、JSON等）的记录，ibdNinja可以检查LOB（Large Object）存储结构：
+
+- **LOB链可视化**：显示所有LOB索引条目、数据页位置、版本号及事务ID。
+- **版本链遍历**（JSON字段）：展示由`JSON_SET()`部分更新创建的完整版本历史，允许查看JSON文档的任意历史版本。
+- **Purge检测**：检测旧版本是否已被InnoDB清除，报告缺失的版本号，显示回收条目的free list，并提供交互式回退到最近可用版本的选项。
+
+### 6. [TODO] 修复ibd文件损坏
 
 因为ibdNinja已经支持解析record，所以对于Index page损坏的ibd文件，可以很容易的从page中删除损坏的records或者从Index中删除损坏的pages，尝试最大程度修复文件
 
@@ -145,6 +155,23 @@ MySQL 数据文件(.ibd)解析、分析工具（C++)
 可以看到该索引有2层，level 1的leftmost page no是82，level 0（leaf level）的leftmost page no的161，之后我们就可以使用前面展示的--parse-page, -p PAGE_NO来打印这些page的详细信息，并从中拿到Slibling pages no，方便接着解析其左，右page，完成整个Index的遍历
 
 ***注：--parse-page, -p PAGE_NO 会打印page中的所有record详细信息，这通常会很多，如果想跳过打印record信息，可以额外使用--no-print-record, -n来跳过，如-p 161 -n***
+
+### 7. 检查外部存储的BLOB/JSON字段（--inspect-blob, -I PAGE,REC）
+
+对于包含外部存储字段的记录，使用`--inspect-blob`来检查LOB存储结构和版本历史。首先使用`--parse-page`（`-p`）找到叶子页并确定记录号（页内从1开始的位置），然后传给`-I`：
+
+```
+./ibdNinja -f test.ibd -I 4,1
+```
+
+该工具将：
+1. 列出记录中所有的外部存储字段并让你选择一个。
+2. 显示**LOB链可视化**，包括索引条目、数据页、版本链和free list条目。
+3. 提供交互菜单：
+   - **[1]** 打印当前版本的字段值（JSON会被解码，其他类型以十六进制显示）。
+   - **[2]** 打印指定的历史版本（仅JSON字段）——适用于检查由`JSON_SET()`部分更新创建的LOB版本链。
+
+如果请求的版本已被InnoDB purge清除，工具会检测到并提供显示最近可用版本的选项。
 
 # 3. 重点介绍：解析包含instant add/drop columns的record示例
 
@@ -236,7 +263,45 @@ INSERT INTO ninja_tbl values (3, NOW(), NOW());
 
 
 
-# 4. 限制
+# 4. 重点介绍：检查JSON LOB版本链
+
+当MySQL对外部存储的JSON列执行`JSON_SET()`部分更新时，InnoDB会创建**LOB版本链**——LOB索引条目的链表，保留数据的历史版本。ibdNinja可以遍历这些版本链来展示JSON文档的完整历史。
+
+### Purge检测
+
+如果没有事务持有read view，InnoDB的purge线程会清理旧的LOB版本条目。ibdNinja通过比较可见版本与LOB header中存储的最大分配版本号来检测这种情况：
+
+```
+[PURGE DETECTED] Missing versions: 1, 2, 3 (out of 1..4)
+Free list (9 entries):
+  [Free #0] page=5, offset=216, ver=3, len=0, data_page=4294967295
+  [Free #1] page=5, offset=96, ver=1, len=0, data_page=4294967295
+  ...
+```
+
+当你请求一个已被purge的版本时，ibdNinja会给出警告并提供显示最近可用版本的选项：
+
+```
+[WARNING] Version 1 is not available.
+This version was likely purged by InnoDB.
+Available versions: 4
+Would you like to see version 4 instead? [y/N]:
+```
+
+### 多条目LOB
+
+对于大型JSON文档（>16KB），数据跨越多个LOB索引条目。对文档不同部分的部分更新会在不同条目上创建版本链，ibdNinja会将它们全部可视化：
+
+```
+[Entry #0] page=6(data), len=12024, ver=4, ...
+  versions: v4(current) <-- v2(page=7,len=12024,...) <-- v1(page=8,len=12024,...)
+[Entry #1] page=9(data), len=12024, ver=1, ...
+[Entry #2] page=10(data), len=12024, ver=3, ...
+  versions: v3(current) <-- v1(page=11,len=12024,...)
+[Entry #3] page=12(data), len=12034, ver=1, ...
+```
+
+# 5. 限制
 
 圣诞假期梭的第一版，所以存在一些功能局限，也可能还有bug（欢迎提Issue）：
 

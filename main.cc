@@ -38,6 +38,8 @@ void Usage() {
                   "raw LOB file output (default: ./blobs/)\n");
   fprintf(stdout, "  --lob-versions, -B                        Show LOB version "
                   "history for external fields\n");
+  fprintf(stdout, "  --inspect-blob, -I PAGE_NO,REC_NO         Interactive BLOB "
+                  "inspection for a specific record\n");
 }
 int main(int argc, char* argv[]) {
   if (argc < 2) {
@@ -59,6 +61,7 @@ int main(int argc, char* argv[]) {
     {"blob-truncate", required_argument, 0, 0x100},
     {"blob-output-dir", required_argument, 0, 0x101},
     {"lob-versions", no_argument, 0, 'B'},
+    {"inspect-blob", required_argument, 0, 'I'},
     {0, 0, 0, 0}  // End of options
   };
 
@@ -73,9 +76,12 @@ int main(int argc, char* argv[]) {
   uint32_t index_id = ibd_ninja::FIL_NULL;
   uint32_t page_no = ibd_ninja::FIL_NULL;
   bool print_record = true;
+  bool inspect_blob = false;
+  uint32_t inspect_page_no = 0;
+  uint32_t inspect_rec_no = 0;
 
   while ((opt = getopt_long(argc,
-                argv, "halvf:e:t:i:p:nb:B", options, &option_index)) != -1) {
+                argv, "halvf:e:t:i:p:nb:BI:", options, &option_index)) != -1) {
     switch (opt) {
       case 'h':
         ibd_ninja::ibdNinja::PrintName();
@@ -171,6 +177,28 @@ int main(int argc, char* argv[]) {
       case 'B':
         ibd_ninja::g_lob_show_version_history = true;
         break;
+      case 'I': {
+          std::string arg(optarg);
+          size_t comma = arg.find(',');
+          if (comma == std::string::npos) {
+            fprintf(stderr, "Invalid format for --inspect-blob. "
+                    "Use: -I PAGE_NO,REC_NO\n");
+            return 1;
+          }
+          std::string page_str = arg.substr(0, comma);
+          std::string rec_str = arg.substr(comma + 1);
+          if (!std::all_of(page_str.begin(), page_str.end(), ::isdigit) ||
+              !std::all_of(rec_str.begin(), rec_str.end(), ::isdigit) ||
+              page_str.empty() || rec_str.empty()) {
+            fprintf(stderr, "Invalid format for --inspect-blob. "
+                    "Use: -I PAGE_NO,REC_NO\n");
+            return 1;
+          }
+          inspect_blob = true;
+          inspect_page_no = std::stoul(page_str);
+          inspect_rec_no = std::stoul(rec_str);
+        }
+        break;
       case '?':
         return 1;
       default:
@@ -199,6 +227,8 @@ int main(int argc, char* argv[]) {
       ninja->ParseTable(table_id);
     } else if (index_id != ibd_ninja::FIL_NULL) {
       ninja->ParseIndex(index_id);
+    } else if (inspect_blob) {
+      ninja->InspectBlob(inspect_page_no, inspect_rec_no);
     } else if (page_no != ibd_ninja::FIL_NULL) {
       ninja->ParsePage(page_no, nullptr, true, print_record);
     } else {

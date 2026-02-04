@@ -11,7 +11,9 @@ A powerful C++ tool for parsing and analyzing MySQL (.ibd) data files
 
 **3. Highlight: Parsing Records with Instant Add/Drop Columns**
 
-**4. Limitations**
+**4. Highlight: Inspecting JSON LOB Version Chains**
+
+**5. Limitations**
 
 
 
@@ -64,7 +66,15 @@ Powered by its record parsing capabilities, ibdNinja enables comprehensive data 
 
 Allows users to print the leftmost page number of each level for a specified index, making it easier to manually traverse and print every record in the index page by page.
 
-### 5. [TODO] Repairing Corrupted ibd Files
+### 5. Inspecting External BLOB/JSON Fields (`--inspect-blob`, `-I PAGE,REC`)
+
+For records containing externally stored fields (BLOB, TEXT, JSON, etc.), ibdNinja can inspect the LOB (Large Object) storage structure:
+
+- **LOB chain visualization**: Shows all LOB index entries, data page locations, version numbers, and transaction IDs.
+- **Version chain traversal** (JSON fields): Displays the full version history created by `JSON_SET()` partial updates, allowing you to view any historical version of a JSON document.
+- **Purge detection**: Detects when old LOB versions have been purged by InnoDB, reports missing version numbers, displays the free list of recycled entries, and offers interactive fallback to the closest available version.
+
+### 6. [TODO] Repairing Corrupted ibd Files
 
 With ibdNinja's capability to parse records, it is possible to address ibd files with corrupted index pages. By removing damaged records from pages or excluding corrupted pages from indexes, the tool can attempt to recover the file to the greatest extent possible.
 
@@ -176,6 +186,22 @@ You can then use the `--parse-page` (`-p PAGE_NO`) command to print detailed inf
 
 ***Note:*** To skip printing record details for a page (e.g., to avoid excessive output), use the `--no-print-record` (`-n`) option along with `-p`, as in:`-p 161 -n`
 
+### 7. Inspect External BLOB/JSON Fields (`--inspect-blob`, `-I PAGE,REC`)
+
+For records with externally stored fields (BLOB, TEXT, JSON), use `--inspect-blob` to examine the LOB storage structure and version history. First use `--parse-page` (`-p`) to find the leaf page and identify the record number (1-based position in the page), then pass them to `-I`:
+
+```
+./ibdNinja -f test.ibd -I 4,1
+```
+
+The tool will:
+1. List all external fields in the record and let you select one.
+2. Display the **LOB chain visualization** showing index entries, data pages, version chains, and free list entries.
+3. Offer an interactive menu to:
+   - **[1]** Print the current version of the field (JSON is decoded, others shown as hex).
+   - **[2]** Print a specific historical version (JSON fields only) — useful for inspecting LOB version chains created by `JSON_SET()` partial updates.
+
+If a requested version has been purged by InnoDB, the tool detects this and offers to show the closest available version instead.
 
 <a name="third-section"></a>
 # 3. Highlight: Parsing Records with Instant Add/Drop Columns
@@ -269,7 +295,45 @@ Similarly, if the page contains deleted-marked records, their size and percentag
 
 These statistics are not only available at the page level but can also be aggregated at the index level using the `--analyze-index` (`-i INDEX_ID`) command.
 
-# 4. Limitations
+# 4. Highlight: Inspecting JSON LOB Version Chains
+
+When MySQL performs `JSON_SET()` partial updates on externally stored JSON columns, InnoDB creates **LOB version chains** — linked lists of LOB index entries that preserve previous versions of the data. ibdNinja can traverse these version chains to show the complete history of a JSON document.
+
+### Purge Detection
+
+If no transaction holds a read view, InnoDB's purge thread will clean up old LOB version entries. ibdNinja detects this by comparing visible versions against the maximum assigned version number stored in the LOB header:
+
+```
+[PURGE DETECTED] Missing versions: 1, 2, 3 (out of 1..4)
+Free list (9 entries):
+  [Free #0] page=5, offset=216, ver=3, len=0, data_page=4294967295
+  [Free #1] page=5, offset=96, ver=1, len=0, data_page=4294967295
+  ...
+```
+
+When you request a purged version, ibdNinja warns you and offers to show the closest available version:
+
+```
+[WARNING] Version 1 is not available.
+This version was likely purged by InnoDB.
+Available versions: 4
+Would you like to see version 4 instead? [y/N]:
+```
+
+### Multi-Entry LOB
+
+For large JSON documents (>16KB), the data spans multiple LOB index entries. Partial updates to different parts of the document create version chains on different entries, and ibdNinja visualizes all of them:
+
+```
+[Entry #0] page=6(data), len=12024, ver=4, ...
+  versions: v4(current) <-- v2(page=7,len=12024,...) <-- v1(page=8,len=12024,...)
+[Entry #1] page=9(data), len=12024, ver=1, ...
+[Entry #2] page=10(data), len=12024, ver=3, ...
+  versions: v3(current) <-- v1(page=11,len=12024,...)
+[Entry #3] page=12(data), len=12034, ver=1, ...
+```
+
+# 5. Limitations
 
 This is the first version I developed during the Christmas holiday, so there are some functional limitations and potential bugs (feel free to raise issues):
 

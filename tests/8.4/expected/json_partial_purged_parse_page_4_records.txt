@@ -1,0 +1,120 @@
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/json_partial_purged.ibd
+    File size:             163840 B
+    Space id:              2
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 10
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     1 indexes.
+====================================================================================
+
+====================================================================================
+|  PAGE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    Page no:           4
+    Slibling pages no: NULL [4] NULL
+    Space id:          2
+    Page type:         INDEX
+    Lsn:               29719210
+    FLush lsn:         0
+    -------------------
+    Page level:        0
+    Page size:         [logical: 16384 B], [physical: 16384 B]
+    Number of records: 1
+    Index id:          158
+    Belongs to:        [table: ibdninja_test.json_partial_purged], [index: PRIMARY]
+    Row format:        DYNAMIC
+    Number dir slots:  2
+    Heap top:          165
+    Number of heap:    3
+    First free rec:    0
+    Garbage:           0 B
+    Last insert:       128
+    Direction:         5
+    Number direction:  0
+    Max trx id:        0
+
+====================================================================================
+|  RECORDS INFORMATION                                                             |
+------------------------------------------------------------------------------------
+=======================================================================
+[ROW 1] Length: 45 (8 | 37), Number of fields: 4
+-----------------------------------------------------------------------
+  [HEADER   ]         14 c0 00 00 00 10 ff f0  
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 01 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 07 1c 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 01 00 00 01 24 01 51 
+  [FIELD   4] Name  : doc
+              Length: 20   
+              Type  : json            | JSON         | DATA_BLOB           
+              Value : 00 00 00 02 00 00 00 05  00 00 00 04 00 00 00 00 
+                      00 00 27 47 
+                      [EXTERNAL: space=2, page=5, version=4, len=10055]
+                      [LOB DATA (hex, 10055 bytes total)]:
+                      00 03 00 46 27 19 00 06 00 1f 00 07 00 26 00 07 
+                      00 0c 2d 00 05 01 00 0c 34 00 73 74 61 74 75 73 
+                      63 6f 75 6e 74 65 72 70 61 79 6c 6f 61 64 06 61 
+                      63 74 69 76 65 90 4e 5a 5a 5a 5a 5a 5a 5a 5a 5a 
+                      5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 
+                      5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 
+                      5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 
+                      5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 
+                      5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 
+                      5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 
+                      5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 
+                      5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 
+                      5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 
+                      5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 
+                      5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 
+                      5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 
+                      [... 9799 more bytes]
+====================================================================================
+|  PAGE ANALYSIS RESULT                                                             |
+------------------------------------------------------------------------------------
+Total valid records count:                1
+Total valid records size:                 45 B
+                                            [Headers: 8 B]
+                                            [Bodies:  37 B]
+Valid records to page space ratio:        0.27466 %
+
+Total records with dropped columns count: 0
+Total instant dropped columns size:       0 B
+Dropped columns to page space ratio:      0.00000 %
+
+Total delete-marked records count:        0
+Total delete-marked records size:         0 B
+Delete-marked recs to page space ratio:   0.00000 %
+
+Total InnoDB internal space used:         140 B
+                                            [FIL HEADER     38 B]
+                                            [PAGE HEADER    36 B]
+                                            [FSEG HEADER    20 B]
+                                            [INFI + SUPRE   26 B]
+                                            [RECORD HEADERS 8 B]*
+                                            [PAGE DIRECTORY 4 B]
+                                            [FIL TRAILER    8 B]
+InnoDB internals to page space ratio:     0.85449 %
+
+Total free space:                         16207 B
+Free space ratio:                         98.91968 %

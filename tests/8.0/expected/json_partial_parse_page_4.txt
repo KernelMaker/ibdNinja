@@ -1,0 +1,77 @@
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/json_partial.ibd
+    File size:             180224 B
+    Space id:              2
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 11
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     1 indexes.
+====================================================================================
+
+====================================================================================
+|  PAGE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    Page no:           4
+    Slibling pages no: NULL [4] NULL
+    Space id:          2
+    Page type:         INDEX
+    Lsn:               32428438
+    FLush lsn:         0
+    -------------------
+    Page level:        0
+    Page size:         [logical: 16384 B], [physical: 16384 B]
+    Number of records: 1
+    Index id:          158
+    Belongs to:        [table: ibdninja_test.json_partial], [index: PRIMARY]
+    Row format:        DYNAMIC
+    Number dir slots:  2
+    Heap top:          187
+    Number of heap:    3
+    First free rec:    0
+    Garbage:           0 B
+    Last insert:       130
+    Direction:         5
+    Number direction:  0
+    Max trx id:        0
+
+====================================================================================
+|  PAGE ANALYSIS RESULT                                                             |
+------------------------------------------------------------------------------------
+Total valid records count:                1
+Total valid records size:                 67 B
+                                            [Headers: 10 B]
+                                            [Bodies:  57 B]
+Valid records to page space ratio:        0.40894 %
+
+Total records with dropped columns count: 0
+Total instant dropped columns size:       0 B
+Dropped columns to page space ratio:      0.00000 %
+
+Total delete-marked records count:        0
+Total delete-marked records size:         0 B
+Delete-marked recs to page space ratio:   0.00000 %
+
+Total InnoDB internal space used:         142 B
+                                            [FIL HEADER     38 B]
+                                            [PAGE HEADER    36 B]
+                                            [FSEG HEADER    20 B]
+                                            [INFI + SUPRE   26 B]
+                                            [RECORD HEADERS 10 B]*
+                                            [PAGE DIRECTORY 4 B]
+                                            [FIL TRAILER    8 B]
+InnoDB internals to page space ratio:     0.86670 %
+
+Total free space:                         16185 B
+Free space ratio:                         98.78540 %
