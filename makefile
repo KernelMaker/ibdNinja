@@ -36,15 +36,24 @@ $(TARGET): check_zlib $(OBJS)
 clean:
 	rm -f $(OBJS) $(TARGET) $(SRCS:.cc=.d)
 
-# Test targets - run both versions
+# Test targets - run all tests
 test: $(TARGET)
 	@./tests/run_tests.sh
+	@./tests/8.0/test_inspect_blob.sh
+	@./tests/8.4/test_inspect_blob.sh 2>/dev/null || true
+	@./tests/9.0/test_inspect_blob.sh 2>/dev/null || true
 
 test-verbose: $(TARGET)
 	@./tests/run_tests.sh --verbose
+	@./tests/8.0/test_inspect_blob.sh --verbose
+	@./tests/8.4/test_inspect_blob.sh --verbose 2>/dev/null || true
+	@./tests/9.0/test_inspect_blob.sh --verbose 2>/dev/null || true
 
 test-update: $(TARGET)
 	@./tests/run_tests.sh --update
+	@./tests/8.0/test_inspect_blob.sh --update
+	@./tests/8.4/test_inspect_blob.sh --update 2>/dev/null || true
+	@./tests/9.0/test_inspect_blob.sh --update 2>/dev/null || true
 
 # Version-specific test targets
 test-8.0: $(TARGET)

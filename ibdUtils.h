@@ -543,13 +543,12 @@ constexpr uint32_t LOB_DATA_PAGE_TRX_ID = 5;
 constexpr uint32_t LOB_DATA_PAGE_DATA_BEGIN = 11;
 
 // LOB output format
-enum class LobOutputFormat { HEX, RAW_FILE, TEXT_TRUNC, SUMMARY_ONLY };
+enum class LobOutputFormat { HEX, SUMMARY_ONLY };
 
 // LOB global config
 extern LobOutputFormat g_lob_output_format;
 extern bool g_lob_show_version_history;
 extern uint32_t g_lob_text_truncate_len;
-extern std::string g_lob_output_dir;
 
 // LOB data structures
 struct FilAddr {

@@ -31,11 +31,9 @@ void Usage() {
   fprintf(stdout, "  --version, -v                             Display version "
                   "information\n");
   fprintf(stdout, "  --blob-format, -b FORMAT                  LOB output format: "
-                  "hex|file|text|summary (default: hex)\n");
+                  "hex|summary (default: hex)\n");
   fprintf(stdout, "  --blob-truncate NUM                       Max bytes to show "
-                  "for hex/text LOB output (default: 256)\n");
-  fprintf(stdout, "  --blob-output-dir DIR                     Directory for "
-                  "raw LOB file output (default: ./blobs/)\n");
+                  "for hex LOB output (default: 256)\n");
   fprintf(stdout, "  --lob-versions, -B                        Show LOB version "
                   "history for external fields\n");
   fprintf(stdout, "  --inspect-blob, -I PAGE_NO,REC_NO         Interactive BLOB "
@@ -59,7 +57,6 @@ int main(int argc, char* argv[]) {
     {"version", no_argument, 0, 'v'},
     {"blob-format", required_argument, 0, 'b'},
     {"blob-truncate", required_argument, 0, 0x100},
-    {"blob-output-dir", required_argument, 0, 0x101},
     {"lob-versions", no_argument, 0, 'B'},
     {"inspect-blob", required_argument, 0, 'I'},
     {0, 0, 0, 0}  // End of options
@@ -148,15 +145,11 @@ int main(int argc, char* argv[]) {
           std::string fmt(optarg);
           if (fmt == "hex") {
             ibd_ninja::g_lob_output_format = ibd_ninja::LobOutputFormat::HEX;
-          } else if (fmt == "file") {
-            ibd_ninja::g_lob_output_format = ibd_ninja::LobOutputFormat::RAW_FILE;
-          } else if (fmt == "text") {
-            ibd_ninja::g_lob_output_format = ibd_ninja::LobOutputFormat::TEXT_TRUNC;
           } else if (fmt == "summary") {
             ibd_ninja::g_lob_output_format = ibd_ninja::LobOutputFormat::SUMMARY_ONLY;
           } else {
             fprintf(stderr, "Unknown blob format: %s "
-                    "(use hex, file, text, or summary)\n", optarg);
+                    "(use hex or summary)\n", optarg);
             return 1;
           }
         }
@@ -170,9 +163,6 @@ int main(int argc, char* argv[]) {
             return 1;
           }
         }
-        break;
-      case 0x101:
-        ibd_ninja::g_lob_output_dir = optarg;
         break;
       case 'B':
         ibd_ninja::g_lob_show_version_history = true;

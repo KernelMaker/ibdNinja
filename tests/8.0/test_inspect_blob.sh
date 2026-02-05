@@ -149,7 +149,7 @@ run_inspect_test() {
 
 echo ""
 echo "=========================================="
-echo "  Inspect-Blob JSON Tests"
+echo "  Inspect-Blob JSON Tests (MySQL 8.0)"
 echo "=========================================="
 echo ""
 
@@ -168,17 +168,17 @@ REC=1
 
 echo -e "${BLUE}Testing: json_partial doc1${NC}"
 
-# doc1 current version (v3): select field 1, action 1, exit
-run_inspect_test "json_partial_inspect_doc1_current" $PAGE $REC "$(printf '1\n1\n0\n')"
+# doc1 current version (v3): select field 1, action 2 (JSON text), exit
+run_inspect_test "json_partial_inspect_doc1_current" $PAGE $REC "$(printf '1\n2\n0\n')"
 
-# doc1 version 1: select field 1, action 2 (specific version), enter 1, exit
-run_inspect_test "json_partial_inspect_doc1_v1" $PAGE $REC "$(printf '1\n2\n1\n0\n')"
+# doc1 version 1: select field 1, action 6 (specific version JSON text), enter 1, exit
+run_inspect_test "json_partial_inspect_doc1_v1" $PAGE $REC "$(printf '1\n6\n1\n0\n')"
 
-# doc1 version 2: select field 1, action 2 (specific version), enter 2, exit
-run_inspect_test "json_partial_inspect_doc1_v2" $PAGE $REC "$(printf '1\n2\n2\n0\n')"
+# doc1 version 2: select field 1, action 6 (specific version JSON text), enter 2, exit
+run_inspect_test "json_partial_inspect_doc1_v2" $PAGE $REC "$(printf '1\n6\n2\n0\n')"
 
-# doc1 version 3: select field 1, action 2 (specific version), enter 3, exit
-run_inspect_test "json_partial_inspect_doc1_v3" $PAGE $REC "$(printf '1\n2\n3\n0\n')"
+# doc1 version 3: select field 1, action 6 (specific version JSON text), enter 3, exit
+run_inspect_test "json_partial_inspect_doc1_v3" $PAGE $REC "$(printf '1\n6\n3\n0\n')"
 
 echo ""
 
@@ -189,14 +189,14 @@ echo ""
 
 echo -e "${BLUE}Testing: json_partial doc2${NC}"
 
-# doc2 current version (v2): select field 2, action 1, exit
-run_inspect_test "json_partial_inspect_doc2_current" $PAGE $REC "$(printf '2\n1\n0\n')"
+# doc2 current version (v2): select field 2, action 2 (JSON text), exit
+run_inspect_test "json_partial_inspect_doc2_current" $PAGE $REC "$(printf '2\n2\n0\n')"
 
-# doc2 version 1: select field 2, action 2 (specific version), enter 1, exit
-run_inspect_test "json_partial_inspect_doc2_v1" $PAGE $REC "$(printf '2\n2\n1\n0\n')"
+# doc2 version 1: select field 2, action 6 (specific version JSON text), enter 1, exit
+run_inspect_test "json_partial_inspect_doc2_v1" $PAGE $REC "$(printf '2\n6\n1\n0\n')"
 
-# doc2 version 2: select field 2, action 2 (specific version), enter 2, exit
-run_inspect_test "json_partial_inspect_doc2_v2" $PAGE $REC "$(printf '2\n2\n2\n0\n')"
+# doc2 version 2: select field 2, action 6 (specific version JSON text), enter 2, exit
+run_inspect_test "json_partial_inspect_doc2_v2" $PAGE $REC "$(printf '2\n6\n2\n0\n')"
 
 # ===================================================================
 # json_partial_large tests (multi-entry LOB with version chains on different entries)
@@ -211,20 +211,20 @@ if [ -f "$LARGE_FIXTURE" ]; then
     LARGE_PAGE=4
     LARGE_REC=1
 
-    # current version (v4): action 1, exit
-    run_inspect_test_fixture "$LARGE_FIXTURE" "json_partial_large_inspect_current" $LARGE_PAGE $LARGE_REC "$(printf '1\n0\n')"
+    # current version (v4): action 2 (JSON text), exit
+    run_inspect_test_fixture "$LARGE_FIXTURE" "json_partial_large_inspect_current" $LARGE_PAGE $LARGE_REC "$(printf '2\n0\n')"
 
-    # version 1: action 2, enter 1, exit
-    run_inspect_test_fixture "$LARGE_FIXTURE" "json_partial_large_inspect_v1" $LARGE_PAGE $LARGE_REC "$(printf '2\n1\n0\n')"
+    # version 1: action 6 (specific version JSON text), enter 1, exit
+    run_inspect_test_fixture "$LARGE_FIXTURE" "json_partial_large_inspect_v1" $LARGE_PAGE $LARGE_REC "$(printf '6\n1\n0\n')"
 
-    # version 2: action 2, enter 2, exit
-    run_inspect_test_fixture "$LARGE_FIXTURE" "json_partial_large_inspect_v2" $LARGE_PAGE $LARGE_REC "$(printf '2\n2\n0\n')"
+    # version 2: action 6 (specific version JSON text), enter 2, exit
+    run_inspect_test_fixture "$LARGE_FIXTURE" "json_partial_large_inspect_v2" $LARGE_PAGE $LARGE_REC "$(printf '6\n2\n0\n')"
 
-    # version 3: action 2, enter 3, exit
-    run_inspect_test_fixture "$LARGE_FIXTURE" "json_partial_large_inspect_v3" $LARGE_PAGE $LARGE_REC "$(printf '2\n3\n0\n')"
+    # version 3: action 6 (specific version JSON text), enter 3, exit
+    run_inspect_test_fixture "$LARGE_FIXTURE" "json_partial_large_inspect_v3" $LARGE_PAGE $LARGE_REC "$(printf '6\n3\n0\n')"
 
-    # version 4: action 2, enter 4, exit
-    run_inspect_test_fixture "$LARGE_FIXTURE" "json_partial_large_inspect_v4" $LARGE_PAGE $LARGE_REC "$(printf '2\n4\n0\n')"
+    # version 4: action 6 (specific version JSON text), enter 4, exit
+    run_inspect_test_fixture "$LARGE_FIXTURE" "json_partial_large_inspect_v4" $LARGE_PAGE $LARGE_REC "$(printf '6\n4\n0\n')"
 else
     echo ""
     log_skip "json_partial_large tests (fixture not found)"
@@ -243,17 +243,17 @@ if [ -f "$PURGED_FIXTURE" ]; then
     PURGED_PAGE=4
     PURGED_REC=1
 
-    # current version: action 1, exit
-    run_inspect_test_fixture "$PURGED_FIXTURE" "json_partial_purged_inspect_current" $PURGED_PAGE $PURGED_REC "$(printf '1\n0\n')"
+    # current version: action 2 (JSON text), exit
+    run_inspect_test_fixture "$PURGED_FIXTURE" "json_partial_purged_inspect_current" $PURGED_PAGE $PURGED_REC "$(printf '2\n0\n')"
 
-    # version 1 with fallback accept: action 2, enter 1 (purged), accept 'y', exit
-    run_inspect_test_fixture "$PURGED_FIXTURE" "json_partial_purged_inspect_v1_fallback" $PURGED_PAGE $PURGED_REC "$(printf '2\n1\ny\n0\n')"
+    # version 1 with fallback accept: action 6 (specific version JSON text), enter 1 (purged), accept 'y', exit
+    run_inspect_test_fixture "$PURGED_FIXTURE" "json_partial_purged_inspect_v1_fallback" $PURGED_PAGE $PURGED_REC "$(printf '6\n1\ny\n0\n')"
 
-    # version 1 decline fallback: action 2, enter 1 (purged), decline 'n', exit
-    run_inspect_test_fixture "$PURGED_FIXTURE" "json_partial_purged_inspect_v1_decline" $PURGED_PAGE $PURGED_REC "$(printf '2\n1\nn\n0\n')"
+    # version 1 decline fallback: action 6 (specific version JSON text), enter 1 (purged), decline 'n', exit
+    run_inspect_test_fixture "$PURGED_FIXTURE" "json_partial_purged_inspect_v1_decline" $PURGED_PAGE $PURGED_REC "$(printf '6\n1\nn\n0\n')"
 
-    # current version via action 2: action 2, enter 4 (current), exit
-    run_inspect_test_fixture "$PURGED_FIXTURE" "json_partial_purged_inspect_v4" $PURGED_PAGE $PURGED_REC "$(printf '2\n4\n0\n')"
+    # current version via action 6: action 6 (specific version JSON text), enter 4 (current), exit
+    run_inspect_test_fixture "$PURGED_FIXTURE" "json_partial_purged_inspect_v4" $PURGED_PAGE $PURGED_REC "$(printf '6\n4\n0\n')"
 else
     echo ""
     log_skip "json_partial_purged tests (fixture not found)"
@@ -266,7 +266,7 @@ echo ""
 # ===================================================================
 
 echo "=========================================="
-echo "  Inspect-Blob Test Summary"
+echo "  Inspect-Blob Test Summary (MySQL 8.0)"
 echo "=========================================="
 echo ""
 echo -e "  ${GREEN}Passed:${NC}  $PASS"

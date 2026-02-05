@@ -197,9 +197,25 @@ For records with externally stored fields (BLOB, TEXT, JSON), use `--inspect-blo
 The tool will:
 1. List all external fields in the record and let you select one.
 2. Display the **LOB chain visualization** showing index entries, data pages, version chains, and free list entries.
-3. Offer an interactive menu to:
-   - **[1]** Print the current version of the field (JSON is decoded, others shown as hex).
-   - **[2]** Print a specific historical version (JSON fields only) — useful for inspecting LOB version chains created by `JSON_SET()` partial updates.
+3. Offer an interactive menu:
+
+   **For JSON fields:**
+   - **[1]** Print current version (hex)
+   - **[2]** Print current version (JSON text)
+   - **[3]** Save current version to file (binary)
+   - **[4]** Save current version to file (JSON text)
+   - **[5]** Print specific version (hex)
+   - **[6]** Print specific version (JSON text)
+   - **[7]** Save specific version to file (binary)
+   - **[8]** Save specific version to file (JSON text)
+   - **[0]** Exit
+
+   **For non-JSON fields:**
+   - **[1]** Print current version (hex)
+   - **[3]** Save current version to file (binary)
+   - **[0]** Exit
+
+   File saves prompt for an output directory (default: `./blobs/`) and auto-generate filenames like `<table>-<index>-page<N>-rec<N>-<field>-v<version>.bin` or `.json`.
 
 If a requested version has been purged by InnoDB, the tool detects this and offers to show the closest available version instead.
 

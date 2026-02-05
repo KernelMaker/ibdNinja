@@ -341,43 +341,6 @@ void FetchAndDisplayExternalLob(uint32_t space_id, uint32_t page_no,
                    fetched - show_len);
         }
       } break;
-
-      case LobOutputFormat::TEXT_TRUNC: {
-        uint32_t show_len = static_cast<uint32_t>(fetched);
-        if (show_len > g_lob_text_truncate_len) {
-          show_len = g_lob_text_truncate_len;
-        }
-        lob_data[show_len] = '\0';
-        ninja_pt(print, "\n                      [LOB DATA (text, %" PRIu64
-                 " bytes total)]: ", fetched);
-        ninja_pt(print, "%.*s", show_len, lob_data);
-        if (fetched > show_len) {
-          ninja_pt(print, "\n                      "
-                   "[... %" PRIu64 " more bytes]",
-                   fetched - show_len);
-        }
-      } break;
-
-      case LobOutputFormat::RAW_FILE: {
-        struct stat st;
-        if (stat(g_lob_output_dir.c_str(), &st) != 0) {
-          mkdir(g_lob_output_dir.c_str(), 0755);
-        }
-        char filename[256];
-        snprintf(filename, sizeof(filename), "%s/page%u.bin",
-                 g_lob_output_dir.c_str(), page_no);
-        std::ofstream ofs(filename, std::ios::binary);
-        if (ofs.is_open()) {
-          ofs.write(reinterpret_cast<const char*>(lob_data), fetched);
-          ofs.close();
-          ninja_pt(print, "\n                      "
-                   "[LOB DATA written to %s (%" PRIu64 " bytes)]",
-                   filename, fetched);
-        } else {
-          ninja_pt(print, "\n                      "
-                   "[LOB: Failed to write to %s]", filename);
-        }
-      } break;
     }
 
     delete[] lob_data;
@@ -924,12 +887,142 @@ void ibdNinja::InspectBlob(uint32_t page_no, uint32_t rec_no) {
   // Step 3: Visualize the LOB chain
   PrintLobChainVisualization(field.page_no, field.is_json);
 
+  // Helper lambda to generate filename
+  auto gen_filename = [&](uint32_t version, bool as_json) -> std::string {
+    std::string ext = as_json ? ".json" : ".bin";
+    char buf[512];
+    snprintf(buf, sizeof(buf), "%s-%s-page%u-rec%u-%s-v%u%s",
+             index->table()->name().c_str(),
+             index->name().c_str(),
+             page_no, rec_no,
+             field.column_name.c_str(),
+             version, ext.c_str());
+    return std::string(buf);
+  };
+
+  // Helper lambda to save data to file
+  auto save_to_file = [&](const unsigned char* data, uint64_t len,
+                          uint32_t version, bool as_json) -> bool {
+    printf("Enter output directory [./blobs/]: ");
+    fflush(stdout);
+    char dir_buf[256];
+    if (fgets(dir_buf, sizeof(dir_buf), stdin) == nullptr) return false;
+    // Remove trailing newline
+    size_t dir_len = strlen(dir_buf);
+    if (dir_len > 0 && dir_buf[dir_len - 1] == '\n') {
+      dir_buf[dir_len - 1] = '\0';
+      dir_len--;
+    }
+    std::string out_dir = (dir_len == 0) ? "./blobs/" : std::string(dir_buf);
+    // Ensure trailing slash
+    if (!out_dir.empty() && out_dir.back() != '/') {
+      out_dir += '/';
+    }
+    // Create directory if needed
+    struct stat st;
+    if (stat(out_dir.c_str(), &st) != 0) {
+      if (mkdir(out_dir.c_str(), 0755) != 0) {
+        printf("Failed to create directory: %s\n", out_dir.c_str());
+        return false;
+      }
+    }
+    std::string filename = gen_filename(version, as_json);
+    std::string full_path = out_dir + filename;
+    std::ofstream ofs(full_path, std::ios::binary);
+    if (!ofs.is_open()) {
+      printf("Failed to open file for writing: %s\n", full_path.c_str());
+      return false;
+    }
+    if (as_json && field.is_json) {
+      std::string json_str = JsonBinaryToString(data, len);
+      ofs.write(json_str.c_str(), json_str.size());
+      ofs.close();
+      printf("Saved to %s (%zu bytes)\n", full_path.c_str(), json_str.size());
+    } else {
+      ofs.write(reinterpret_cast<const char*>(data), len);
+      ofs.close();
+      printf("Saved to %s (%" PRIu64 " bytes)\n", full_path.c_str(), len);
+    }
+    return true;
+  };
+
+  // Helper lambda to prompt for version selection
+  auto select_version = [&](uint32_t* target_ver) -> bool {
+    std::vector<uint32_t> versions;
+    uint32_t max_lob_ver = 0;
+    CollectLobVersions(field.page_no, &versions, &max_lob_ver);
+    if (versions.empty()) {
+      printf("No versions found.\n");
+      return false;
+    }
+    printf("Available versions: ");
+    for (size_t i = 0; i < versions.size(); i++) {
+      if (i > 0) printf(", ");
+      printf("%u", versions[i]);
+    }
+    printf("\nEnter version number: ");
+    fflush(stdout);
+    char ver_input[64];
+    if (fgets(ver_input, sizeof(ver_input), stdin) == nullptr) return false;
+    if (sscanf(ver_input, "%u", target_ver) != 1) {
+      printf("Invalid version number.\n");
+      return false;
+    }
+    bool ver_found = false;
+    for (uint32_t v : versions) {
+      if (v == *target_ver) { ver_found = true; break; }
+    }
+    if (!ver_found) {
+      printf("[WARNING] Version %u is not available.\n", *target_ver);
+      if (*target_ver <= max_lob_ver) {
+        printf("This version was likely purged by InnoDB.\n");
+      } else {
+        printf("Version %u exceeds max assigned version %u.\n",
+               *target_ver, max_lob_ver);
+      }
+      printf("Available versions: ");
+      for (size_t i = 0; i < versions.size(); i++) {
+        if (i > 0) printf(", ");
+        printf("%u", versions[i]);
+      }
+      // Find closest available version
+      uint32_t closest = versions[0];
+      uint32_t min_diff = (*target_ver > closest)
+          ? *target_ver - closest : closest - *target_ver;
+      for (uint32_t v : versions) {
+        uint32_t diff = (*target_ver > v) ? *target_ver - v : v - *target_ver;
+        if (diff < min_diff) {
+          min_diff = diff;
+          closest = v;
+        }
+      }
+      printf("\nWould you like to see version %u instead? [y/N]: ", closest);
+      fflush(stdout);
+      char yn_buf[64];
+      if (fgets(yn_buf, sizeof(yn_buf), stdin) == nullptr) return false;
+      if (yn_buf[0] == 'y' || yn_buf[0] == 'Y') {
+        *target_ver = closest;
+        return true;
+      }
+      return false;
+    }
+    return true;
+  };
+
   // Step 4: Interactive action menu
   while (true) {
     printf("\nActions:\n");
-    printf("  [1] Print full field value (current version)\n");
+    printf("  [1] Print current version (hex)\n");
     if (field.is_json) {
-      printf("  [2] Print full field value for a specific version (JSON only)\n");
+      printf("  [2] Print current version (JSON text)\n");
+      printf("  [3] Save current version to file (binary)\n");
+      printf("  [4] Save current version to file (JSON text)\n");
+      printf("  [5] Print specific version (hex)\n");
+      printf("  [6] Print specific version (JSON text)\n");
+      printf("  [7] Save specific version to file (binary)\n");
+      printf("  [8] Save specific version to file (JSON text)\n");
+    } else {
+      printf("  [3] Save current version to file (binary)\n");
     }
     printf("  [0] Exit\n");
     printf("Choice: ");
@@ -947,124 +1040,140 @@ void ibdNinja::InspectBlob(uint32_t page_no, uint32_t rec_no) {
 
     if (action == 0) {
       break;
-    } else if (action == 1) {
-      // Print current version
+    }
+
+    // Fetch current version LOB data (used by actions 1-4)
+    auto fetch_current = [&](unsigned char** out_data, uint64_t* out_len) -> bool {
       uint64_t fetch_len = field.ext_len;
-      if (fetch_len > LOB_MAX_FETCH_SIZE) {
-        fetch_len = LOB_MAX_FETCH_SIZE;
-      }
-      unsigned char* lob_data = new unsigned char[fetch_len + 1]();
+      if (fetch_len > LOB_MAX_FETCH_SIZE) fetch_len = LOB_MAX_FETCH_SIZE;
+      *out_data = new unsigned char[fetch_len + 1]();
       bool error = false;
-      uint64_t fetched = FetchModernUncompLob(field.page_no, field.ext_len,
-                                              lob_data, &error);
+      *out_len = FetchModernUncompLob(field.page_no, field.ext_len,
+                                      *out_data, &error);
       if (error) {
         printf("Error fetching LOB data.\n");
-        delete[] lob_data;
-        continue;
+        delete[] *out_data;
+        *out_data = nullptr;
+        return false;
       }
+      return true;
+    };
 
-      if (field.is_json) {
-        std::string json_str = JsonBinaryToString(lob_data, fetched);
-        printf("\n[JSON value (%" PRIu64 " bytes binary -> %zu chars decoded)]:\n",
-               fetched, json_str.size());
-        printf("%s\n", json_str.c_str());
-      } else {
-        printf("\n[LOB DATA (hex, %" PRIu64 " bytes)]:\n", fetched);
-        for (uint64_t i = 0; i < fetched; i++) {
-          printf("%02x ", lob_data[i]);
-          if ((i + 1) % 16 == 0) {
-            printf("\n");
-          }
-        }
-        if (fetched % 16 != 0) printf("\n");
+    // Fetch specific version LOB data (used by actions 5-8)
+    auto fetch_version = [&](uint32_t ver, unsigned char** out_data,
+                             uint64_t* out_len) -> bool {
+      uint64_t fetch_len = field.ext_len;
+      if (fetch_len > LOB_MAX_FETCH_SIZE) fetch_len = LOB_MAX_FETCH_SIZE;
+      *out_data = new unsigned char[fetch_len + 1]();
+      bool error = false;
+      *out_len = FetchLobByVersion(field.page_no, ver, *out_data, &error);
+      if (error) {
+        printf("Error fetching LOB data for version %u.\n", ver);
+        delete[] *out_data;
+        *out_data = nullptr;
+        return false;
       }
+      return true;
+    };
+
+    // Get current LOB version from header
+    auto get_current_version = [&]() -> uint32_t {
+      unsigned char tmp[UNIV_PAGE_SIZE_MAX];
+      if (ibdNinja::ReadPage(field.page_no, tmp) != g_page_physical_size) {
+        return 1;
+      }
+      LobFirstPageHeader hdr = ReadLobFirstPageHeader(tmp);
+      return hdr.lob_version;
+    };
+
+    if (action == 1) {
+      // Print current version (hex)
+      unsigned char* lob_data = nullptr;
+      uint64_t fetched = 0;
+      if (!fetch_current(&lob_data, &fetched)) continue;
+      printf("\n[LOB DATA (hex, %" PRIu64 " bytes)]:\n", fetched);
+      for (uint64_t i = 0; i < fetched; i++) {
+        printf("%02x ", lob_data[i]);
+        if ((i + 1) % 16 == 0) printf("\n");
+      }
+      if (fetched % 16 != 0) printf("\n");
       delete[] lob_data;
 
     } else if (action == 2 && field.is_json) {
-      // Print specific version
-      std::vector<uint32_t> versions;
-      uint32_t max_lob_ver = 0;
-      CollectLobVersions(field.page_no, &versions, &max_lob_ver);
+      // Print current version (JSON text)
+      unsigned char* lob_data = nullptr;
+      uint64_t fetched = 0;
+      if (!fetch_current(&lob_data, &fetched)) continue;
+      std::string json_str = JsonBinaryToString(lob_data, fetched);
+      printf("\n[JSON value (%" PRIu64 " bytes binary -> %zu chars decoded)]:\n",
+             fetched, json_str.size());
+      printf("%s\n", json_str.c_str());
+      delete[] lob_data;
 
-      if (versions.empty()) {
-        printf("No versions found.\n");
-        continue;
-      }
+    } else if (action == 3) {
+      // Save current version to file (binary)
+      unsigned char* lob_data = nullptr;
+      uint64_t fetched = 0;
+      if (!fetch_current(&lob_data, &fetched)) continue;
+      uint32_t cur_ver = get_current_version();
+      save_to_file(lob_data, fetched, cur_ver, false);
+      delete[] lob_data;
 
-      printf("Available versions: ");
-      for (size_t i = 0; i < versions.size(); i++) {
-        if (i > 0) printf(", ");
-        printf("%u", versions[i]);
-      }
-      printf("\nEnter version number: ");
-      fflush(stdout);
+    } else if (action == 4 && field.is_json) {
+      // Save current version to file (JSON text)
+      unsigned char* lob_data = nullptr;
+      uint64_t fetched = 0;
+      if (!fetch_current(&lob_data, &fetched)) continue;
+      uint32_t cur_ver = get_current_version();
+      save_to_file(lob_data, fetched, cur_ver, true);
+      delete[] lob_data;
 
-      char ver_buf[64];
-      if (fgets(ver_buf, sizeof(ver_buf), stdin) == nullptr) break;
+    } else if (action == 5 && field.is_json) {
+      // Print specific version (hex)
       uint32_t target_ver = 0;
-      if (sscanf(ver_buf, "%u", &target_ver) != 1) {
-        printf("Invalid version number.\n");
-        continue;
+      if (!select_version(&target_ver)) continue;
+      unsigned char* lob_data = nullptr;
+      uint64_t fetched = 0;
+      if (!fetch_version(target_ver, &lob_data, &fetched)) continue;
+      printf("\n[LOB DATA v%u (hex, %" PRIu64 " bytes)]:\n", target_ver, fetched);
+      for (uint64_t i = 0; i < fetched; i++) {
+        printf("%02x ", lob_data[i]);
+        if ((i + 1) % 16 == 0) printf("\n");
       }
+      if (fetched % 16 != 0) printf("\n");
+      delete[] lob_data;
 
-      // Check if version exists
-      bool ver_found = false;
-      for (uint32_t v : versions) {
-        if (v == target_ver) { ver_found = true; break; }
-      }
-      if (!ver_found) {
-        printf("[WARNING] Version %u is not available.\n", target_ver);
-        if (target_ver <= max_lob_ver) {
-          printf("This version was likely purged by InnoDB.\n");
-        } else {
-          printf("Version %u exceeds max assigned version %u.\n",
-                 target_ver, max_lob_ver);
-        }
-        printf("Available versions: ");
-        for (size_t i = 0; i < versions.size(); i++) {
-          if (i > 0) printf(", ");
-          printf("%u", versions[i]);
-        }
-        // Find closest available version
-        uint32_t closest = versions[0];
-        uint32_t min_diff = (target_ver > closest)
-            ? target_ver - closest : closest - target_ver;
-        for (uint32_t v : versions) {
-          uint32_t diff = (target_ver > v) ? target_ver - v : v - target_ver;
-          if (diff < min_diff) {
-            min_diff = diff;
-            closest = v;
-          }
-        }
-        printf("\nWould you like to see version %u instead? [y/N]: ", closest);
-        fflush(stdout);
-        char yn_buf[64];
-        if (fgets(yn_buf, sizeof(yn_buf), stdin) == nullptr) break;
-        if (yn_buf[0] == 'y' || yn_buf[0] == 'Y') {
-          target_ver = closest;
-        } else {
-          continue;
-        }
-      }
-
-      uint64_t fetch_len = field.ext_len;
-      if (fetch_len > LOB_MAX_FETCH_SIZE) {
-        fetch_len = LOB_MAX_FETCH_SIZE;
-      }
-      unsigned char* lob_data = new unsigned char[fetch_len + 1]();
-      bool error = false;
-      uint64_t fetched = FetchLobByVersion(field.page_no, target_ver,
-                                           lob_data, &error);
-      if (error) {
-        printf("Error fetching LOB data for version %u.\n", target_ver);
-        delete[] lob_data;
-        continue;
-      }
-
+    } else if (action == 6 && field.is_json) {
+      // Print specific version (JSON text)
+      uint32_t target_ver = 0;
+      if (!select_version(&target_ver)) continue;
+      unsigned char* lob_data = nullptr;
+      uint64_t fetched = 0;
+      if (!fetch_version(target_ver, &lob_data, &fetched)) continue;
       std::string json_str = JsonBinaryToString(lob_data, fetched);
       printf("\n[JSON value v%u (%" PRIu64 " bytes binary -> %zu chars decoded)]:\n",
              target_ver, fetched, json_str.size());
       printf("%s\n", json_str.c_str());
+      delete[] lob_data;
+
+    } else if (action == 7 && field.is_json) {
+      // Save specific version to file (binary)
+      uint32_t target_ver = 0;
+      if (!select_version(&target_ver)) continue;
+      unsigned char* lob_data = nullptr;
+      uint64_t fetched = 0;
+      if (!fetch_version(target_ver, &lob_data, &fetched)) continue;
+      save_to_file(lob_data, fetched, target_ver, false);
+      delete[] lob_data;
+
+    } else if (action == 8 && field.is_json) {
+      // Save specific version to file (JSON text)
+      uint32_t target_ver = 0;
+      if (!select_version(&target_ver)) continue;
+      unsigned char* lob_data = nullptr;
+      uint64_t fetched = 0;
+      if (!fetch_version(target_ver, &lob_data, &fetched)) continue;
+      save_to_file(lob_data, fetched, target_ver, true);
       delete[] lob_data;
 
     } else {
