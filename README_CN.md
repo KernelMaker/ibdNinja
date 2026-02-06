@@ -76,7 +76,7 @@ MySQL 数据文件(.ibd)解析、分析工具（C++)
 
 ### 1. 帮助信息（--help, -h)
 
-<img src="https://github.com/KernelMaker/kernelmaker.github.io/blob/master/public/images/ibdNinja-diagram/1.png" alt="image-1" width="80%" />
+<img src="https://github.com/KernelMaker/kernelmaker.github.io/blob/master/public/images/ibdNinja-diagram/1-v2.png" alt="image-1" width="80%" />
 
 ### 2. 打印ibd文件中的表及索引信息（--list-tables, -l)
 

@@ -85,7 +85,7 @@ With ibdNinja's capability to parse records, it is possible to address ibd files
 
 ### 1. Display Help Information (`--help`, `-h`)
 
-<img src="https://github.com/KernelMaker/kernelmaker.github.io/blob/master/public/images/ibdNinja-diagram/1.png" alt="image-1" width="80%" />
+<img src="https://github.com/KernelMaker/kernelmaker.github.io/blob/master/public/images/ibdNinja-diagram/1-v2.png" alt="image-1" width="80%" />
 
 ### 2. List Tables and Indexes in the ibd File (`--list-tables`, `-l`)
 
