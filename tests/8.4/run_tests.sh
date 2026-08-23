@@ -146,7 +146,7 @@ test_list_tables() {
     fi
 
     if [ ! -f "$expected_file" ]; then
-        log_skip "$test_name (no expected file)"
+        log_fail "$test_name (missing golden file, run with -u to create)"
         return
     fi
 
@@ -189,7 +189,7 @@ test_parse_page() {
     fi
 
     if [ ! -f "$expected_file" ]; then
-        log_skip "$test_name (no expected file)"
+        log_fail "$test_name (missing golden file, run with -u to create)"
         return
     fi
 
@@ -227,7 +227,7 @@ test_parse_page_with_records() {
     fi
 
     if [ ! -f "$expected_file" ]; then
-        log_skip "$test_name (no expected file)"
+        log_fail "$test_name (missing golden file, run with -u to create)"
         return
     fi
 
@@ -276,7 +276,7 @@ test_list_leftmost_pages() {
     fi
 
     if [ ! -f "$expected_file" ]; then
-        log_skip "$test_name (no expected file)"
+        log_fail "$test_name (missing golden file, run with -u to create)"
         return
     fi
 
@@ -323,7 +323,7 @@ test_parse_index() {
     fi
 
     if [ ! -f "$expected_file" ]; then
-        log_skip "$test_name (no expected file)"
+        log_fail "$test_name (missing golden file, run with -u to create)"
         return
     fi
 

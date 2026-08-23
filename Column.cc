@@ -7,8 +7,13 @@
 #include "JSONHelpers.h"
 
 #include <cassert>
+#include <cstdio>
 
 namespace ibd_ninja {
+
+#define ninja_error(format, ...) \
+      fprintf(stderr, "[ERROR] %s:%d - " format "\n", \
+              __FILE__, __LINE__, ##__VA_ARGS__)
 
 /* ------ Column ------ */
 const std::set<std::string> Column::default_valid_option_keys = {
@@ -666,8 +671,14 @@ uint32_t Column::GetFixedSize() {
       // TODO(Zhao): support redundant row format
       } else {
         auto iter = g_collation_map.find(dd_collation_id_);
-        assert(iter != g_collation_map.end());
-        if (iter->second.min == iter->second.max) {
+        if (iter == g_collation_map.end()) {
+          // Unknown collation (newer MySQL addition or custom collation):
+          // treat the column as variable-length rather than crashing.
+          ninja_error("Unknown collation id %" PRIu64 " on column '%s'; "
+                      "treating the column as variable-length. Parsed "
+                      "records may be wrong if it is actually fixed-length.",
+                      dd_collation_id_, dd_name_.c_str());
+        } else if (iter->second.min == iter->second.max) {
           return ib_col_len_;
         }
       }
@@ -681,7 +692,9 @@ uint32_t Column::GetFixedSize() {
     case DATA_BLOB:
       return (0);
     default:
-      assert(0);
+      ninja_error("Unexpected InnoDB main type %u on column '%s'",
+                  ib_mtype_, dd_name_.c_str());
+      return (0);
   }
 }
 
@@ -723,6 +736,12 @@ bool IndexColumn::Init(const rapidjson::Value& dd_index_col_obj,
    * the column_opx of an IndexColumn starts from 0.
    * However, this is not an issue, as the columns array starts from 0.
    */
+  if (dd_column_opx_ >= columns.size()) {
+    ninja_error("Index element column_opx %u is out of range "
+                "(%zu columns); the SDI is likely corrupt",
+                dd_column_opx_, columns.size());
+    return false;
+  }
   column_ = columns[dd_column_opx_];
   column_->set_index_column(this);
   return true;
@@ -754,6 +773,16 @@ IndexColumn* IndexColumn::CreateIndexFTSDocIdColumn(Column* doc_id_col) {
   IndexColumn* index_column = new IndexColumn(true);
   index_column->set_column(doc_id_col);
   doc_id_col->set_index_column(index_column);
+
+  return index_column;
+}
+
+// Used only for a per-index copy of a prefix-capped field (owned by the
+// Index that creates it). Deliberately does not call set_index_column():
+// the column's shared IndexColumn must keep the full-column fixed length.
+IndexColumn* IndexColumn::CreateIndexPrefixColumn(Column* col) {
+  IndexColumn* index_column = new IndexColumn(false);
+  index_column->set_column(col);
 
   return index_column;
 }

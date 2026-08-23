@@ -35,6 +35,9 @@ class Index {
         }
       }
     }
+    for (auto* iter : ib_prefix_fields_) {
+      delete iter;
+    }
     for (auto* iter : dd_elements_) {
       delete iter;
     }
@@ -204,17 +207,19 @@ class Index {
   }
   bool Init(const rapidjson::Value& dd_index_obj,
             const std::vector<Column*>& columns);
+  // SDI-derived members carry default initializers because the SDI Read()
+  // calls in Init() leave them untouched when a key is missing.
   std::string dd_name_;
-  bool dd_hidden_;
-  bool dd_is_generated_;
-  uint32_t dd_ordinal_position_;
+  bool dd_hidden_ = false;
+  bool dd_is_generated_ = false;
+  uint32_t dd_ordinal_position_ = 0;
   std::string dd_comment_;
   Properties dd_options_;
   Properties dd_se_private_data_;
-  enum_index_type dd_type_;
-  enum_index_algorithm dd_algorithm_;
-  bool dd_is_algorithm_explicit_;
-  bool dd_is_visible_;
+  enum_index_type dd_type_ = IT_MULTIPLE;
+  enum_index_algorithm dd_algorithm_ = IA_BTREE;
+  bool dd_is_algorithm_explicit_ = false;
+  bool dd_is_visible_ = true;
   std::string dd_engine_;
   std::string dd_engine_attribute_;
   std::string dd_secondary_engine_attribute_;
@@ -222,28 +227,31 @@ class Index {
   std::string dd_tablespace_ref_;
 
   /* ------TABLE SHARE------ */
-  uint32_t s_user_defined_key_parts_;
-  uint32_t s_key_length_;
-  uint32_t s_flags_;
+  uint32_t s_user_defined_key_parts_ = 0;
+  uint32_t s_key_length_ = 0;
+  uint32_t s_flags_ = 0;
 
   /* ------SE------ */
   void PreCheck();
   uint32_t unsupported_reason_;
-  uint32_t ib_id_;
-  uint32_t ib_page_;  // root page
-  uint32_t ib_n_fields_;
-  uint32_t ib_n_uniq_;
+  uint32_t ib_id_ = 0;
+  uint32_t ib_page_ = 0;  // root page
+  uint32_t ib_n_fields_ = 0;
+  uint32_t ib_n_uniq_ = 0;
   uint32_t ib_type_;
-  uint32_t ib_n_def_;
-  uint32_t ib_n_nullable_;
-  uint32_t ib_n_user_defined_cols_;
+  uint32_t ib_n_def_ = 0;
+  uint32_t ib_n_nullable_ = 0;
+  uint32_t ib_n_user_defined_cols_ = 0;
   std::vector<IndexColumn*> ib_fields_;
+  // Private per-index copies created for prefix-capped fields (owned here;
+  // see IndexAddCol).
+  std::vector<IndexColumn*> ib_prefix_fields_;
   std::vector<uint16_t> ib_fields_array_;
   uint32_t ib_nullables_[MAX_ROW_VERSION + 1] = {0};
-  bool ib_row_versions_;
-  bool ib_instant_cols_;
-  uint32_t ib_n_instant_nullable_;
-  uint32_t ib_n_total_fields_;
+  bool ib_row_versions_ = false;
+  bool ib_instant_cols_ = false;
+  uint32_t ib_n_instant_nullable_ = 0;
+  uint32_t ib_n_total_fields_ = 0;
   Table* table_;
 };
 

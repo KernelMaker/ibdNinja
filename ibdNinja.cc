@@ -73,6 +73,28 @@ static LobIndexEntry ReadLobIndexEntry(const unsigned char* ptr) {
   return entry;
 }
 
+// Number of payload bytes available on a page starting at src_off
+// (excludes the FIL trailer).
+static uint32_t LobPageAvail(uint32_t src_off) {
+  uint32_t page_end = g_page_physical_size - FIL_PAGE_DATA_END;
+  return (page_end > src_off) ? page_end - src_off : 0;
+}
+
+// Read a LOB index entry after validating the on-disk byte offset.
+// The offset comes from the file, so it must be range-checked before use.
+static bool ReadLobIndexEntryChecked(const unsigned char* page_buf,
+                                     const FilAddr& addr,
+                                     LobIndexEntry* entry) {
+  if (static_cast<uint32_t>(addr.byte_offset) + LOB_INDEX_ENTRY_SIZE >
+      g_page_physical_size) {
+    ninja_error("LOB index entry offset %u on page %u is out of page bounds",
+                addr.byte_offset, addr.page_no);
+    return false;
+  }
+  *entry = ReadLobIndexEntry(page_buf + addr.byte_offset);
+  return true;
+}
+
 static LobFirstPageHeader ReadLobFirstPageHeader(const unsigned char* page_buf) {
   const unsigned char* p = page_buf + FIL_PAGE_DATA;
   LobFirstPageHeader hdr;
@@ -148,7 +170,11 @@ static uint64_t FetchModernUncompLob(uint32_t first_page_no,
       cached_index_page_no = cur_addr.page_no;
     }
 
-    LobIndexEntry entry = ReadLobIndexEntry(page_buf + cur_addr.byte_offset);
+    LobIndexEntry entry;
+    if (!ReadLobIndexEntryChecked(page_buf, cur_addr, &entry)) {
+      *error = true;
+      break;
+    }
 
     const unsigned char* data_src = nullptr;
     uint32_t data_len = entry.data_len;
@@ -157,6 +183,7 @@ static uint64_t FetchModernUncompLob(uint32_t first_page_no,
       data_len = static_cast<uint32_t>(cap - bytes_copied);
     }
 
+    uint32_t data_src_off = 0;
     if (entry.data_page_no == first_page_no) {
       // Data is on the first page itself
       // Need to re-read first page if we changed the cached page
@@ -171,6 +198,7 @@ static uint64_t FetchModernUncompLob(uint32_t first_page_no,
       } else {
         data_src = page_buf + first_page_data_offset;
       }
+      data_src_off = first_page_data_offset;
     } else {
       bytes = ibdNinja::ReadPage(entry.data_page_no, data_buf);
       if (bytes != g_page_physical_size) {
@@ -186,6 +214,17 @@ static uint64_t FetchModernUncompLob(uint32_t first_page_no,
         break;
       }
       data_src = data_buf + FIL_PAGE_DATA + LOB_DATA_PAGE_DATA_BEGIN;
+      data_src_off = FIL_PAGE_DATA + LOB_DATA_PAGE_DATA_BEGIN;
+    }
+
+    // The per-entry data_len comes from the file; never copy more than
+    // what physically fits on the source page.
+    uint32_t page_avail = LobPageAvail(data_src_off);
+    if (data_len > page_avail) {
+      ninja_error("LOB entry data_len %u exceeds page capacity %u "
+                  "(page %u), truncating", data_len, page_avail,
+                  entry.data_page_no);
+      data_len = page_avail;
     }
 
     if (dest_buf != nullptr) {
@@ -235,7 +274,10 @@ static void PrintLobVersionHistory(uint32_t first_page_no, bool print) {
       cached_page_no = cur_addr.page_no;
     }
 
-    LobIndexEntry entry = ReadLobIndexEntry(page_buf + cur_addr.byte_offset);
+    LobIndexEntry entry;
+    if (!ReadLobIndexEntryChecked(page_buf, cur_addr, &entry)) {
+      break;
+    }
 
     ninja_pt(print, "                      [LOB INDEX ENTRY %u]:\n", entry_no);
     ninja_pt(print, "                        Current (v%u): page=%u, len=%u, "
@@ -258,8 +300,10 @@ static void PrintLobVersionHistory(uint32_t first_page_no, bool print) {
           }
           ver_cached_page_no = ver_addr.page_no;
         }
-        LobIndexEntry old_entry = ReadLobIndexEntry(
-            ver_buf + ver_addr.byte_offset);
+        LobIndexEntry old_entry;
+        if (!ReadLobIndexEntryChecked(ver_buf, ver_addr, &old_entry)) {
+          break;
+        }
         ninja_pt(print, "                        Old    (v%u): page=%u, "
                  "len=%u, creator_trx=%" PRIu64 ", modifier_trx=%" PRIu64 "\n",
                  old_entry.lob_version, old_entry.data_page_no,
@@ -410,7 +454,10 @@ static void PrintLobChainVisualization(uint32_t first_page_no, bool is_json) {
       cached_page_no = cur_addr.page_no;
     }
 
-    LobIndexEntry entry = ReadLobIndexEntry(page_buf + cur_addr.byte_offset);
+    LobIndexEntry entry;
+    if (!ReadLobIndexEntryChecked(page_buf, cur_addr, &entry)) {
+      break;
+    }
 
     const char* loc = (entry.data_page_no == first_page_no) ? "first" : "data";
     printf("  [Entry #%u] page=%u(%s), len=%u, ver=%u, "
@@ -435,8 +482,10 @@ static void PrintLobChainVisualization(uint32_t first_page_no, bool is_json) {
           if (bytes != g_page_physical_size) break;
           ver_cached_page_no = ver_addr.page_no;
         }
-        LobIndexEntry old_entry = ReadLobIndexEntry(
-            ver_buf + ver_addr.byte_offset);
+        LobIndexEntry old_entry;
+        if (!ReadLobIndexEntryChecked(ver_buf, ver_addr, &old_entry)) {
+          break;
+        }
         printf(" <-- v%u(page=%u,len=%u,trx=%" PRIu64 ")",
                old_entry.lob_version, old_entry.data_page_no,
                old_entry.data_len, old_entry.creator_trx_id);
@@ -468,7 +517,10 @@ static void PrintLobChainVisualization(uint32_t first_page_no, bool is_json) {
         ibdNinja::ReadPage(cur_addr.page_no, page_buf);
         cached_page_no = cur_addr.page_no;
       }
-      LobIndexEntry e = ReadLobIndexEntry(page_buf + cur_addr.byte_offset);
+      LobIndexEntry e;
+      if (!ReadLobIndexEntryChecked(page_buf, cur_addr, &e)) {
+        break;
+      }
       visible_versions.insert(e.lob_version);
       if (e.versions.length > 0) {
         FilAddr va = e.versions.first;
@@ -479,7 +531,10 @@ static void PrintLobChainVisualization(uint32_t first_page_no, bool is_json) {
             ibdNinja::ReadPage(va.page_no, ver_buf);
             vc = va.page_no;
           }
-          LobIndexEntry oe = ReadLobIndexEntry(ver_buf + va.byte_offset);
+          LobIndexEntry oe;
+          if (!ReadLobIndexEntryChecked(ver_buf, va, &oe)) {
+            break;
+          }
           visible_versions.insert(oe.lob_version);
           va = oe.next;
         }
@@ -516,7 +571,10 @@ static void PrintLobChainVisualization(uint32_t first_page_no, bool is_json) {
           ibdNinja::ReadPage(free_addr.page_no, ver_buf);
           free_cached_page_no = free_addr.page_no;
         }
-        LobIndexEntry fe = ReadLobIndexEntry(ver_buf + free_addr.byte_offset);
+        LobIndexEntry fe;
+        if (!ReadLobIndexEntryChecked(ver_buf, free_addr, &fe)) {
+          break;
+        }
         printf("    [Free #%u] page=%u, offset=%u, ver=%u, len=%u, "
                "data_page=%u\n",
                free_idx, free_addr.page_no, free_addr.byte_offset,
@@ -528,9 +586,15 @@ static void PrintLobChainVisualization(uint32_t first_page_no, bool is_json) {
   }
 }
 
+// Fetch the LOB contents as of target_version. dest_buf may be nullptr to
+// only compute the total length; otherwise at most buf_cap bytes are written.
+// An old version can be *longer* than the current one (e.g. after a
+// JSON_SET() partial update that shrank the document), so the caller must
+// size dest_buf for the version being fetched, not for the current length.
 static uint64_t FetchLobByVersion(uint32_t first_page_no,
                                   uint32_t target_version,
                                   unsigned char* dest_buf,
+                                  uint64_t buf_cap,
                                   bool* error) {
   *error = false;
   unsigned char page_buf[UNIV_PAGE_SIZE_MAX];
@@ -582,7 +646,11 @@ static uint64_t FetchLobByVersion(uint32_t first_page_no,
       cached_index_page_no = cur_addr.page_no;
     }
 
-    LobIndexEntry entry = ReadLobIndexEntry(page_buf + cur_addr.byte_offset);
+    LobIndexEntry entry;
+    if (!ReadLobIndexEntryChecked(page_buf, cur_addr, &entry)) {
+      *error = true;
+      break;
+    }
 
     // Determine which entry to use for this position
     LobIndexEntry use_entry = entry;
@@ -606,8 +674,10 @@ static uint64_t FetchLobByVersion(uint32_t first_page_no,
           if (bytes != g_page_physical_size) break;
           ver_cached_page_no = ver_addr.page_no;
         }
-        LobIndexEntry old_entry = ReadLobIndexEntry(
-            ver_buf + ver_addr.byte_offset);
+        LobIndexEntry old_entry;
+        if (!ReadLobIndexEntryChecked(ver_buf, ver_addr, &old_entry)) {
+          break;
+        }
         if (old_entry.lob_version == target_version) {
           use_entry = old_entry;
           found = true;
@@ -640,6 +710,7 @@ static uint64_t FetchLobByVersion(uint32_t first_page_no,
     // Read the data for this entry
     const unsigned char* data_src = nullptr;
     uint32_t data_len = use_entry.data_len;
+    uint32_t data_src_off = 0;
 
     if (use_entry.data_page_no == first_page_no) {
       if (cached_index_page_no != first_page_no) {
@@ -652,6 +723,7 @@ static uint64_t FetchLobByVersion(uint32_t first_page_no,
       } else {
         data_src = page_buf + first_page_data_offset;
       }
+      data_src_off = first_page_data_offset;
     } else {
       bytes = ibdNinja::ReadPage(use_entry.data_page_no, data_buf);
       if (bytes != g_page_physical_size) {
@@ -666,12 +738,35 @@ static uint64_t FetchLobByVersion(uint32_t first_page_no,
         break;
       }
       data_src = data_buf + FIL_PAGE_DATA + LOB_DATA_PAGE_DATA_BEGIN;
+      data_src_off = FIL_PAGE_DATA + LOB_DATA_PAGE_DATA_BEGIN;
+    }
+
+    // data_len comes from the file; never read past the source page.
+    uint32_t page_avail = LobPageAvail(data_src_off);
+    if (data_len > page_avail) {
+      ninja_error("LOB entry data_len %u exceeds page capacity %u "
+                  "(page %u), truncating", data_len, page_avail,
+                  use_entry.data_page_no);
+      data_len = page_avail;
     }
 
     if (dest_buf != nullptr) {
-      memcpy(dest_buf + bytes_copied, data_src, data_len);
+      // Never write past the destination buffer.
+      uint64_t dest_avail =
+          (buf_cap > bytes_copied) ? buf_cap - bytes_copied : 0;
+      uint32_t copy_len = data_len;
+      if (copy_len > dest_avail) {
+        copy_len = static_cast<uint32_t>(dest_avail);
+      }
+      memcpy(dest_buf + bytes_copied, data_src, copy_len);
+      bytes_copied += copy_len;
+      if (copy_len < data_len) {
+        // Destination is full; stop instead of overflowing.
+        break;
+      }
+    } else {
+      bytes_copied += data_len;
     }
-    bytes_copied += data_len;
 
     cur_addr = entry.next;
   }
@@ -709,7 +804,10 @@ static void CollectLobVersions(uint32_t first_page_no,
       if (bytes != g_page_physical_size) break;
       cached_page_no = cur_addr.page_no;
     }
-    LobIndexEntry entry = ReadLobIndexEntry(page_buf + cur_addr.byte_offset);
+    LobIndexEntry entry;
+    if (!ReadLobIndexEntryChecked(page_buf, cur_addr, &entry)) {
+      break;
+    }
     ver_set.insert(entry.lob_version);
 
     if (entry.versions.length > 0) {
@@ -722,8 +820,10 @@ static void CollectLobVersions(uint32_t first_page_no,
           if (bytes != g_page_physical_size) break;
           ver_cached_page_no = ver_addr.page_no;
         }
-        LobIndexEntry old_entry = ReadLobIndexEntry(
-            ver_buf + ver_addr.byte_offset);
+        LobIndexEntry old_entry;
+        if (!ReadLobIndexEntryChecked(ver_buf, ver_addr, &old_entry)) {
+          break;
+        }
         ver_set.insert(old_entry.lob_version);
         ver_addr = old_entry.next;
       }
@@ -819,12 +919,30 @@ void ibdNinja::InspectBlob(uint32_t page_no, uint32_t rec_no) {
 
   std::vector<ExternalFieldInfo> ext_fields;
 
+  // Field end offsets are derived from on-disk lengths; bound them by the
+  // page before using them to locate the 20-byte external reference.
+  uint32_t rec_off = page_offset(current_rec);
+  uint32_t max_body_len =
+      (g_page_physical_size > rec_off) ? g_page_physical_size - rec_off : 0;
+
   for (uint32_t i = 0; i < n_fields; i++) {
     uint32_t len = offs_base[i + 1];
     uint32_t end_pos = (len & REC_OFFS_MASK);
 
     if (len & REC_OFFS_EXTERNAL) {
-      const unsigned char* ext_ref = &current_rec[end_pos - 20];
+      if (end_pos > max_body_len) {
+        ninja_error("External field %u ends at offset %u, past the end of "
+                    "the page; skipping", i, end_pos);
+        continue;
+      }
+      if (end_pos < BTR_EXTERN_FIELD_REF_SIZE) {
+        ninja_error("External field %u ends at offset %u, too small to hold "
+                    "a %u-byte external reference; skipping",
+                    i, end_pos, BTR_EXTERN_FIELD_REF_SIZE);
+        continue;
+      }
+      const unsigned char* ext_ref =
+          &current_rec[end_pos - BTR_EXTERN_FIELD_REF_SIZE];
       ExternalFieldInfo info;
       info.field_index = i;
       IndexColumn* icol = index->GetPhysicalField(i);
@@ -1059,14 +1177,22 @@ void ibdNinja::InspectBlob(uint32_t page_no, uint32_t rec_no) {
       return true;
     };
 
-    // Fetch specific version LOB data (used by actions 5-8)
+    // Fetch specific version LOB data (used by actions 5-8).
+    // An older version can be larger than the current one, so first do a
+    // sizing pass (dest_buf == nullptr) and allocate for that length.
     auto fetch_version = [&](uint32_t ver, unsigned char** out_data,
                              uint64_t* out_len) -> bool {
-      uint64_t fetch_len = field.ext_len;
+      bool error = false;
+      uint64_t fetch_len = FetchLobByVersion(field.page_no, ver, nullptr,
+                                             0, &error);
+      if (error) {
+        printf("Error fetching LOB data for version %u.\n", ver);
+        return false;
+      }
       if (fetch_len > LOB_MAX_FETCH_SIZE) fetch_len = LOB_MAX_FETCH_SIZE;
       *out_data = new unsigned char[fetch_len + 1]();
-      bool error = false;
-      *out_len = FetchLobByVersion(field.page_no, ver, *out_data, &error);
+      *out_len = FetchLobByVersion(field.page_no, ver, *out_data,
+                                   fetch_len, &error);
       if (error) {
         printf("Error fetching LOB data for version %u.\n", ver);
         delete[] *out_data;
@@ -1237,7 +1363,6 @@ ibdNinja* ibdNinja::CreateNinja(const char* ibd_filename) {
   if (g_fd == -1) {
     ninja_error("Failed to open file: %s, error: %d(%s)",
             ibd_filename, errno, strerror(errno));
-    close(g_fd);
     return nullptr;
   }
   if (size < UNIV_ZIP_SIZE_MIN) {
@@ -1311,7 +1436,12 @@ ibdNinja* ibdNinja::CreateNinja(const char* ibd_filename) {
   uint32_t sdi_offset = XDES_ARR_OFFSET +
                     XDES_SIZE * (g_page_physical_size / FSP_EXTENT_SIZE) +
                     INFO_MAX_SIZE;
-  assert(sdi_offset + 4 < bytes);
+  if (sdi_offset + 8 > static_cast<uint32_t>(bytes)) {
+    ninja_error("SDI root offset %u is beyond page 0 (%zd bytes)",
+                sdi_offset, bytes);
+    close(g_fd);
+    return nullptr;
+  }
   uint32_t sdi_root = ReadFrom4B(buf + sdi_offset + 4);
   if (!has_sdi) {
     ninja_warn("FSP doesn't have SDI flags... "
@@ -1474,7 +1604,13 @@ void ibdNinja::AddTable(Table* table) {
       continue;
     }
     uint64_t index_id = 0;
-    assert(iter->se_private_data().Exists("id"));
+    if (!iter->se_private_data().Exists("id")) {
+      ninja_warn("Index '%s' of table '%s.%s' has no id in its SDI "
+                 "se_private_data, skipping it",
+                 iter->name().c_str(),
+                 table->schema_ref().c_str(), table->name().c_str());
+      continue;
+    }
     iter->se_private_data().Get("id", &index_id);
     indexes_.insert({index_id, iter});
   }
@@ -1493,7 +1629,7 @@ bool ibdNinja::SDIToLeftmostLeaf(unsigned char* buf, uint32_t sdi_root,
   if (n_of_recs == 0) {
     ninja_warn("No SDI is found in this file, "
                "it might be from an older MySQL version.");
-    ninja_warn("ibdNinja currently supports MySQL 8.0.16 to 8.0.40, 8.4.0 to 8.4.8, and 9.0.0 to 9.6.0.");
+    ninja_warn("ibdNinja currently supports MySQL 8.0.16 to 8.0.40, 8.4.0 to 8.4.8, and 9.0.0 to 9.7.x.");
     return false;
   }
 
@@ -1562,11 +1698,10 @@ unsigned char* ibdNinja::SDIGetFirstUserRec(unsigned char* buf,
   uint32_t next_rec_off_t =
             ReadFrom2B(buf + PAGE_NEW_INFIMUM - REC_OFF_NEXT);
 
-  assert(PAGE_NEW_INFIMUM + next_rec_off_t != PAGE_NEW_SUPREMUM);
-
-  if (next_rec_off_t > buf_len) {
-    assert(0);
-    return (nullptr);
+  if (PAGE_NEW_INFIMUM + next_rec_off_t >= buf_len) {
+    ninja_error("Corrupt next-record offset %u after INFIMUM",
+                next_rec_off_t);
+    return nullptr;
   }
 
   if (memcmp(buf + PAGE_NEW_INFIMUM, "infimum", strlen("infimum")) != 0) {
@@ -1576,12 +1711,13 @@ unsigned char* ibdNinja::SDIGetFirstUserRec(unsigned char* buf,
 
   unsigned char* current_rec = buf + PAGE_NEW_INFIMUM + next_rec_off_t;
 
-  assert(static_cast<uint32_t>(current_rec - buf) <= buf_len);
-
   bool is_comp = PageIsCompact(buf);
 
   // TODO(Zhao): Support redundant row format
-  assert(is_comp);
+  if (!is_comp) {
+    ninja_error("Redundant row format is not supported");
+    return nullptr;
+  }
   /* record is delete marked, get next record */
   if (RecGetDeletedFlag(current_rec, is_comp) != 0) {
     bool corrupt;
@@ -1602,22 +1738,37 @@ unsigned char* ibdNinja::SDIGetNextRec(unsigned char* current_rec,
   *corrupt = false;
   uint32_t page_no = ReadFrom4B(buf + FIL_PAGE_OFFSET);
   bool is_comp = PageIsCompact(buf);
-  uint32_t next_rec_offset = RecGetNextOffs(current_rec, is_comp);
 
-  if (next_rec_offset == 0) {
-    ninja_error("Record is corrupt");
-    *corrupt = true;
-    return nullptr;
-  }
+  // Skip delete-marked records iteratively; cap the number of steps so a
+  // cyclic next-record chain on a corrupt page cannot loop forever.
+  const uint32_t max_recs = buf_len / REC_N_NEW_EXTRA_BYTES + 1;
+  uint32_t n_steps = 0;
+  unsigned char* next_rec = nullptr;
+  unsigned char* rec = current_rec;
+  do {
+    if (++n_steps > max_recs) {
+      ninja_error("Record chain on page %u does not terminate "
+                  "(possible cycle)", page_no);
+      *corrupt = true;
+      return nullptr;
+    }
+    uint32_t next_rec_offset = RecGetNextOffs(rec, is_comp);
 
-  unsigned char* next_rec = buf + next_rec_offset;
+    if (next_rec_offset == 0) {
+      ninja_error("Record is corrupt");
+      *corrupt = true;
+      return nullptr;
+    }
+    if (next_rec_offset < PAGE_NEW_INFIMUM || next_rec_offset >= buf_len) {
+      ninja_error("Next-record offset %u on page %u is out of bounds",
+                  next_rec_offset, page_no);
+      *corrupt = true;
+      return nullptr;
+    }
 
-  assert(static_cast<uint32_t>(next_rec - buf) <= buf_len);
-
-  if (RecGetDeletedFlag(next_rec, is_comp) != 0) {
-    unsigned char* curr_rec = next_rec;
-    return SDIGetNextRec(curr_rec, buf, buf_len, corrupt);
-  }
+    next_rec = buf + next_rec_offset;
+    rec = next_rec;
+  } while (RecGetDeletedFlag(next_rec, is_comp) != 0);
 
   if (RecGetType(next_rec) == REC_STATUS_SUPREMUM) {
     if (memcmp(next_rec, "supremum", strlen("supremum")) != 0) {
@@ -1688,6 +1839,14 @@ bool ibdNinja::SDIParseRec(unsigned char* rec,
     rec_data_in_page_len = (rec_data_len_partial & 0x3f) << 8;
     if (rec_data_len_partial & 0x40) {
       is_rec_data_external = true;
+      /* Validate that the 20-byte external reference following the in-page
+      prefix lies within the page before reading it. */
+      if (page_offset(rec) + REC_OFF_DATA_VARCHAR + rec_data_in_page_len +
+          BTR_EXTERN_FIELD_REF_SIZE > g_page_physical_size) {
+        ninja_error("SDI record corruption: external reference runs past "
+                    "the page");
+        return false;
+      }
       rec_data_length =
           ReadFrom8B(rec + REC_OFF_DATA_VARCHAR + rec_data_in_page_len +
                            BTR_EXTERN_LEN);
@@ -1701,14 +1860,46 @@ bool ibdNinja::SDIParseRec(unsigned char* rec,
     rec_data_length = rec_data_len_partial;
   }
 
+  /* All the lengths above are read from the file. Validate them before
+  allocating or copying anything, so a corrupt record is reported instead
+  of throwing std::bad_alloc or over-reading the page. */
+  if (rec_data_length != sdi_comp_len) {
+    ninja_error("SDI record corruption: stored data length %" PRIu64
+                " != compressed length %u", rec_data_length, sdi_comp_len);
+    return false;
+  }
+  static constexpr uint64_t SDI_MAX_DATA_LEN = 256 * 1024 * 1024;  // 256MB
+  if (rec_data_length > SDI_MAX_DATA_LEN || sdi_uncomp_len > SDI_MAX_DATA_LEN) {
+    ninja_error("SDI record corruption: unreasonable SDI length "
+                "(compressed %" PRIu64 ", uncompressed %u)",
+                rec_data_length, sdi_uncomp_len);
+    return false;
+  }
+  if (is_rec_data_external &&
+      rec_data_in_page_len != 0 &&
+      rec_data_in_page_len != REC_ANTELOPE_MAX_INDEX_COL_LEN) {
+    ninja_error("SDI record corruption: unexpected in-page prefix length %u",
+                rec_data_in_page_len);
+    return false;
+  }
+  {
+    /* The in-page portion must not run past the page buffer. */
+    uint32_t in_page_len = is_rec_data_external
+        ? rec_data_in_page_len : static_cast<uint32_t>(rec_data_length);
+    uint32_t rec_off = page_offset(rec);
+    if (rec_off + REC_OFF_DATA_VARCHAR + in_page_len >
+        g_page_physical_size) {
+      ninja_error("SDI record corruption: record data (%u bytes at offset "
+                  "%u) runs past the page", in_page_len, rec_off);
+      return false;
+    }
+  }
+
   unsigned char* str = new unsigned char[rec_data_length + 1]();
 
   unsigned char* rec_data_origin = rec + REC_OFF_DATA_VARCHAR;
 
   if (is_rec_data_external) {
-    assert(rec_data_in_page_len == 0 ||
-          rec_data_in_page_len == REC_ANTELOPE_MAX_INDEX_COL_LEN);
-
     if (rec_data_in_page_len != 0) {
       memcpy(str, rec_data_origin, rec_data_in_page_len);
     }
@@ -1718,32 +1909,22 @@ bool ibdNinja::SDIParseRec(unsigned char* rec,
         ReadFrom4B(rec + REC_OFF_DATA_VARCHAR + rec_data_in_page_len +
                          BTR_EXTERN_PAGE_NO);
 
-    uint64_t blob_len_retrieved = 0;
     if (g_page_compressed) {
       // TODO(Zhao): Support compressed page
     } else {
       uint32_t n_ext_pages = 0;
       bool error = false;
-      blob_len_retrieved = SDIFetchUncompBlob(
+      SDIFetchUncompBlob(
           first_blob_page_no, rec_data_length - rec_data_in_page_len,
           str + rec_data_in_page_len, &n_ext_pages, &error);
+      if (error) {
+        ninja_error("Failed to fetch external SDI data");
+        delete[] str;
+        return false;
+      }
     }
-    *sdi_data_len = rec_data_in_page_len + blob_len_retrieved;
   } else {
     memcpy(str, rec_data_origin, static_cast<size_t>(rec_data_length));
-    *sdi_data_len = rec_data_length;
-  }
-
-  *sdi_data_len = rec_data_length;
-  *sdi_data = str;
-
-  assert(rec_data_length == sdi_comp_len);
-
-  if (rec_data_length != sdi_comp_len) {
-    /* Record Corruption */
-    ninja_error("SDI record corruption");
-    delete[] str;
-    return false;
   }
 
   unsigned char* uncompressed_sdi = new unsigned char[sdi_uncomp_len + 1]();
@@ -1754,6 +1935,7 @@ bool ibdNinja::SDIParseRec(unsigned char* rec,
 
   if (ret != Z_OK) {
     ninja_error("Failed to uncompress SDI record, error: %d", ret);
+    delete[] uncompressed_sdi;
     delete[] str;
     return false;
   }
@@ -1780,6 +1962,12 @@ uint64_t ibdNinja::SDIFetchUncompBlob(uint32_t first_blob_page_no,
   do {
     uint32_t bytes = ReadPage(next_page_no, page_buf);
     *n_ext_pages += 1;
+    if (*n_ext_pages > LOB_MAX_PAGES_VISITED) {
+      ninja_error("SDI BLOB chain exceeded max pages limit (%u), "
+                  "possible corruption", LOB_MAX_PAGES_VISITED);
+      *error = true;
+      break;
+    }
     if (bytes != g_page_physical_size) {
       ninja_error("Failed to read BLOB page: %u, error: %d(%s)",
               next_page_no, errno, strerror(errno));
@@ -1796,6 +1984,23 @@ uint64_t ibdNinja::SDIFetchUncompBlob(uint32_t first_blob_page_no,
 
     part_len =
         ReadFrom4B(page_buf + FIL_PAGE_DATA + LOB_HDR_PART_LEN);
+
+    /* part_len is read from the file: bound it by what physically fits on
+    the page and by the remaining expected length (the caller's buffer is
+    sized to total_off_page_length). */
+    uint32_t page_avail = LobPageAvail(FIL_PAGE_DATA + LOB_HDR_SIZE);
+    if (part_len > page_avail) {
+      ninja_error("SDI BLOB part length %" PRIu64 " exceeds page capacity "
+                  "%u on page %u", part_len, page_avail, next_page_no);
+      *error = true;
+      break;
+    }
+    if (calc_length + part_len > total_off_page_length) {
+      ninja_error("SDI BLOB data exceeds expected length %" PRIu64,
+                  total_off_page_length);
+      *error = true;
+      break;
+    }
 
     if (dest_buf) {
       memcpy(dest_buf + calc_length, page_buf + FIL_PAGE_DATA + LOB_HDR_SIZE,
@@ -1814,8 +2019,10 @@ uint64_t ibdNinja::SDIFetchUncompBlob(uint32_t first_blob_page_no,
     }
   } while (next_page_no != FIL_NULL);
 
-  if (!*error) {
-    assert(calc_length == total_off_page_length);
+  if (!*error && calc_length != total_off_page_length) {
+    ninja_error("SDI BLOB length mismatch: fetched %" PRIu64
+                ", expected %" PRIu64, calc_length, total_off_page_length);
+    *error = true;
   }
   return calc_length;
 }
@@ -1824,10 +2031,9 @@ unsigned char* ibdNinja::GetFirstUserRec(unsigned char* buf) {
   uint32_t next_rec_off_t =
             ReadFrom2B(buf + PAGE_NEW_INFIMUM - REC_OFF_NEXT);
 
-  assert(PAGE_NEW_INFIMUM + next_rec_off_t != PAGE_NEW_SUPREMUM);
-
-  if (next_rec_off_t > g_page_physical_size) {
-    assert(0);
+  if (PAGE_NEW_INFIMUM + next_rec_off_t >= g_page_physical_size) {
+    ninja_error("Corrupt next-record offset %u after INFIMUM",
+                next_rec_off_t);
     return (nullptr);
   }
 
@@ -1838,12 +2044,13 @@ unsigned char* ibdNinja::GetFirstUserRec(unsigned char* buf) {
 
   unsigned char* current_rec = buf + PAGE_NEW_INFIMUM + next_rec_off_t;
 
-  assert(static_cast<uint32_t>(current_rec - buf) <= g_page_physical_size);
-
   bool is_comp = PageIsCompact(buf);
 
   // TODO(Zhao): Support redundant row format
-  assert(is_comp);
+  if (!is_comp) {
+    ninja_error("Redundant row format is not supported");
+    return nullptr;
+  }
 
   return current_rec;
 }
@@ -1859,13 +2066,18 @@ unsigned char* ibdNinja::GetNextRecInPage(unsigned char* current_rec,
   if (next_rec_offset == 0) {
     ninja_error("Record is corrupt");
     *corrupt = true;
-    assert(0);
+    return nullptr;
+  }
+
+  if (next_rec_offset < PAGE_NEW_INFIMUM ||
+      next_rec_offset >= g_page_physical_size) {
+    ninja_error("Next-record offset %u on page %u is out of bounds",
+                next_rec_offset, page_no);
+    *corrupt = true;
     return nullptr;
   }
 
   unsigned char* next_rec = buf + next_rec_offset;
-
-  assert(static_cast<uint32_t>(next_rec - buf) <= g_page_physical_size);
 
   if (RecGetType(next_rec) == REC_STATUS_SUPREMUM) {
     if (memcmp(next_rec, "supremum", strlen("supremum")) != 0) {
@@ -2003,8 +2215,10 @@ bool ibdNinja::ParsePage(uint32_t page_no,
             if (b != g_page_physical_size) break;
             cached_page = cur_addr.page_no;
           }
-          LobIndexEntry entry = ReadLobIndexEntry(
-              idx_buf + cur_addr.byte_offset);
+          LobIndexEntry entry;
+          if (!ReadLobIndexEntryChecked(idx_buf, cur_addr, &entry)) {
+            break;
+          }
           ninja_pt(print, "    Entry %u: data_page=%u, data_len=%u, "
                    "lob_version=%u, creator_trx=%" PRIu64
                    ", modifier_trx=%" PRIu64 "\n",
@@ -2066,12 +2280,15 @@ bool ibdNinja::ParsePage(uint32_t page_no,
   }
 
   uint32_t page_no_in_fil_header = ReadFrom4B(buf + FIL_PAGE_OFFSET);
-  assert(page_no_in_fil_header == page_no);
+  if (page_no_in_fil_header != page_no) {
+    ninja_warn("Page number %u in the FIL header does not match the "
+               "requested page %u", page_no_in_fil_header, page_no);
+  }
   uint32_t prev_page_no = ReadFrom4B(buf + FIL_PAGE_PREV);
   uint32_t next_page_no = ReadFrom4B(buf + FIL_PAGE_NEXT);
   uint32_t space_id = ReadFrom4B(buf + FIL_PAGE_ARCH_LOG_NO_OR_SPACE_ID);
-  uint32_t lsn = ReadFrom8B(buf + FIL_PAGE_LSN);
-  uint32_t flush_lsn = ReadFrom8B(buf + FIL_PAGE_FILE_FLUSH_LSN);
+  uint64_t lsn = ReadFrom8B(buf + FIL_PAGE_LSN);
+  uint64_t flush_lsn = ReadFrom8B(buf + FIL_PAGE_FILE_FLUSH_LSN);
 
   uint32_t n_dir_slots = ReadFrom2B(buf + PAGE_HEADER + PAGE_N_DIR_SLOTS);
   uint32_t heap_top = ReadFrom2B(buf + PAGE_HEADER + PAGE_HEAP_TOP);
@@ -2083,7 +2300,7 @@ bool ibdNinja::ParsePage(uint32_t page_no,
   uint32_t direction = ReadFrom2B(buf + PAGE_HEADER + PAGE_DIRECTION);
   uint32_t n_direction = ReadFrom2B(buf + PAGE_HEADER + PAGE_N_DIRECTION);
   uint32_t n_recs = ReadFrom2B(buf + PAGE_HEADER + PAGE_N_RECS);
-  uint32_t max_trx_id = ReadFrom2B(buf + PAGE_HEADER + PAGE_MAX_TRX_ID);
+  uint64_t max_trx_id = ReadFrom8B(buf + PAGE_HEADER + PAGE_MAX_TRX_ID);
   uint32_t page_level = ReadFrom2B(buf + PAGE_HEADER + PAGE_LEVEL);
   uint64_t index_id = ReadFrom8B(buf + PAGE_HEADER + PAGE_INDEX_ID);
 
@@ -2115,8 +2332,8 @@ bool ibdNinja::ParsePage(uint32_t page_no,
   }
   ninja_pt(print, "    Space id:          %u\n", space_id);
   ninja_pt(print, "    Page type:         %s\n", PageType2String(type).c_str());
-  ninja_pt(print, "    Lsn:               %u\n", lsn);
-  ninja_pt(print, "    FLush lsn:         %u\n", flush_lsn);
+  ninja_pt(print, "    Lsn:               %" PRIu64 "\n", lsn);
+  ninja_pt(print, "    FLush lsn:         %" PRIu64 "\n", flush_lsn);
   ninja_pt(print, "    -------------------\n");
   ninja_pt(print, "    Page level:        %u\n", page_level);
   ninja_pt(print, "    Page size:         [logical: %u B], [physical: %u B]\n",
@@ -2140,7 +2357,7 @@ bool ibdNinja::ParsePage(uint32_t page_no,
   ninja_pt(print, "    Last insert:       %u\n", last_insert);
   ninja_pt(print, "    Direction:         %u\n", direction);
   ninja_pt(print, "    Number direction:  %u\n", n_direction);
-  ninja_pt(print, "    Max trx id:        %u\n", max_trx_id);
+  ninja_pt(print, "    Max trx id:        %" PRIu64 "\n", max_trx_id);
 
   ninja_pt(print, "\n");
 
@@ -2167,16 +2384,24 @@ bool ibdNinja::ParsePage(uint32_t page_no,
   if (n_recs > 0) {
     current_rec = GetFirstUserRec(buf);
     bool corrupt = false;
-    while (current_rec != nullptr && corrupt != true) {
+    // The record chain should contain exactly n_recs user records before
+    // reaching the supremum; cap the walk so a cyclic chain cannot loop.
+    while (current_rec != nullptr && corrupt != true && i < n_recs) {
       i++;
       Record rec(current_rec, index);
-      rec.GetColumnOffsets();
+      if (rec.GetColumnOffsets() == nullptr) {
+        ninja_error("Failed to compute column offsets for record %u on "
+                    "page %u, stopping record parsing", i, page_no);
+        corrupt = true;
+        break;
+      }
       rec.ParseRecord(page_level == 0, i, &result,
                       print_rec);
       current_rec = GetNextRecInPage(current_rec, buf, &corrupt);
     }
-    if (corrupt != true) {
-      assert(i == n_recs);
+    if (corrupt != true && i != n_recs) {
+      ninja_warn("Page %u record chain ended after %u records, "
+                 "but the page header claims %u", page_no, i, n_recs);
     }
   } else {
     ninja_pt(print_rec, "No record\n");
@@ -2294,8 +2519,11 @@ bool ibdNinja::ParsePage(uint32_t page_no,
           result.deleted_recs_len_non_leaf) /
         g_page_physical_size * 100);
 
-    assert(result.n_contain_dropped_cols_recs_non_leaf == 0);
-    assert(result.dropped_cols_len_non_leaf == 0);
+    if (result.n_contain_dropped_cols_recs_non_leaf != 0 ||
+        result.dropped_cols_len_non_leaf != 0) {
+      ninja_warn("Unexpected instant-dropped column data in non-leaf "
+                 "records on page %u", page_no);
+    }
 
     result.innodb_internal_used_non_leaf =
       PAGE_NEW_SUPREMUM_END + result.headers_len_non_leaf +
@@ -2405,7 +2633,11 @@ bool ibdNinja::ToLeftmostLeaf(Index* index,
       break;
     }
     Record record(current_rec, index);
-    record.GetColumnOffsets();
+    if (record.GetColumnOffsets() == nullptr) {
+      ninja_error("Failed to compute column offsets on page %u",
+                  curr_page_no);
+      return false;
+    }
     uint32_t child_page_no = record.GetChildPageNo();
 
     uint64_t curr_page_level = page_level;
@@ -2463,7 +2695,16 @@ bool ibdNinja::ParseIndex(Index* index) {
     index_result.n_level++;
     uint32_t current_page_no = iter;
     uint32_t next_page_no = FIL_NULL;
+    // Track visited pages: a corrupt file whose FIL_PAGE_NEXT pointers form
+    // a cycle must not make this loop run forever.
+    std::set<uint32_t> visited_pages;
     do {
+      if (!visited_pages.insert(current_page_no).second) {
+        ninja_error("Page %u was already visited while following "
+                    "FIL_PAGE_NEXT; the page chain contains a cycle. "
+                    "Stopping analysis for this level.", current_page_no);
+        break;
+      }
       ssize_t bytes = ReadPage(current_page_no, buf);
       if (bytes != g_page_physical_size) {
         ninja_error("Failed to read page: %u, error: %d(%s)",
@@ -2561,8 +2802,11 @@ bool ibdNinja::ParseIndex(Index* index) {
           index_result.recs_result.deleted_recs_len_non_leaf) /
         total_pages_size * 100);
 
-    assert(index_result.recs_result.n_contain_dropped_cols_recs_non_leaf == 0);
-    assert(index_result.recs_result.dropped_cols_len_non_leaf == 0);
+    if (index_result.recs_result.n_contain_dropped_cols_recs_non_leaf != 0 ||
+        index_result.recs_result.dropped_cols_len_non_leaf != 0) {
+      ninja_warn("Unexpected instant-dropped column data in non-leaf "
+                 "records of index %s", index->name().c_str());
+    }
 
     fprintf(stdout, "\n");
     fprintf(stdout, "Total Innodb internal space used:                 "

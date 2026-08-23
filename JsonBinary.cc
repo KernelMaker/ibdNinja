@@ -107,14 +107,23 @@ static bool IsInlineable(uint8_t type, bool large) {
   }
 }
 
+// Value offsets inside the document are read from the file, so nesting can
+// be made circular by corruption; cap the recursion depth. MySQL documents
+// nest far shallower than this in practice.
+static constexpr int JSONB_MAX_DEPTH = 100;
+
 // Forward declaration
 static bool DecodeValue(const unsigned char* data, size_t data_len,
                         uint8_t type, size_t value_offset,
-                        std::string* out);
+                        std::string* out, int depth);
 
 static bool DecodeObjectOrArray(const unsigned char* data, size_t data_len,
                                 size_t offset, bool is_object, bool large,
-                                std::string* out) {
+                                std::string* out, int depth) {
+  if (depth > JSONB_MAX_DEPTH) {
+    *out = "\"<max_depth_exceeded>\"";
+    return false;
+  }
   size_t offset_size = large ? 4 : 2;
   // Need at least count + size
   if (offset + 2 * offset_size > data_len) {
@@ -203,7 +212,8 @@ static bool DecodeObjectOrArray(const unsigned char* data, size_t data_len,
       // Value is at an offset relative to the start of the object/array
       size_t abs_val_offset = offset + val_offset_or_inline;
       std::string val_str;
-      if (!DecodeValue(data, data_len, val_type, abs_val_offset, &val_str)) {
+      if (!DecodeValue(data, data_len, val_type, abs_val_offset, &val_str,
+                       depth + 1)) {
         result += "\"<decode_error>\"";
       } else {
         result += val_str;
@@ -218,20 +228,20 @@ static bool DecodeObjectOrArray(const unsigned char* data, size_t data_len,
 
 static bool DecodeValue(const unsigned char* data, size_t data_len,
                         uint8_t type, size_t value_offset,
-                        std::string* out) {
+                        std::string* out, int depth) {
   switch (type) {
     case JSONB_TYPE_SMALL_OBJECT:
       return DecodeObjectOrArray(data, data_len, value_offset,
-                                 true, false, out);
+                                 true, false, out, depth);
     case JSONB_TYPE_LARGE_OBJECT:
       return DecodeObjectOrArray(data, data_len, value_offset,
-                                 true, true, out);
+                                 true, true, out, depth);
     case JSONB_TYPE_SMALL_ARRAY:
       return DecodeObjectOrArray(data, data_len, value_offset,
-                                 false, false, out);
+                                 false, false, out, depth);
     case JSONB_TYPE_LARGE_ARRAY:
       return DecodeObjectOrArray(data, data_len, value_offset,
-                                 false, true, out);
+                                 false, true, out, depth);
 
     case JSONB_TYPE_LITERAL: {
       if (value_offset >= data_len) {
@@ -386,7 +396,7 @@ std::string JsonBinaryToString(const unsigned char* data, size_t len) {
   uint8_t type = data[0];
   std::string result;
 
-  if (!DecodeValue(data, len, type, 1, &result)) {
+  if (!DecodeValue(data, len, type, 1, &result, 0)) {
     // Partial decode is still useful, return what we have
     if (result.empty()) {
       return "<decode_error>";

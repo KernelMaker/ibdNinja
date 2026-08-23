@@ -14,6 +14,9 @@ namespace ibd_ninja {
 
 #define ninja_pt(p, fmt, ...) \
     do { if (p) printf(fmt, ##__VA_ARGS__); } while (0)
+#define ninja_error(format, ...) \
+    fprintf(stderr, "[ERROR] %s:%d - " format "\n", \
+            __FILE__, __LINE__, ##__VA_ARGS__)
 
 #define UT_BITS_IN_BYTES(b) (((b) + 7UL) / 8UL)
 
@@ -48,7 +51,10 @@ uint32_t* Record::GetColumnOffsets() {
         n = 1;
         break;
       default:
-        assert(0);
+        // The status bits come from the record on disk
+        ninja_error("Invalid record status %u, the record is corrupt",
+                    GetStatus());
+        return nullptr;
     }
   } else {
     // TODO(Zhao): Support redundant row format
@@ -177,6 +183,14 @@ void Record::InitColumnOffsetsCompactLeaf() {
   uint16_t i = 0;
   do {
     IndexColumn* index_col = index_->GetPhysicalField(i);
+    if (index_col == nullptr) {
+      // Corrupt metadata: fill the remaining offsets as zero-length NULL
+      // fields so callers never read uninitialized offsets.
+      do {
+        RecOffsBase(offsets_)[i + 1] = offs | REC_OFFS_SQL_NULL;
+      } while (++i < RecOffsNFields(offsets_));
+      break;
+    }
     Column* col = index_col->column();
     uint64_t len;
     switch (rec_insert_state) {
@@ -220,7 +234,12 @@ void Record::InitColumnOffsetsCompactLeaf() {
     }
 
     if (col->is_nullable()) {
-      assert(n_null--);
+      // n_null tracks the nullable columns accounted for in the null
+      // bitmap; running out means the record is corrupt. (Must not be a
+      // side effect inside assert(): that breaks under -DNDEBUG.)
+      if (n_null > 0) {
+        n_null--;
+      }
 
       if (!(unsigned char)null_mask) {
         nulls--;
@@ -383,15 +402,23 @@ uint32_t Record::GetNFieldsInstant(const uint32_t extra_bytes,
   *length = 2;
   n_fields = ((*ptr-- & REC_N_FIELDS_ONE_BYTE_MAX) << 8);
   n_fields |= *ptr;
-  assert(n_fields < REC_MAX_N_FIELDS);
-  assert(n_fields != 0);
+  // The count comes from the record on disk; report instead of asserting.
+  // Callers bound it against the index field array before using it.
+  if (n_fields >= REC_MAX_N_FIELDS || n_fields == 0) {
+    ninja_error("Instant field count %u is out of range, "
+                "the record is likely corrupt", n_fields);
+  }
 
   return (n_fields);
 }
 
 uint64_t Record::GetInstantOffset(uint32_t n, uint64_t offs) {
   assert(index_->HasInstantColsOrRowVersions());
-  Column* col = index_->GetPhysicalField(n)->column();
+  IndexColumn* index_col = index_->GetPhysicalField(n);
+  if (index_col == nullptr) {
+    return (offs | REC_OFFS_SQL_NULL);
+  }
+  Column* col = index_col->column();
   if (col->ib_instant_default()) {
     return (offs | REC_OFFS_DEFAULT);
   } else {
@@ -407,6 +434,22 @@ void Record::ParseRecord(bool leaf, uint32_t row_no,
   uint32_t header_len = (RecOffsBase(offsets_)[0] & REC_OFFS_MASK);
   uint32_t rec_len = (RecOffsBase(offsets_)[n_fields] &
                       REC_OFFS_MASK);
+  // The offsets above accumulate variable-length field lengths read from
+  // the file; bound everything by the page so a bad length can't make the
+  // dump below walk past the page buffer.
+  uint32_t rec_off = page_offset(rec_);
+  uint32_t max_body_len =
+      (g_page_physical_size > rec_off) ? g_page_physical_size - rec_off : 0;
+  if (header_len > rec_off) {
+    ninja_error("Record header length %u runs past the start of the page, "
+                "the record is likely corrupt", header_len);
+    header_len = rec_off;
+  }
+  if (rec_len > max_body_len) {
+    ninja_error("Record length %u runs past the end of the page, "
+                "the record is likely corrupt", rec_len);
+    rec_len = max_body_len;
+  }
   ninja_pt(print, "=========================================="
                   "=============================\n");
   ninja_pt(print, "[ROW %u] Length: %u (%d | %d), Number of fields: %u\n",
@@ -466,6 +509,11 @@ void Record::ParseRecord(bool leaf, uint32_t row_no,
                          i + 1);
     } else {
       index_col = index_->GetPhysicalField(i);
+      if (index_col == nullptr) {
+        ninja_pt(print, "  [FIELD %3u] <corrupt field metadata, "
+                        "stopping record dump>\n", i + 1);
+        break;
+      }
       ninja_pt(print, "  [FIELD %3u] Name  : %s\n",
                          i + 1,
                          index_col->column()->name().c_str());
@@ -473,6 +521,13 @@ void Record::ParseRecord(bool leaf, uint32_t row_no,
 
     len = RecOffsBase(offsets_)[i + 1];
     end_pos = (len & REC_OFFS_MASK);
+    if (end_pos > max_body_len) {
+      // Bad on-disk length; clamp the dump to the page.
+      end_pos = max_body_len;
+    }
+    if (end_pos < start_pos) {
+      end_pos = start_pos;
+    }
     ninja_pt(print, "              "
                     "Length: %-5u\n",
                     end_pos - start_pos);
@@ -541,7 +596,14 @@ void Record::ParseRecord(bool leaf, uint32_t row_no,
       start_pos++;
     }
     if (len & REC_OFFS_EXTERNAL) {
-      const unsigned char* ext_ref = &rec_[end_pos - 20];
+      if (end_pos < BTR_EXTERN_FIELD_REF_SIZE) {
+        ninja_pt(print, "\n                      "
+                 "[EXTERNAL: corrupt reference, field too short]");
+        ninja_pt(print, "\n");
+        continue;
+      }
+      const unsigned char* ext_ref =
+          &rec_[end_pos - BTR_EXTERN_FIELD_REF_SIZE];
       uint32_t space_id = ReadFrom4B(ext_ref + BTR_EXTERN_SPACE_ID);
       uint32_t ext_page_no = ReadFrom4B(ext_ref + BTR_EXTERN_PAGE_NO);
       uint32_t ext_version = ReadFrom4B(ext_ref + BTR_EXTERN_VERSION);
@@ -564,7 +626,15 @@ uint32_t Record::GetChildPageNo() {
   uint32_t last_2_end_pos = (last_2_len & REC_OFFS_MASK);
   uint32_t last_len = (RecOffsBase(offsets_)[n_fields]);
   uint32_t last_end_pos = (last_len & REC_OFFS_MASK);
-  assert(last_end_pos - last_2_end_pos == 4);
+  uint32_t rec_off = page_offset(rec_);
+  // Both offsets come from parsing on-disk data: validate that the
+  // node-pointer field is the expected 4 bytes and lies inside the page.
+  if (last_end_pos - last_2_end_pos != REC_NODE_PTR_SIZE ||
+      rec_off + last_end_pos > g_page_physical_size) {
+    ninja_error("Corrupt node-pointer record (field end offsets %u/%u)",
+                last_2_end_pos, last_end_pos);
+    return FIL_NULL;
+  }
   return ReadFrom4B(&rec_[last_2_end_pos]);
 }
 

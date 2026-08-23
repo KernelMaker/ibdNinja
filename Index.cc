@@ -7,10 +7,15 @@
 #include "JSONHelpers.h"
 
 #include <cassert>
+#include <cstdio>
 #include <cstring>
 #include <iostream>
 
 namespace ibd_ninja {
+
+#define ninja_error(format, ...) \
+      fprintf(stderr, "[ERROR] %s:%d - " format "\n", \
+              __FILE__, __LINE__, ##__VA_ARGS__)
 
 /* ------ Index ------ */
 const std::set<std::string> Index::default_valid_option_keys = {
@@ -104,44 +109,57 @@ bool Index::FillIndex(uint32_t ind) {
       assert(0);
       s_flags_ = 0;
   }
-  FillSeIndex(ind);
-  return true;
+  return FillSeIndex(ind);
 }
 
 #define FTS_DOC_ID_COL_NAME "FTS_DOC_ID"
 
 bool Index::IndexAddCol(Column* col, uint32_t prefix_len) {
-  if (col->index_column() != nullptr) {
-    ib_fields_.push_back(col->index_column());
-  } else if (col->name() == FTS_DOC_ID_COL_NAME) {
-    /*
-     * The FTS_DOC_ID column is not defined in the SDI's PRIMARY index columns,
-     * so we need to create it manually.
-     */
-    IndexColumn* index_column = IndexColumn::CreateIndexFTSDocIdColumn(col);
-    ib_fields_.push_back(index_column);
-  } else {
-    assert(col->IsInstantDropped());
-    IndexColumn* index_column = IndexColumn::CreateIndexDroppedColumn(col);
-    ib_fields_.push_back(index_column);
+  IndexColumn* field = col->index_column();
+  if (field == nullptr) {
+    if (col->name() == FTS_DOC_ID_COL_NAME) {
+      /*
+       * The FTS_DOC_ID column is not defined in the SDI's PRIMARY index
+       * columns, so we need to create it manually.
+       */
+      field = IndexColumn::CreateIndexFTSDocIdColumn(col);
+    } else {
+      assert(col->IsInstantDropped());
+      field = IndexColumn::CreateIndexDroppedColumn(col);
+    }
   }
   ib_n_def_++;
-  if (ib_type_ & HA_SPATIAL &&
+
+  uint32_t fixed_len;
+  if (ib_type_ & DICT_SPATIAL &&
       (col->ib_mtype() == DATA_POINT ||
        col->ib_mtype() == DATA_VAR_POINT) &&
       ib_n_def_ == 1) {
-    col->index_column()->set_ib_fixed_len(DATA_MBR_LEN);
+    fixed_len = DATA_MBR_LEN;
   } else {
-    col->index_column()->set_ib_fixed_len(col->GetFixedSize());
+    fixed_len = col->GetFixedSize();
   }
 
-  if (prefix_len && col->index_column()->ib_fixed_len() > prefix_len) {
-    col->index_column()->set_ib_fixed_len(prefix_len);
+  if (prefix_len && fixed_len > prefix_len) {
+    /*
+     * A prefixed key (e.g. KEY(c(10)) on a fixed-width column) stores a
+     * fixed prefix_len-byte field (MySQL: dict_index_add_col()). The
+     * capped length is specific to THIS index, but IndexColumn objects
+     * are shared across indexes via Column::index_column() -- so use a
+     * private copy instead of mutating the shared object, which would
+     * corrupt parsing of the other indexes on the same column.
+     */
+    fixed_len = prefix_len;
+    IndexColumn* prefix_field = IndexColumn::CreateIndexPrefixColumn(col);
+    ib_prefix_fields_.push_back(prefix_field);
+    field = prefix_field;
   }
 
-  if (col->index_column()->ib_fixed_len() > DICT_MAX_FIXED_COL_LEN) {
-    col->index_column()->set_ib_fixed_len(0);
+  if (fixed_len > DICT_MAX_FIXED_COL_LEN) {
+    fixed_len = 0;
   }
+  field->set_ib_fixed_len(fixed_len);
+  ib_fields_.push_back(field);
 
   if (col->is_nullable() &&
       !col->IsInstantDropped()) {
@@ -162,6 +180,13 @@ uint32_t Index::GetNOriginalFields() {
 }
 
 uint32_t Index::GetNNullableBefore(uint32_t nth) {
+  // nth can originate from an on-disk field count; never index past
+  // the actual field array.
+  if (nth > ib_fields_.size()) {
+    ninja_error("Field count %u exceeds the index field array size %zu, "
+                "the record is likely corrupt", nth, ib_fields_.size());
+    nth = static_cast<uint32_t>(ib_fields_.size());
+  }
   uint32_t nullable = 0;
   for (uint32_t i = 0; i < nth; i++) {
     const IndexColumn* index_col = ib_fields_[i];
@@ -211,6 +236,13 @@ bool Index::HasInstantColsOrRowVersions() {
 }
 
 uint32_t Index::GetNullableInVersion(uint8_t version) {
+  // The row version byte is read from the record on disk; validate it
+  // before using it as an array index (MySQL: is_valid_row_version()).
+  if (version > MAX_ROW_VERSION) {
+    ninja_error("Row version %u exceeds MAX_ROW_VERSION (%u), "
+                "the record is likely corrupt", version, MAX_ROW_VERSION);
+    return ib_nullables_[0];
+  }
   return ib_nullables_[version];
 }
 
@@ -246,9 +278,19 @@ uint16_t Index::GetNUniqueInTreeNonleaf() {
 
 IndexColumn* Index::GetPhysicalField(size_t pos) {
   if (ib_row_versions_) {
+    if (pos >= ib_fields_array_.size()) {
+      ninja_error("Physical field position %zu is out of range (%zu fields)",
+                  pos, ib_fields_array_.size());
+      return nullptr;
+    }
     return ib_fields_[ib_fields_array_[pos]];
   }
 
+  if (pos >= ib_fields_.size()) {
+    ninja_error("Field position %zu is out of range (%zu fields)",
+                pos, ib_fields_.size());
+    return nullptr;
+  }
   return ib_fields_[pos];
 }
 
@@ -311,6 +353,33 @@ bool Index::IsIndexParsingRecSupported() {
 
 #define FTS_DOC_ID_INDEX_NAME "FTS_DOC_ID_INDEX"
 
+/*
+ * Determine the key prefix length (in bytes) of an index element, following
+ * MySQL's create_index() (ha_innodb.cc): the DD element 'length' is
+ * key_part->length; a value smaller than the column's byte length means the
+ * key is on a column prefix (e.g. KEY(c(10))). dict_index_add_col() then
+ * caps the field's fixed length at the prefix length.
+ */
+static uint32_t GetElementPrefixLen(IndexColumn* element) {
+  Column* col = element->column();
+  uint32_t mtype = col->ib_mtype();
+  bool is_large_mtype = (mtype == DATA_BLOB || mtype == DATA_VAR_POINT ||
+                         mtype == DATA_GEOMETRY);
+  if (is_large_mtype || element->length() < col->ib_col_len()) {
+    switch (mtype) {
+      case DATA_INT:
+      case DATA_FLOAT:
+      case DATA_DOUBLE:
+      case DATA_DECIMAL:
+        // Prefix indexes are not possible on these types
+        return 0;
+      default:
+        return element->length();
+    }
+  }
+  return 0;
+}
+
 bool Index::FillSeIndex(uint32_t ind) {
   PreCheck();
   if (!IsIndexSupported()) {
@@ -345,21 +414,15 @@ bool Index::FillSeIndex(uint32_t ind) {
   ib_n_nullable_ = 0;
   ib_fields_.clear();
 
-  for (auto* iter : dd_elements_) {
-    if (iter->hidden()) {
-      continue;
-    }
-    uint32_t prefix_len = 0;
-    IndexAddCol(iter->column(), prefix_len);
-  }
-
   /*
    * Special case: "FTS_DOC_ID_INDEX"
    * The columns of FTS_DOC_ID_INDEX defined in the SDI are correct,
    * but the information for the FTS_DOC_ID column is
    * missing (e.g., ib_mtype_).
    * Note that we have created a new FTS_DOC_ID in Table::ib_cols_,
-   * so use that instead.
+   * so use that instead. The swap must happen before IndexAddCol below,
+   * which computes the field's fixed length from ib_mtype_/ib_col_len_ --
+   * both uninitialized on the SDI copy of the column.
    */
   if (dd_name_ == FTS_DOC_ID_INDEX_NAME) {
     for (auto* iter : dd_elements_) {
@@ -370,6 +433,18 @@ bool Index::FillSeIndex(uint32_t ind) {
           }
         }
       }
+    }
+  }
+
+  for (auto* iter : dd_elements_) {
+    if (iter->hidden()) {
+      continue;
+    }
+    IndexAddCol(iter->column(), GetElementPrefixLen(iter));
+  }
+
+  if (dd_name_ == FTS_DOC_ID_INDEX_NAME) {
+    for (auto* iter : dd_elements_) {
       /*
        * The user has explicitly defined the FTS_DOC_ID column,
        * so no need to add another.
@@ -433,8 +508,12 @@ bool Index::FillSeIndex(uint32_t ind) {
         ib_n_fields_++;
       }
     }
-    assert((IsIndexUnique() || found_db_row_id) &&
-        found_db_trx_id && found_db_roll_ptr);
+    if (!((IsIndexUnique() || found_db_row_id) &&
+          found_db_trx_id && found_db_roll_ptr)) {
+      ninja_error("Missing system columns (DB_ROW_ID/DB_TRX_ID/DB_ROLL_PTR) "
+                  "in the SDI for index '%s'", dd_name_.c_str());
+      return false;
+    }
 
     std::vector<bool> indexed(table()->GetTotalCols(), false);
     for (auto* iter : ib_fields_) {
@@ -473,7 +552,15 @@ bool Index::FillSeIndex(uint32_t ind) {
           IndexColumn *index_col = ib_fields_[i];
           assert(index_col != nullptr && index_col->column() != nullptr);
 
+          // physical_pos comes from the SDI; a missing or corrupt value
+          // (e.g. UINT32_UNDEFINED) must not index past the array.
           size_t pos = index_col->column()->ib_phy_pos();
+          if (pos >= ib_n_def_) {
+            ninja_error("Column '%s' has physical position %zu out of range "
+                        "(%u fields); the SDI is likely corrupt",
+                        index_col->column()->name().c_str(), pos, ib_n_def_);
+            return false;
+          }
 
           ib_fields_array_[pos] = i;
         }

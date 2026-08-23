@@ -227,7 +227,7 @@ bool Table::InitSeTable() {
   }
   std::string norm_name = dd_schema_ref_ + "/" + dd_name_;
 
-  if (dd_schema_ref_ == "mysql" && dd_schema_ref_ == "information_schema" &&
+  if (dd_schema_ref_ == "mysql" || dd_schema_ref_ == "information_schema" ||
       dd_schema_ref_ == "performance_schema") {
     ib_is_system_table_ = true;
   } else {
@@ -517,10 +517,17 @@ bool Table::InitSeTable() {
     }
   }
 
-  assert(!indexes_.empty());
+  if (indexes_.empty()) {
+    ninja_error("Table '%s' has no indexes in its SDI", dd_name_.c_str());
+    return false;
+  }
   uint32_t ind = 0;
   for (auto* iter : indexes_) {
-    iter->FillIndex(ind);
+    if (!iter->FillIndex(ind)) {
+      ninja_error("Failed to initialize index '%s' of table '%s'",
+                  iter->name().c_str(), dd_name_.c_str());
+      return false;
+    }
     ind++;
   }
 

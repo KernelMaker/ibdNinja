@@ -35,3 +35,6 @@
 ibdNinja
 zlib
 tags
+
+# cscope
+cscope.*

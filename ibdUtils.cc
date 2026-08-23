@@ -190,8 +190,8 @@ bool RecGetDeletedFlag(const unsigned char* rec, bool comp) {
     return (RecGetBitField1B(rec, REC_NEW_INFO_BITS, REC_INFO_DELETED_FLAG,
                              REC_INFO_BITS_SHIFT));
   } else {
-    assert(0);
     // TODO(Zhao): Support redundant row format
+    return false;
   }
 }
 uint8_t RecGetType(const unsigned char* rec) {
@@ -247,21 +247,27 @@ uint32_t RecGetNextOffs(const unsigned char* rec, bool comp) {
   field_value = ReadFrom2B(rec - REC_NEXT);
 
   if (comp) {
-    assert(static_cast<uint16_t>(field_value +
-                                ut_align_offset(rec, UNIV_PAGE_SIZE)));
-
     if (field_value == 0) {
       return (0);
     }
 
-    assert((field_value > REC_N_NEW_EXTRA_BYTES && field_value < 32768) ||
-          field_value < (uint16_t) - REC_N_NEW_EXTRA_BYTES);
+    /* The next-record offset comes from the file: reject values outside
+    the range valid for the compact format (a 0 return means corrupt). */
+    if (static_cast<uint16_t>(field_value +
+                              ut_align_offset(rec, UNIV_PAGE_SIZE)) == 0) {
+      return (0);
+    }
+    if (!((field_value > REC_N_NEW_EXTRA_BYTES && field_value < 32768) ||
+          field_value < (uint16_t) - REC_N_NEW_EXTRA_BYTES)) {
+      return (0);
+    }
 
     return (ut_align_offset(rec + field_value, UNIV_PAGE_SIZE));
   } else {
     // TODO(Zhao): Support redundant row format
-    assert(0);
-    assert(field_value < UNIV_PAGE_SIZE);
+    if (field_value >= UNIV_PAGE_SIZE) {
+      return (0);
+    }
 
     return (field_value);
   }
@@ -286,27 +292,25 @@ uint16_t PageGetType(const unsigned char* page) {
 bool page_rec_check(const unsigned char* rec) {
   const unsigned char* page = page_align(rec);
 
-  assert(rec);
-
-  assert(page_offset(rec) <= PageHeaderGetField(page, PAGE_HEAP_TOP));
-  assert(page_offset(rec) >= PAGE_DATA);
+  if (rec == nullptr) {
+    return false;
+  }
+  /* These positions come from the file; a violation means corruption. */
+  if (page_offset(rec) > PageHeaderGetField(page, PAGE_HEAP_TOP) ||
+      page_offset(rec) < PAGE_DATA) {
+    return false;
+  }
 
   return true;
 }
 
 bool RecIsInfimum(const unsigned char* rec) {
-  assert(page_rec_check(rec));
   uint32_t offset = page_offset(rec);
-  assert(offset >= PAGE_NEW_INFIMUM);
-  assert(offset <= UNIV_PAGE_SIZE - PAGE_EMPTY_DIR_START);
   return (offset == PAGE_NEW_INFIMUM || offset == PAGE_OLD_INFIMUM);
 }
 
 bool RecIsSupremum(const unsigned char* rec) {
-  assert(page_rec_check(rec));
   uint32_t offset = page_offset(rec);
-  assert(offset >= PAGE_NEW_INFIMUM);
-  assert(offset <= UNIV_PAGE_SIZE - PAGE_EMPTY_DIR_START);
   return (offset == PAGE_NEW_SUPREMUM || offset == PAGE_OLD_SUPREMUM);
 }
 }  // namespace ibd_ninja

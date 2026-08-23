@@ -146,7 +146,7 @@ test_list_tables() {
     fi
 
     if [ ! -f "$expected_file" ]; then
-        log_skip "$test_name (no expected file)"
+        log_fail "$test_name (missing golden file, run with -u to create)"
         return
     fi
 
@@ -189,7 +189,7 @@ test_parse_page() {
     fi
 
     if [ ! -f "$expected_file" ]; then
-        log_skip "$test_name (no expected file)"
+        log_fail "$test_name (missing golden file, run with -u to create)"
         return
     fi
 
@@ -227,7 +227,7 @@ test_parse_page_with_records() {
     fi
 
     if [ ! -f "$expected_file" ]; then
-        log_skip "$test_name (no expected file)"
+        log_fail "$test_name (missing golden file, run with -u to create)"
         return
     fi
 
@@ -276,7 +276,7 @@ test_list_leftmost_pages() {
     fi
 
     if [ ! -f "$expected_file" ]; then
-        log_skip "$test_name (no expected file)"
+        log_fail "$test_name (missing golden file, run with -u to create)"
         return
     fi
 
@@ -323,7 +323,7 @@ test_parse_index() {
     fi
 
     if [ ! -f "$expected_file" ]; then
-        log_skip "$test_name (no expected file)"
+        log_fail "$test_name (missing golden file, run with -u to create)"
         return
     fi
 
@@ -368,6 +368,14 @@ for fixture in "$FIXTURES_DIR"/*.ibd; do
     test_parse_page_with_records "$fixture" 4
     test_list_leftmost_pages "$fixture"
     test_parse_index "$fixture"
+
+    # collation_prefix: also parse the secondary index pages -- page 5 is
+    # idx_lat_prefix (CHAR-prefix key, fixed 10-byte fields) and page 6 is
+    # idx_bin (utf8mb4_0900_bin key, variable-length fields).
+    if [ "$name" = "collation_prefix" ]; then
+        test_parse_page_with_records "$fixture" 5
+        test_parse_page_with_records "$fixture" 6
+    fi
 
     echo ""
 done

@@ -119,7 +119,7 @@ run_inspect_test_fixture() {
     fi
 
     if [ ! -f "$expected_file" ]; then
-        log_skip "$test_name (no expected file, run with -u to create)"
+        log_fail "$test_name (missing golden file, run with -u to create)"
         return
     fi
 
@@ -228,6 +228,33 @@ if [ -f "$LARGE_FIXTURE" ]; then
 else
     echo ""
     log_skip "json_partial_large tests (fixture not found)"
+fi
+
+# ===================================================================
+# json_shrink tests (shrinking partial update: JSON_SET replaced a
+# 10000-byte payload with 200 bytes, freeing LOB entries to the free
+# list; fetching v1 must reproduce the full old payload)
+# ===================================================================
+
+SHRINK_FIXTURE="$FIXTURES_DIR/json_shrink.ibd"
+if [ -f "$SHRINK_FIXTURE" ]; then
+    echo ""
+    echo -e "${BLUE}Testing: json_shrink${NC}"
+
+    SHRINK_PAGE=4
+    SHRINK_REC=1
+
+    # current version (v2, payload shrunk to 200 X's): action 2, exit
+    run_inspect_test_fixture "$SHRINK_FIXTURE" "json_shrink_inspect_current" $SHRINK_PAGE $SHRINK_REC "$(printf '2\n0\n')"
+
+    # version 1 (payload still 10000 A's): action 6, enter 1, exit
+    run_inspect_test_fixture "$SHRINK_FIXTURE" "json_shrink_inspect_v1" $SHRINK_PAGE $SHRINK_REC "$(printf '6\n1\n0\n')"
+
+    # version 2 via action 6: enter 2, exit
+    run_inspect_test_fixture "$SHRINK_FIXTURE" "json_shrink_inspect_v2" $SHRINK_PAGE $SHRINK_REC "$(printf '6\n2\n0\n')"
+else
+    echo ""
+    log_skip "json_shrink tests (fixture not found)"
 fi
 
 # ===================================================================

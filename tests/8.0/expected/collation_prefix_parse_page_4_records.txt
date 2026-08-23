@@ -1,0 +1,244 @@
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/collation_prefix.ibd
+    File size:             147456 B
+    Space id:              2
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 9
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     3 indexes.
+====================================================================================
+
+====================================================================================
+|  PAGE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    Page no:           4
+    Slibling pages no: NULL [4] NULL
+    Space id:          2
+    Page type:         INDEX
+    Lsn:               32376518
+    FLush lsn:         0
+    -------------------
+    Page level:        0
+    Page size:         [logical: 16384 B], [physical: 16384 B]
+    Number of records: 5
+    Index id:          158
+    Belongs to:        [table: ibdninja_test.collation_prefix], [index: PRIMARY]
+    Row format:        DYNAMIC
+    Number dir slots:  2
+    Heap top:          433
+    Number of heap:    7
+    First free rec:    0
+    Garbage:           0 B
+    Last insert:       402
+    Direction:         2
+    Number direction:  4
+    Max trx id:        0
+
+====================================================================================
+|  RECORDS INFORMATION                                                             |
+------------------------------------------------------------------------------------
+=======================================================================
+[ROW 1] Length: 68 (8 | 60), Number of fields: 7
+-----------------------------------------------------------------------
+  [HEADER   ]         09 0a 00 00 00 10 00 44  
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 01 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 07 18 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 01 18 01 10 
+  [FIELD   4] Name  : c_bin
+              Length: 10   
+              Type  : char(10)        | STRING       | DATA_MYSQL          
+              Value : 61 62 63 20 20 20 20 20  20 20 
+  [FIELD   5] Name  : trailing_int
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 04 57 
+  [FIELD   6] Name  : trailing_str
+              Length: 9    
+              Type  : varchar(20)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 66 74 65 72 2d 6f 6e  65 
+  [FIELD   7] Name  : c_lat
+              Length: 20   
+              Type  : char(20)        | STRING       | DATA_CHAR           
+              Value : 70 72 65 66 69 78 2d 6b  65 79 2d 30 30 30 30 30 
+                      30 30 30 31 
+=======================================================================
+[ROW 2] Length: 68 (8 | 60), Number of fields: 7
+-----------------------------------------------------------------------
+  [HEADER   ]         09 0a 00 00 00 18 00 44  
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 02 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 07 18 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 01 18 01 1d 
+  [FIELD   4] Name  : c_bin
+              Length: 10   
+              Type  : char(10)        | STRING       | DATA_MYSQL          
+              Value : 64 65 20 20 20 20 20 20  20 20 
+  [FIELD   5] Name  : trailing_int
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 08 ae 
+  [FIELD   6] Name  : trailing_str
+              Length: 9    
+              Type  : varchar(20)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 66 74 65 72 2d 74 77  6f 
+  [FIELD   7] Name  : c_lat
+              Length: 20   
+              Type  : char(20)        | STRING       | DATA_CHAR           
+              Value : 70 72 65 66 69 78 2d 6b  65 79 2d 30 30 30 30 30 
+                      30 30 30 32 
+=======================================================================
+[ROW 3] Length: 70 (8 | 62), Number of fields: 7
+-----------------------------------------------------------------------
+  [HEADER   ]         0b 0a 00 00 00 20 00 46  
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 03 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 07 18 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 01 18 01 2a 
+  [FIELD   4] Name  : c_bin
+              Length: 10   
+              Type  : char(10)        | STRING       | DATA_MYSQL          
+              Value : 66 67 68 69 6a 20 20 20  20 20 
+  [FIELD   5] Name  : trailing_int
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 0d 05 
+  [FIELD   6] Name  : trailing_str
+              Length: 11   
+              Type  : varchar(20)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 66 74 65 72 2d 74 68  72 65 65 
+  [FIELD   7] Name  : c_lat
+              Length: 20   
+              Type  : char(20)        | STRING       | DATA_CHAR           
+              Value : 70 72 65 66 69 78 2d 6b  65 79 2d 30 30 30 30 30 
+                      30 30 30 33 
+=======================================================================
+[ROW 4] Length: 69 (8 | 61), Number of fields: 7
+-----------------------------------------------------------------------
+  [HEADER   ]         0a 0a 00 00 00 28 00 44  
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 04 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 07 18 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 01 18 01 37 
+  [FIELD   4] Name  : c_bin
+              Length: 10   
+              Type  : char(10)        | STRING       | DATA_MYSQL          
+              Value : 6b 6c 6d 6e 6f 70 71 72  73 74 
+  [FIELD   5] Name  : trailing_int
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 11 5c 
+  [FIELD   6] Name  : trailing_str
+              Length: 10   
+              Type  : varchar(20)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 66 74 65 72 2d 66 6f  75 72 
+  [FIELD   7] Name  : c_lat
+              Length: 20   
+              Type  : char(20)        | STRING       | DATA_CHAR           
+              Value : 70 72 65 66 69 78 20 20  20 20 20 20 20 20 20 20 
+                      20 20 20 20 
+=======================================================================
+[ROW 5] Length: 38 (7 | 31), Number of fields: 7
+-----------------------------------------------------------------------
+  [HEADER   ]         0a 05 00 00 30 fe de 
+  [FIELD   1] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 05 
+  [FIELD   2] Name  : DB_TRX_ID
+              Length: 6    
+              Type  :                 | INT24        | DATA_SYS            
+              Value : 00 00 00 00 07 18 
+  [FIELD   3] Name  : DB_ROLL_PTR
+              Length: 7    
+              Type  :                 | LONGLONG     | DATA_SYS            
+              Value : 82 00 00 01 18 01 44 
+  [FIELD   4] Name  : c_bin
+              Length: 0    
+              Type  : char(10)        | STRING       | DATA_MYSQL          
+              Value : *NULL*
+  [FIELD   5] Name  : trailing_int
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 15 b3 
+  [FIELD   6] Name  : trailing_str
+              Length: 10   
+              Type  : varchar(20)     | VARCHAR      | DATA_VARMYSQL       
+              Value : 61 66 74 65 72 2d 66 69  76 65 
+  [FIELD   7] Name  : c_lat
+              Length: 0    
+              Type  : char(20)        | STRING       | DATA_CHAR           
+              Value : *NULL*
+====================================================================================
+|  PAGE ANALYSIS RESULT                                                             |
+------------------------------------------------------------------------------------
+Total valid records count:                5
+Total valid records size:                 313 B
+                                            [Headers: 39 B]
+                                            [Bodies:  274 B]
+Valid records to page space ratio:        1.91040 %
+
+Total records with dropped columns count: 0
+Total instant dropped columns size:       0 B
+Dropped columns to page space ratio:      0.00000 %
+
+Total delete-marked records count:        0
+Total delete-marked records size:         0 B
+Delete-marked recs to page space ratio:   0.00000 %
+
+Total InnoDB internal space used:         171 B
+                                            [FIL HEADER     38 B]
+                                            [PAGE HEADER    36 B]
+                                            [FSEG HEADER    20 B]
+                                            [INFI + SUPRE   26 B]
+                                            [RECORD HEADERS 39 B]*
+                                            [PAGE DIRECTORY 4 B]
+                                            [FIL TRAILER    8 B]
+InnoDB internals to page space ratio:     1.04370 %
+
+Total free space:                         15939 B
+Free space ratio:                         97.28394 %

@@ -497,6 +497,8 @@ const uint32_t BTR_EXTERN_PAGE_NO = 4;
 const uint32_t BTR_EXTERN_OFFSET = 8;
 const uint32_t BTR_EXTERN_VERSION = BTR_EXTERN_OFFSET;
 const uint32_t BTR_EXTERN_LEN = 12;
+// Total size of an external field reference stored at the end of the field
+const uint32_t BTR_EXTERN_FIELD_REF_SIZE = 20;
 const uint32_t BTR_EXTERN_OWNER_FLAG = 128UL;
 const uint32_t BTR_EXTERN_INHERITED_FLAG = 64UL;
 const uint32_t BTR_EXTERN_BEING_MODIFIED_FLAG = 32UL;

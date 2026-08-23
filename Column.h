@@ -346,24 +346,26 @@ class Column {
              se_explicit_(false), index_column_(nullptr) {
   }
   bool Init(const rapidjson::Value& dd_col_obj);
+  // SDI-derived members carry default initializers because the SDI Read()
+  // calls in Init() leave them untouched when a key is missing.
   std::string dd_name_;
-  enum_column_types dd_type_;
-  bool dd_is_nullable_;
-  bool dd_is_zerofill_;
-  bool dd_is_unsigned_;
-  bool dd_is_auto_increment_;
-  bool dd_is_virtual_;
-  enum_hidden_type dd_hidden_;
-  uint32_t dd_ordinal_position_;
-  uint32_t dd_char_length_;
-  uint32_t dd_numeric_precision_;
-  uint32_t dd_numeric_scale_;
-  bool dd_numeric_scale_null_;
-  uint32_t dd_datetime_precision_;
-  uint32_t dd_datetime_precision_null_;
-  bool dd_has_no_default_;
-  bool dd_default_value_null_;
-  bool dd_srs_id_null_;
+  enum_column_types dd_type_ = enum_column_types::TYPE_NULL;
+  bool dd_is_nullable_ = false;
+  bool dd_is_zerofill_ = false;
+  bool dd_is_unsigned_ = false;
+  bool dd_is_auto_increment_ = false;
+  bool dd_is_virtual_ = false;
+  enum_hidden_type dd_hidden_ = enum_hidden_type::HT_VISIBLE;
+  uint32_t dd_ordinal_position_ = 0;
+  uint32_t dd_char_length_ = 0;
+  uint32_t dd_numeric_precision_ = 0;
+  uint32_t dd_numeric_scale_ = 0;
+  bool dd_numeric_scale_null_ = true;
+  uint32_t dd_datetime_precision_ = 0;
+  uint32_t dd_datetime_precision_null_ = true;
+  bool dd_has_no_default_ = false;
+  bool dd_default_value_null_ = true;
+  bool dd_srs_id_null_ = true;
   std::optional<std::uint32_t> dd_srs_id_;
   std::string dd_default_value_;
   bool dd_default_value_utf8_null_;
@@ -377,23 +379,23 @@ class Column {
   Properties dd_se_private_data_;
   std::string dd_engine_attribute_;
   std::string dd_secondary_engine_attribute_;
-  enum_column_key dd_column_key_;
+  enum_column_key dd_column_key_ = enum_column_key::CK_NONE;
   std::string dd_column_type_utf8_;
   // TODO(Zhao):
   // Column_type_element_collection dd_elements_;
-  uint64_t dd_elements_size_tmp_;
-  uint64_t dd_collation_id_;
-  bool dd_is_explicit_collation_;
+  uint64_t dd_elements_size_tmp_ = 0;
+  uint64_t dd_collation_id_ = 0;
+  bool dd_is_explicit_collation_ = false;
 
   /*------SE------*/
-  uint32_t ib_ind_;
-  uint32_t ib_mtype_;
-  bool ib_is_visible_;
-  uint32_t ib_version_added_;
-  uint32_t ib_version_dropped_;
-  uint32_t ib_phy_pos_;
-  uint32_t ib_col_len_;
-  bool ib_instant_default_;
+  uint32_t ib_ind_ = 0;
+  uint32_t ib_mtype_ = DATA_MISSING;
+  bool ib_is_visible_ = false;
+  uint32_t ib_version_added_ = UINT8_UNDEFINED;
+  uint32_t ib_version_dropped_ = UINT8_UNDEFINED;
+  uint32_t ib_phy_pos_ = UINT32_UNDEFINED;
+  uint32_t ib_col_len_ = 0;
+  bool ib_instant_default_ = false;
   bool is_array_ = false;
 
   bool se_explicit_;
@@ -409,6 +411,9 @@ class IndexColumn {
   static IndexColumn* CreateIndexDroppedColumn(Column* dropped_col);
   // Used only when creating a FTS_DOC_ID index column.
   static IndexColumn* CreateIndexFTSDocIdColumn(Column* doc_id_col);
+  // Used only for a per-index copy of a prefix-capped field
+  // (see Index::IndexAddCol). Does NOT register itself on the column.
+  static IndexColumn* CreateIndexPrefixColumn(Column* col);
   void DebugDump(int space = 0) {
     std::string space_str(space, ' ');
     std::cout << space_str << "[" << std::endl;
@@ -459,14 +464,16 @@ class IndexColumn {
   }
   bool Init(const rapidjson::Value& dd_index_col_obj,
             const std::vector<Column*>& columns);
-  uint32_t dd_ordinal_position_;
-  uint32_t dd_length_;
-  enum_index_element_order dd_order_;
-  bool dd_hidden_;
-  uint32_t dd_column_opx_;
+  // Defaults matter: Init()'s Read() calls leave these untouched when the
+  // SDI key is missing. UINT32_UNDEFINED for length means "no prefix".
+  uint32_t dd_ordinal_position_ = 0;
+  uint32_t dd_length_ = UINT32_UNDEFINED;
+  enum_index_element_order dd_order_ = ORDER_UNDEF;
+  bool dd_hidden_ = false;
+  uint32_t dd_column_opx_ = 0;
 
   /*------SE------*/
-  uint32_t ib_fixed_len_;
+  uint32_t ib_fixed_len_ = 0;
 
   bool se_explicit_;
 

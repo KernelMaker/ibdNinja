@@ -387,35 +387,39 @@ class Table {
   bool Init(const rapidjson::Value& dd_obj);
   unsigned char* sdi_data_;
   /* DD */
+  // SDI-derived members carry default initializers because the SDI Read()
+  // calls in Init() leave them untouched when a key is missing. A missing
+  // mysql_version_id (0) fails the PreCheck() version gate, which is the
+  // safe outcome for a table with corrupt/incomplete SDI.
   std::string dd_name_;
-  uint32_t dd_mysql_version_id_;
-  uint64_t dd_created_;
-  uint64_t dd_last_altered_;
-  enum_hidden_type dd_hidden_;
+  uint32_t dd_mysql_version_id_ = 0;
+  uint64_t dd_created_ = 0;
+  uint64_t dd_last_altered_ = 0;
+  enum_hidden_type dd_hidden_ = HT_VISIBLE;
   Properties dd_options_;
   std::vector<Column*> columns_;
   std::string dd_schema_ref_;
-  uint64_t dd_se_private_id_;
+  uint64_t dd_se_private_id_ = 0;
   std::string dd_engine_;
   std::string dd_comment_;
-  uint32_t dd_last_checked_for_upgrade_version_id_;
+  uint32_t dd_last_checked_for_upgrade_version_id_ = 0;
   Properties dd_se_private_data_;
   std::string dd_engine_attribute_;
   std::string dd_secondary_engine_attribute_;
-  enum_row_format dd_row_format_;
-  enum_partition_type dd_partition_type_;
+  enum_row_format dd_row_format_ = RF_DYNAMIC;
+  enum_partition_type dd_partition_type_ = PT_NONE;
   std::string dd_partition_expression_;
   std::string dd_partition_expression_utf8_;
-  enum_default_partitioning dd_default_partitioning_;
-  enum_subpartition_type dd_subpartition_type_;
+  enum_default_partitioning dd_default_partitioning_ = DP_NONE;
+  enum_subpartition_type dd_subpartition_type_ = ST_NONE;
   std::string dd_subpartition_expression_;
   std::string dd_subpartition_expression_utf8_;
-  enum_default_partitioning dd_default_subpartitioning_;
+  enum_default_partitioning dd_default_subpartitioning_ = DP_NONE;
   std::vector<Index*> indexes_;
   // dd_foreign_keys
   // dd_check_constraints
   // dd_partitions
-  uint64_t dd_collation_id_;
+  uint64_t dd_collation_id_ = 0;
 
   /* TABLE_SHARE */
   uint32_t s_fields_;
@@ -428,25 +432,25 @@ class Table {
   bool InitSeTable();
   bool ContainFulltext();
   uint32_t unsupported_reason_;
-  uint32_t ib_id_;
-  uint32_t ib_n_cols_;
-  uint32_t ib_n_v_cols_;
-  uint32_t ib_n_m_v_cols_;
-  uint32_t ib_n_t_cols_;
-  uint32_t ib_n_instant_cols_;
-  bool ib_m_upgraded_instant_;
-  uint32_t ib_initial_col_count_;
-  uint32_t ib_current_col_count_;
-  uint32_t ib_total_col_count_;
-  uint32_t ib_current_row_version_;
+  uint32_t ib_id_ = 0;
+  uint32_t ib_n_cols_ = 0;
+  uint32_t ib_n_v_cols_ = 0;
+  uint32_t ib_n_m_v_cols_ = 0;
+  uint32_t ib_n_t_cols_ = 0;
+  uint32_t ib_n_instant_cols_ = 0;
+  bool ib_m_upgraded_instant_ = false;
+  uint32_t ib_initial_col_count_ = 0;
+  uint32_t ib_current_col_count_ = 0;
+  uint32_t ib_total_col_count_ = 0;
+  uint32_t ib_current_row_version_ = 0;
 
-  uint32_t ib_n_def_;
-  uint32_t ib_n_v_def_;
-  uint32_t ib_n_t_def_;
+  uint32_t ib_n_def_ = 0;
+  uint32_t ib_n_v_def_ = 0;
+  uint32_t ib_n_t_def_ = 0;
   std::vector<Column*> ib_cols_;
-  Column* row_id_col_;
+  Column* row_id_col_ = nullptr;
 
-  bool ib_is_system_table_;
+  bool ib_is_system_table_ = false;
   Index* clust_index_;
 };
 

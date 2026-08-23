@@ -1,0 +1,140 @@
+====================================================================================
+|  FILE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    File name:             <FIXTURES>/collation_prefix.ibd
+    File size:             147456 B
+    Space id:              2
+    Page logical size:     16384 B
+    Page physical size:    16384 B
+    Total number of pages: 9
+    Is compressed page?    0
+    First page number:     0
+    SDI root page number:  3
+    Post antelop:          1
+    Atomic blobs:          1
+    Has data dir:          0
+    Shared:                0
+    Temporary:             0
+    Encryption:            0
+------------------------------------------------------------------------------------
+[ibdNinja]: Successfully loaded     1 tables with     3 indexes.
+====================================================================================
+
+====================================================================================
+|  PAGE INFORMATION                                                                |
+------------------------------------------------------------------------------------
+    Page no:           5
+    Slibling pages no: NULL [5] NULL
+    Space id:          2
+    Page type:         INDEX
+    Lsn:               32376547
+    FLush lsn:         0
+    -------------------
+    Page level:        0
+    Page size:         [logical: 16384 B], [physical: 16384 B]
+    Number of records: 5
+    Index id:          159
+    Belongs to:        [table: ibdninja_test.collation_prefix], [index: idx_lat_prefix]
+    Row format:        DYNAMIC
+    Number dir slots:  2
+    Heap top:          210
+    Number of heap:    7
+    First free rec:    0
+    Garbage:           0 B
+    Last insert:       206
+    Direction:         1
+    Number direction:  1
+    Max trx id:        1816
+
+====================================================================================
+|  RECORDS INFORMATION                                                             |
+------------------------------------------------------------------------------------
+=======================================================================
+[ROW 1] Length: 10 (6 | 4), Number of fields: 2
+-----------------------------------------------------------------------
+  [HEADER   ]         01 00 00 30 ff ec 
+  [FIELD   1] Name  : c_lat
+              Length: 0    
+              Type  : char(20)        | STRING       | DATA_CHAR           
+              Value : *NULL*
+  [FIELD   2] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 05 
+=======================================================================
+[ROW 2] Length: 20 (6 | 14), Number of fields: 2
+-----------------------------------------------------------------------
+  [HEADER   ]         00 00 00 28 ff c4 
+  [FIELD   1] Name  : c_lat
+              Length: 10   
+              Type  : char(20)        | STRING       | DATA_CHAR           
+              Value : 70 72 65 66 69 78 20 20  20 20 
+  [FIELD   2] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 04 
+=======================================================================
+[ROW 3] Length: 20 (6 | 14), Number of fields: 2
+-----------------------------------------------------------------------
+  [HEADER   ]         00 00 00 10 00 14 
+  [FIELD   1] Name  : c_lat
+              Length: 10   
+              Type  : char(20)        | STRING       | DATA_CHAR           
+              Value : 70 72 65 66 69 78 2d 6b  65 79 
+  [FIELD   2] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 01 
+=======================================================================
+[ROW 4] Length: 20 (6 | 14), Number of fields: 2
+-----------------------------------------------------------------------
+  [HEADER   ]         00 00 00 18 00 14 
+  [FIELD   1] Name  : c_lat
+              Length: 10   
+              Type  : char(20)        | STRING       | DATA_CHAR           
+              Value : 70 72 65 66 69 78 2d 6b  65 79 
+  [FIELD   2] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 02 
+=======================================================================
+[ROW 5] Length: 20 (6 | 14), Number of fields: 2
+-----------------------------------------------------------------------
+  [HEADER   ]         00 00 00 20 ff ca 
+  [FIELD   1] Name  : c_lat
+              Length: 10   
+              Type  : char(20)        | STRING       | DATA_CHAR           
+              Value : 70 72 65 66 69 78 2d 6b  65 79 
+  [FIELD   2] Name  : id
+              Length: 4    
+              Type  : int             | LONG         | DATA_INT            
+              Value : 80 00 00 03 
+====================================================================================
+|  PAGE ANALYSIS RESULT                                                             |
+------------------------------------------------------------------------------------
+Total valid records count:                5
+Total valid records size:                 90 B
+                                            [Headers: 30 B]
+                                            [Bodies:  60 B]
+Valid records to page space ratio:        0.54932 %
+
+Total records with dropped columns count: 0
+Total instant dropped columns size:       0 B
+Dropped columns to page space ratio:      0.00000 %
+
+Total delete-marked records count:        0
+Total delete-marked records size:         0 B
+Delete-marked recs to page space ratio:   0.00000 %
+
+Total InnoDB internal space used:         162 B
+                                            [FIL HEADER     38 B]
+                                            [PAGE HEADER    36 B]
+                                            [FSEG HEADER    20 B]
+                                            [INFI + SUPRE   26 B]
+                                            [RECORD HEADERS 30 B]*
+                                            [PAGE DIRECTORY 4 B]
+                                            [FIL TRAILER    8 B]
+InnoDB internals to page space ratio:     0.98877 %
+
+Total free space:                         16162 B
+Free space ratio:                         98.64502 %

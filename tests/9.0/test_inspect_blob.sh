@@ -119,7 +119,7 @@ run_inspect_test_fixture() {
     fi
 
     if [ ! -f "$expected_file" ]; then
-        log_skip "$test_name (no expected file, run with -u to create)"
+        log_fail "$test_name (missing golden file, run with -u to create)"
         return
     fi
 

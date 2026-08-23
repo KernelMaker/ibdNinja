@@ -323,7 +323,7 @@ Would you like to see version 4 instead? [y/N]:
 
 1. **支持MySQL版本**：
 
-   当前支持MySQL 8.0 （8.0.16 - 8.0.40）、MySQL 8.4 （8.4.0 - 8.4.8）、MySQL 9.0 （9.0.0 - 9.6.0）
+   当前支持MySQL 8.0 （8.0.16 - 8.0.40）、MySQL 8.4 （8.4.0 - 8.4.8）、MySQL 9.x （9.0.0 - 9.7.x）
 
 （*因为MySQL 8.0.16之前的版本在生成SDI的时候存在bug，导致SDI会缺失dd_object::indexes::elements中的一些元信息*）
 

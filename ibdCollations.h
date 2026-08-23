@@ -286,7 +286,7 @@ std::map<int,  collation> g_collation_map = {
   {306, {"utf8mb4_ru_0900_ai_ci", 1, 4}},
   {307, {"utf8mb4_ru_0900_as_cs", 1, 4}},
   {308, {"utf8mb4_zh_0900_as_cs", 1, 4}},
-  {309, {"utf8mb4_0900_bin", 1, 1}},
+  {309, {"utf8mb4_0900_bin", 1, 4}},
   {310, {"utf8mb4_nb_0900_ai_ci", 1, 4}},
   {311, {"utf8mb4_nb_0900_as_cs", 1, 4}},
   {312, {"utf8mb4_nn_0900_ai_ci", 1, 4}},

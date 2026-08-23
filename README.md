@@ -355,7 +355,7 @@ This is the first version I developed during the Christmas holiday, so there are
 
 1. **Supported MySQL Versions**:
 
-   Currently supports MySQL 8.0 (8.0.16 - 8.0.40), MySQL 8.4 (8.4.0 - 8.4.8), and MySQL 9.0 (9.0.0 - 9.6.0).
+   Currently supports MySQL 8.0 (8.0.16 - 8.0.40), MySQL 8.4 (8.4.0 - 8.4.8), and MySQL 9.x (9.0.0 - 9.7.x).
 
    *(Earlier versions of MySQL 8.0, prior to 8.0.16, contain a bug in SDI generation that leads to missing metadata in `dd_object::indexes::elements`.)*
 
